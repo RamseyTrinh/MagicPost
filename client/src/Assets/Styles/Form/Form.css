@@ -1,0 +1,34 @@
+.MuiFormLabel-root.Mui-focused {
+  color: #467061 !important;
+}
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #003e29 !important;
+}
+#outlined-basic {
+  background-color: white;
+}
+#paper {
+  background-color: #fdfdfd;
+  padding: 1rem;
+}
+.LABEL {
+  margin-bottom: 4px;
+  font-family: "arial";
+  font-size: larger;
+  font-weight: bold;
+  color: #003e29;
+}
+
+.css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked {
+  color: green;
+}
+
+.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
+.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+  color: green;
+}
+@media (max-width: 800px) {
+  #paper {
+    width: 100% !important;
+  }
+}
