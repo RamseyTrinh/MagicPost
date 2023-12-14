@@ -18,8 +18,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import Form from "../Form/Form.tsx";
-import Transfer from "../Transfer/Transfer.jsx";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";

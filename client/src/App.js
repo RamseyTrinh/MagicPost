@@ -9,7 +9,7 @@ import { useAuthUser } from "react-auth-kit";
 
 export default function App() {
   const auth = useAuthUser();
-  const role = auth().data.role;
+  const role = auth()?.data.role;
   const PrivateRoute = () => {
     const isAuthenticated = useIsAuthenticated();
     const auth = isAuthenticated();
@@ -22,7 +22,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/menu" element={<PrivateRoute />}>
-        <Route index element={<div>{role}</div>} />
+        <Route index element={role && <div>{role}</div>} />
         <Route path="taodonhang" element={<Form />} />
         <Route path="chuyenhang" element={<Transfer />} />
         {/* <Route path="xacnhan" element={<Confi />} /> */}
