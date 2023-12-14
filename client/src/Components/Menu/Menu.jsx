@@ -20,7 +20,7 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthUser } from "react-auth-kit";
 
 const drawerWidth = 200;
@@ -97,7 +97,6 @@ export default function MiniDrawer() {
   const role = auth().data.role;
 
   const [open, setOpen] = React.useState(true);
-  const [idx, setIdx] = React.useState(0);
   const [title, setTitle] = React.useState("Tạo đơn hàng");
 
   const giaodich = [
@@ -124,11 +123,23 @@ export default function MiniDrawer() {
     e.persist();
     if (index === 0) {
       if (role === "admin") {
-        navigate("/menu/taodonhang");
+        navigate("/menu/create");
       }
     }
     if (index === 1) {
-      navigate("/menu/chuyenhang");
+      if (role === "admin") {
+        navigate("/menu/transfer");
+      }
+    }
+    if (index === 2) {
+      if (role === "admin") {
+        navigate("/menu/confirmation");
+      }
+    }
+    if (index === 3) {
+      if (role === "admin") {
+        navigate("/menu/statistics");
+      }
     }
   };
 
