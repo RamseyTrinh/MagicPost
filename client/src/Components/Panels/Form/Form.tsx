@@ -10,10 +10,10 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import "../../Assets/Styles/Form/Form.css";
+import "../../../Assets/Styles/Form/Form.css";
 import { useForm } from "react-hook-form";
 import React from "react";
-import SelectAdd from "../SelectAdd/SelectAdd";
+import SelectAdd from "../../Funtions/SelectAdd/SelectAdd.js";
 
 export default function Form() {
   const match = useMediaQuery("(max-width:800px)");

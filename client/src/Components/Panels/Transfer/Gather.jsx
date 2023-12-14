@@ -6,7 +6,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import "../../Assets/Styles/Gather/Gather.css";
+import "../../../Assets/Styles/Gather/Gather.css";
 
 import React from "react";
 
@@ -33,7 +33,7 @@ export default function Gather() {
               color: "#003e29",
             }}
           >
-            NGƯỜI NHẬN
+            ĐIỂM TẬP KẾT
           </Typography>
 
           <Stack
@@ -76,24 +76,20 @@ export default function Gather() {
               />
             )}
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
-              <Stack spacing={3} direction="column">
+              <Stack spacing={2} direction="column">
                 <TextField
                   fullWidth
                   id="outlined-basic"
-                  label="Người nhận"
+                  label="Điểm tập kết"
                   variant="outlined"
                   required
                 ></TextField>
                 <TextField
                   fullWidth
+                  multiline
+                  rows={5}
                   id="outlined-basic"
-                  label="Số điện thoại"
-                  variant="outlined"
-                ></TextField>
-                <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Địa chỉ"
+                  label="Ghi chú"
                   variant="outlined"
                 ></TextField>
               </Stack>

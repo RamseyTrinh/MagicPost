@@ -18,10 +18,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import Form from "../Form/Form.tsx";
-import Transfer from "../Transfer/Transfer.jsx";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
+import Form from "../Panels/Form/Form.tsx";
+import Transfer from "../Panels/Transfer/Transfer.jsx";
+import Confirmation from "../Panels/Confirmation/Confirmation.jsx";
+import Statistics from "../Panels/Statistics/Statistics.jsx";
 
 const drawerWidth = 200;
 
@@ -131,7 +133,7 @@ export default function MiniDrawer() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h5" noWrap component="div">
             {title}
           </Typography>
         </Toolbar>
@@ -200,6 +202,8 @@ export default function MiniDrawer() {
         <DrawerHeader />
         {idx === 0 ? <Form /> : ""}
         {idx === 1 ? <Transfer /> : ""}
+        {idx === 2 ? <Confirmation /> : ""}
+        {idx === 3 ? <Statistics /> : ""}
       </Box>
     </Box>
   );
