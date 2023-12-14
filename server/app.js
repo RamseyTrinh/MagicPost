@@ -5,12 +5,13 @@ const moviesRouter = require("./Routes/moviesRoutes");
 const authRouter = require("./Routes/authRouter");
 const CustomError = require("./Utils/CustomError");
 const globalErrorHandler = require("./Controllers/errorController");
+const cors = require("cors");
 
 let app = express();
 
 app.use(express.json());
-
 app.use(express.static("./public"));
+app.use(cors());
 
 //USING ROUTES
 

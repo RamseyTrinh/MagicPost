@@ -2,20 +2,21 @@ const mongoose = require("mongoose");
 const packagesController = require("../Controllers/packagesController");
 const packageSchema = new mongoose.Schema({
   id: {
-    type: Number,
+    type: String,
     required: true,
     unique: true,
   },
   name: {
     type: String,
-    required: [true, "Name is required"],
   },
   destinition: {
     type: String,
   },
-  ratings: {
-    type: Number,
-    default: 1.0,
+  status: {
+    type: String,
+    enum: {
+      values: ["recieved", "delivering", "takingup", "shipping"],
+    },
   },
 });
 const Packages = mongoose.model("package", packageSchema);

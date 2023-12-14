@@ -28,18 +28,18 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
   const password = req.body.password;
 
   if (!email || !password) {
-    const error = new CustomError(
-      "Please enter email and password for login in!",
-      400
-    );
-    return next(error);
+    return res.status(400).json({
+      message: "Tên đăng nhập và mật khẩu không để trống!",
+    });
   }
   const user = await User.findOne({ email }).select("+password");
+  console.log(user);
 
   //check if match
   if (!user || !(await user.comparePasswordInDB(password, user.password))) {
-    const error = new CustomError("Incorrect email or password", 400);
-    return next(error);
+    return res.status(400).json({
+      message: "Sai tên đăng nhập hoặc mật khẩu!",
+    });
   }
 
   const token = signToken(user._id);
@@ -47,6 +47,7 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "Login success",
     token,
+    role: user.role,
   });
 });
 

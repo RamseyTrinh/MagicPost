@@ -5,11 +5,39 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import LINK from "@mui/material/Link";
 import Divider from "@mui/material/Divider";
-import { Link } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
+import { Alert, AlertTitle } from "@mui/material";
+
+//Hoang
 import React from "react";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("nhubuoi");
+    axios
+      .post("http://localhost:3000/api/v1/users/login", { email, password })
+      .then((result) => {
+        console.log(result);
+        if (result.status === 200) {
+          console.log(result.data.role);
+          navigate("/menu");
+          setError("");
+        }
+      })
+      .catch((err) => {
+        setError(err.response.data.message);
+        console.log(err.response.data.message);
+      });
+  };
   return (
     <CssBaseline>
       <Box
@@ -42,9 +70,10 @@ export default function Login() {
           <Typography variant="h5" sx={{ mb: 3, mt: 4 }}>
             Đăng nhập
           </Typography>
-          <form style={{ marginBottom: "12px" }}>
+          <form style={{ marginBottom: "12px" }} onSubmit={handleSubmit}>
             <TextField
               fullWidth
+              onChange={(e) => setEmail(e.target.value)}
               label="Tên tài khoản"
               sx={{
                 mb: 3,
@@ -60,7 +89,9 @@ export default function Login() {
             ></TextField>
             <TextField
               fullWidth
-              label="Mật khẩu đăng nhập"
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              label="Mật khẩu"
               sx={{
                 mb: 3,
                 ".MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
@@ -73,20 +104,21 @@ export default function Login() {
                   },
               }}
             ></TextField>
-            <Link to="/Menu">
-              <Button
-                variant="contained"
-                fullWidth
-                sx={{
-                  backgroundColor: "#003e29",
-                  color: "#fdfdfd",
-                  ":hover": { backgroundColor: "#467061", color: "#bcbcbc" },
-                  fontWeight: "bold",
-                }}
-              >
-                Đăng nhập
-              </Button>
-            </Link>
+            {error && <Alert severity="error">{error}</Alert>}
+
+            <Button
+              variant="contained"
+              fullWidth
+              type="submit"
+              sx={{
+                backgroundColor: "#003e29",
+                color: "#fdfdfd",
+                ":hover": { backgroundColor: "#467061", color: "#bcbcbc" },
+                fontWeight: "bold",
+              }}
+            >
+              Đăng nhập
+            </Button>
           </form>
           <Typography sx={{ mb: 3 }}>
             <LINK href="#">Quên mật khẩu</LINK>
