@@ -47,7 +47,9 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "Login success",
     token,
-    role: user.role,
+    user: {
+      role: user.role,
+    },
   });
 });
 

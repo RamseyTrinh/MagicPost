@@ -18,12 +18,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import Form from "../Form/Form.tsx";
+import Transfer from "../Transfer/Transfer.jsx";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
-import Form from "../Panels/Form/Form.tsx";
-import Transfer from "../Panels/Transfer/Transfer.jsx";
-import Confirmation from "../Panels/Confirmation/Confirmation.jsx";
-import Statistics from "../Panels/Statistics/Statistics.jsx";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { useAuthUser } from "react-auth-kit";
 
 const drawerWidth = 200;
 
@@ -93,10 +93,21 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const auth = useAuthUser();
+  const role = auth().data.role;
 
   const [open, setOpen] = React.useState(true);
   const [idx, setIdx] = React.useState(0);
   const [title, setTitle] = React.useState("Tạo đơn hàng");
+
+  const giaodich = [
+    { name: "Tạo đơn hàng", Icon: BorderColorIcon },
+    { name: "Chuyển hàng", Icon: LocalShippingIcon },
+    { name: "Xác nhận", Icon: MarkEmailReadIcon },
+    { name: "Thống kê", Icon: AssessmentIcon },
+  ];
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -113,7 +124,14 @@ export default function MiniDrawer() {
 
   const handleToggle = (e, index) => {
     e.persist();
-    setIdx(index);
+    if (index === 0) {
+      if (role === "admin") {
+        navigate("/menu/taodonhang");
+      }
+    }
+    if (index === 1) {
+      navigate("/menu/chuyenhang");
+    }
   };
 
   return (
@@ -133,7 +151,7 @@ export default function MiniDrawer() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h5" noWrap component="div">
+          <Typography variant="h6" noWrap component="div">
             {title}
           </Typography>
         </Toolbar>
@@ -162,12 +180,7 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {[
-            { name: "Tạo đơn hàng", Icon: BorderColorIcon },
-            { name: "Chuyển hàng", Icon: LocalShippingIcon },
-            { name: "Xác nhận", Icon: MarkEmailReadIcon },
-            { name: "Thống kê", Icon: AssessmentIcon },
-          ].map(({ name: text, Icon }, index) => (
+          {giaodich.map(({ name: text, Icon }, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
@@ -200,10 +213,7 @@ export default function MiniDrawer() {
         sx={{ flexGrow: 1, p: 3, background: "#f1f2ec", minHeight: "100vh" }}
       >
         <DrawerHeader />
-        {idx === 0 ? <Form /> : ""}
-        {idx === 1 ? <Transfer /> : ""}
-        {idx === 2 ? <Confirmation /> : ""}
-        {idx === 3 ? <Statistics /> : ""}
+        <Outlet />
       </Box>
     </Box>
   );

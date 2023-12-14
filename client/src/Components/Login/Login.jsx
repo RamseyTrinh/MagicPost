@@ -6,30 +6,43 @@ import Button from "@mui/material/Button";
 import LINK from "@mui/material/Link";
 import Divider from "@mui/material/Divider";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Alert, AlertTitle } from "@mui/material";
+import { Alert } from "@mui/material";
 
 //Hoang
 import React from "react";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSignIn } from "react-auth-kit";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const signIn = useSignIn();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("nhubuoi");
     axios
-      .post("http://localhost:3005/api/v1/users/login", { email, password })
+      .post("http://localhost:3001/api/v1/users/login", { email, password })
       .then((result) => {
         console.log(result);
         if (result.status === 200) {
+          if (
+            signIn({
+              token: result.data.token,
+              expiresIn: 480,
+              tokenType: "Bearer",
+              authState: {
+                data: result.data.user,
+              },
+            })
+          ) {
+            navigate("/menu");
+          }
           console.log(result.data.role);
-          navigate("/menu");
           setError("");
         }
       })
