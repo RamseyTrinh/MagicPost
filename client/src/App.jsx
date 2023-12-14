@@ -1,4 +1,4 @@
-import Menu from "./Components/Menu/Menu.js";
+import Menu from "./Components/Menu/Menu.jsx";
 import Login from "./Components/Login/Login.jsx";
 import Landing from "./Components/Landing/Landing.jsx";
 import { Route, Routes } from "react-router-dom";
