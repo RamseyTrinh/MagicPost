@@ -4,8 +4,8 @@
 // import Divider from "@mui/material/Divider";
 import Gather from "./Gather.tsx";
 import Shipper from "./Shipper.tsx";
-import Navigator from "../../Funtions/Navigator/Navigator.jsx";
-import "../../../Assets/Styles/Gather/Gather.css";
+import Navigator from "../../../Funtions/Navigator/Navigator.jsx";
+import "../../../../Assets/Styles/Gather/Gather.css";
 
 import React, { useState } from "react";
 

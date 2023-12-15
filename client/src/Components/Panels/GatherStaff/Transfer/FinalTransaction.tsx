@@ -6,12 +6,12 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import SelectTransaction from "../../Funtions/SelectArea/SelectTransaction.jsx";
-import SelectGather from "../../Funtions/SelectArea/SelectGather.jsx";
-import { GenerateCode } from "../../Funtions/GenerateCode/GenerateCode.jsx";
+import SelectTransaction from "../../../Funtions/SelectArea/SelectTransaction.jsx";
+import SelectGather from "../../../Funtions/SelectArea/SelectGather.jsx";
+import { GenerateCode } from "../../../Funtions/GenerateCode/GenerateCode.jsx";
 import { useForm } from "react-hook-form";
 
-import "../../../Assets/Styles/Gather/Gather.css";
+import "../../../../Assets/Styles/Gather/Gather.css";
 
 import React, { useState } from "react";
 
@@ -23,13 +23,13 @@ export default function Gather() {
   type FormValues = {
     ID: string;
     from: {
-      transactionPoint: string;
-      transactionStaffID: string;
+      gatherPoint: string;
+      gatherStaffID: string;
       packageID: string;
     };
 
     to: {
-      gatherPoint: string;
+      finalTransactionPoint: string;
       note: string;
     };
   };
@@ -64,7 +64,7 @@ export default function Gather() {
               color: "#003e29",
             }}
           >
-            ĐIỂM TẬP KẾT
+            ĐIỂM GIAO DỊCH ĐÍCH
           </Typography>
 
           <Stack
@@ -74,16 +74,14 @@ export default function Gather() {
           >
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={3} direction="column">
-                <SelectTransaction
-                  refs={{ ...register("from.transactionPoint") }}
-                />
+                <SelectGather refs={{ ...register("from.gatherPoint") }} />
                 <TextField
                   fullWidth
                   id="outlined-basic"
                   label="Mã nhân viên"
                   variant="outlined"
                   required
-                  {...register("from.transactionStaffID")}
+                  {...register("from.gatherStaffID")}
                 ></TextField>
                 <TextField
                   fullWidth
@@ -106,7 +104,9 @@ export default function Gather() {
             )}
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={2} direction="column">
-                <SelectGather refs={{ ...register("to.gatherPoint") }} />
+                <SelectTransaction
+                  refs={{ ...register("to.finalTransactionPoint") }}
+                />
                 <TextField
                   fullWidth
                   multiline

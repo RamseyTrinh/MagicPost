@@ -10,17 +10,19 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import FormHelperText from "@mui/material/FormHelperText";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import "../../../Assets/Styles/Form/Form.css";
+import "../../../../Assets/Styles/Form/Form.css";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import ReceiverAdd from "../../Funtions/SelectAdd/ReceiverAdd.jsx";
-import SenderAdd from "../../Funtions/SelectAdd/ReceiverAdd.jsx";
-import { GenerateCode } from "../../Funtions/GenerateCode/GenerateCode.jsx";
+import ReceiverAdd from "../../../Funtions/SelectAdd/ReceiverAdd.jsx";
+import SenderAdd from "../../../Funtions/SelectAdd/ReceiverAdd.jsx";
+import { GenerateCode } from "../../../Funtions/GenerateCode/GenerateCode.jsx";
+import { Typography } from "@mui/material";
 
 export default function Form() {
   const match = useMediaQuery("(max-width:800px)");
 
   const [code, setCode] = useState(GenerateCode);
+  const [formState, setFormState] = useState(false);
 
   type FormValues = {
     sender: {
@@ -56,6 +58,7 @@ export default function Form() {
   const { register, handleSubmit } = useForm<FormValues>();
 
   const onSubmit = (data: FormValues) => {
+    setFormState(true);
     console.log(data);
   };
 
@@ -356,6 +359,20 @@ export default function Form() {
             >
               Tạo bưu gửi
             </Button>
+            {formState ? (
+              <div>
+                <Typography>Tạo đơn Thành Công</Typography>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  style={{ fontWeight: "bold", background: "#003e29" }}
+                >
+                  IN
+                </Button>
+              </div>
+            ) : (
+              ""
+            )}
           </Paper>
         </Stack>
       </form>

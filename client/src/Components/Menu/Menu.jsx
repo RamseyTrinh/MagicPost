@@ -97,7 +97,7 @@ export default function MiniDrawer() {
   const role = auth().data.role;
 
   const [open, setOpen] = React.useState(true);
-  const [title, setTitle] = React.useState("Tạo đơn hàng");
+  const [title, setTitle] = React.useState("");
 
   const giaodich = [
     { name: "Tạo đơn hàng", Icon: BorderColorIcon },
@@ -105,6 +105,14 @@ export default function MiniDrawer() {
     { name: "Xác nhận", Icon: MarkEmailReadIcon },
     { name: "Thống kê", Icon: AssessmentIcon },
   ];
+
+  const tapket = [
+    { name: "Chuyển hàng", Icon: LocalShippingIcon },
+    { name: "Xác nhận", Icon: MarkEmailReadIcon },
+  ];
+
+  const functions =
+    role === "admin" ? giaodich : role === "admin" ? tapket : "";
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -123,22 +131,22 @@ export default function MiniDrawer() {
     e.persist();
     if (index === 0) {
       if (role === "admin") {
-        navigate("/menu/create");
+        navigate("/menu/admin/create");
       }
     }
     if (index === 1) {
       if (role === "admin") {
-        navigate("/menu/transfer");
+        navigate("/menu/admin/transfer");
       }
     }
     if (index === 2) {
       if (role === "admin") {
-        navigate("/menu/confirmation");
+        navigate("/menu/admin/confirmation");
       }
     }
     if (index === 3) {
       if (role === "admin") {
-        navigate("/menu/statistics");
+        navigate("/menu/admin/statistics");
       }
     }
   };
@@ -189,7 +197,9 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {giaodich.map(({ name: text, Icon }, index) => (
+          {/* {role === "admin" ? setFunctions(tapket) : ""} */}
+          {/* {role === "admin" ? setFunctions(giaodich) : ""} */}
+          {functions.map(({ name: text, Icon }, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
