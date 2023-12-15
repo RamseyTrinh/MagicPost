@@ -7,6 +7,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Input from "@mui/material/Input";
 import Stack from "@mui/material/Stack";
+import FormHelperText from "@mui/material/FormHelperText";
+
 import React from "react";
 
 export default function ReceiverAdd({ refs }) {
@@ -50,7 +52,7 @@ export default function ReceiverAdd({ refs }) {
 
   return (
     <>
-      <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
+      <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
         <SelectAddress
           label="Tỉnh thành phố"
           options={provinces}
@@ -73,53 +75,60 @@ export default function ReceiverAdd({ refs }) {
           value={ward}
         />
       </Stack>
-      <Stack direction={"row"} sx={{ mb: 4 }} spacing={1}>
-        <Input
-          variant="contained"
-          fullWidth
-          sx={{
-            "&:after": {
-              border: "2px solid green",
-            },
-          }}
-          value={`${
-            ward
-              ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
-              : ""
-          } ${
-            district
-              ? `${
-                  districts?.find((item) => item.district_id === district)
-                    ?.district_name
-                },`
-              : ""
-          } ${
-            province
-              ? provinces?.find((item) => item.province_id === province)
-                  ?.province_name
-              : ""
-          }`}
-        />
-        <FormControlLabel
-          value={`${
-            ward
-              ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
-              : ""
-          } ${
-            district
-              ? `${
-                  districts?.find((item) => item.district_id === district)
-                    ?.district_name
-                },`
-              : ""
-          } ${
-            province
-              ? provinces?.find((item) => item.province_id === province)
-                  ?.province_name
-              : ""
-          }`}
-          control={<Checkbox {...refs} required />}
-        />
+      <Stack spacing={0} sx={{ alignItems: "flex-end", mb: 3 }}>
+        <Stack
+          direction={"row"}
+          sx={{ alignItems: "flex-start", width: "100%", height: "40px" }}
+          spacing={1}
+        >
+          <Input
+            variant="contained"
+            fullWidth
+            sx={{
+              "&:after": {
+                border: "2px solid green",
+              },
+            }}
+            value={`${
+              ward
+                ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
+                : ""
+            } ${
+              district
+                ? `${
+                    districts?.find((item) => item.district_id === district)
+                      ?.district_name
+                  },`
+                : ""
+            } ${
+              province
+                ? provinces?.find((item) => item.province_id === province)
+                    ?.province_name
+                : ""
+            }`}
+          />
+          <FormControlLabel
+            value={`${
+              ward
+                ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
+                : ""
+            } ${
+              district
+                ? `${
+                    districts?.find((item) => item.district_id === district)
+                      ?.district_name
+                  },`
+                : ""
+            } ${
+              province
+                ? provinces?.find((item) => item.province_id === province)
+                    ?.province_name
+                : ""
+            }`}
+            control={<Checkbox {...refs} required />}
+          />
+        </Stack>
+        <FormHelperText sx={{ width: "55px", mt: 0 }}>Xác nhận</FormHelperText>
       </Stack>
     </>
   );

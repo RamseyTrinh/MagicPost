@@ -8,8 +8,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
-import FormHelperText from "@mui/material/FormHelperText";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import "../../../../Assets/Styles/Form/Form.css";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
@@ -72,8 +72,8 @@ export default function Form() {
         <Stack spacing={3} direction={`${match ? "column" : "row"}`}>
           <Paper id="paper" style={{ width: "40%" }} elevation={3}>
             <div className="LABEL">NGƯỜI GỬI</div>
-            <Divider sx={{ marginBottom: 4 }} />
-            <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+            <Divider sx={{ marginBottom: 3 }} />
+            <Stack spacing={2} direction="row" sx={{ marginBottom: 3 }}>
               <TextField
                 id="outlined-basic"
                 label="Họ tên"
@@ -100,13 +100,13 @@ export default function Form() {
               variant="outlined"
               fullWidth
               required
-              sx={{ mb: 6 }}
+              sx={{ mb: 4 }}
               // name="senderAddr"
               {...register("sender.senderAddr")}
             />
             <div className="LABEL">NGƯỜI NHẬN</div>
-            <Divider sx={{ marginBottom: 4 }} />
-            <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+            <Divider sx={{ marginBottom: 3 }} />
+            <Stack spacing={2} direction="row" sx={{ marginBottom: 3 }}>
               <TextField
                 id="outlined-basic"
                 label="Họ tên"
@@ -133,7 +133,7 @@ export default function Form() {
               variant="outlined"
               fullWidth
               required
-              sx={{ mb: 6 }}
+              sx={{ mb: 4 }}
               // name="receiverAddr"
               {...register("receiver.receiverAddr")}
             />
@@ -141,6 +141,86 @@ export default function Form() {
           <Paper id="paper" style={{ width: "35%" }} elevation={3}>
             <div className="LABEL">THÔNG TIN BƯU GỬI</div>
             <Divider sx={{ marginBottom: 4 }} />
+            <TextField
+              id="outlined-basic"
+              label="Tên sản phẩm"
+              variant="outlined"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              // name="product"
+              {...register("package.productName")}
+            />
+            <Stack spacing={1} direction="row" sx={{ marginBottom: 4 }}>
+              <TextField
+                id="outlined-basic"
+                label="Giá trị ₫"
+                variant="outlined"
+                fullWidth
+                // required
+                sx={{ mb: 4 }}
+                {...register("package.productValue")}
+              />
+              <TextField
+                id="outlined-basic"
+                label="K.lượng (g)"
+                variant="outlined"
+                fullWidth
+                // required
+                sx={{ mb: 4 }}
+                {...register("package.productWeight")}
+              />
+              <TextField
+                id="outlined-basic"
+                label="S.lượng"
+                variant="outlined"
+                fullWidth
+                // required
+                sx={{ mb: 4 }}
+                {...register("package.quantity")}
+              />
+            </Stack>
+            <Divider sx={{ mb: 4 }} />
+
+            <div
+              style={{
+                marginBottom: "15px",
+                fontFamily: "arial",
+                fontSize: "18px",
+              }}
+            >
+              Kích thước
+            </div>
+            <Stack spacing={1} direction="row" sx={{ marginBottom: 4 }}>
+              <TextField
+                id="outlined-basic"
+                label="Dài (cm)"
+                variant="outlined"
+                fullWidth
+                // required
+                sx={{ mb: 4 }}
+                {...register("package.size.length")}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Rộng (cm)"
+                variant="outlined"
+                fullWidth
+                // required
+                sx={{ mb: 4 }}
+                {...register("package.size.width")}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Cao (cm)"
+                variant="outlined"
+                fullWidth
+                // required
+                sx={{ mb: 4 }}
+                {...register("package.size.height")}
+              />
+            </Stack>
+            <Divider sx={{ mb: 4 }} />
             <div
               style={{ marginBottom: 4, fontFamily: "arial", fontSize: "18px" }}
             >
@@ -162,85 +242,6 @@ export default function Form() {
                 {...register("package.productType")}
               />
             </RadioGroup>
-            <Divider sx={{ mb: 4 }} />
-            <TextField
-              id="outlined-basic"
-              label="Tên sản phẩm"
-              variant="outlined"
-              fullWidth
-              required
-              sx={{ mb: 4 }}
-              // name="product"
-              {...register("package.productName")}
-            />
-            <Stack spacing={1} direction="row" sx={{ marginBottom: 4 }}>
-              <TextField
-                id="outlined-basic"
-                label="Giá trị "
-                variant="outlined"
-                fullWidth
-                // required
-                sx={{ mb: 4 }}
-                {...register("package.productValue")}
-              />
-              <TextField
-                id="outlined-basic"
-                label="K.lượng"
-                variant="outlined"
-                fullWidth
-                // required
-                sx={{ mb: 4 }}
-                {...register("package.productWeight")}
-              />
-              <TextField
-                id="outlined-basic"
-                label="S.lượng"
-                variant="outlined"
-                fullWidth
-                // required
-                sx={{ mb: 4 }}
-                {...register("package.quantity")}
-              />
-            </Stack>
-            <Divider sx={{ mb: 4 }} />
-            <div
-              style={{
-                marginBottom: "15px",
-                fontFamily: "arial",
-                fontSize: "18px",
-              }}
-            >
-              Kích thước
-            </div>
-            <Stack spacing={1} direction="row" sx={{ marginBottom: 4 }}>
-              <TextField
-                id="outlined-basic"
-                label="Dài"
-                variant="outlined"
-                fullWidth
-                // required
-                sx={{ mb: 4 }}
-                {...register("package.size.length")}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Rộng"
-                variant="outlined"
-                fullWidth
-                // required
-                sx={{ mb: 4 }}
-                {...register("package.size.width")}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Cao"
-                variant="outlined"
-                fullWidth
-                // required
-                sx={{ mb: 4 }}
-                {...register("package.size.height")}
-              />
-            </Stack>
             <Divider sx={{ mb: 4 }} />
             <div
               style={{
@@ -286,22 +287,6 @@ export default function Form() {
           <Paper id="paper" style={{ width: "25%" }} elevation={3}>
             <div className="LABEL">BƯU GỬI</div>
             <Divider sx={{ mb: 4 }} />
-            <div
-              style={{
-                fontFamily: "arial",
-                fontSize: "18px",
-              }}
-            >
-              Tiền thu hộ
-            </div>
-            <FormHelperText style={{ margin: "0px" }}>
-              Hình Thức thanh toán tiền COD
-            </FormHelperText>
-            <FormControlLabel
-              control={<Checkbox />}
-              label="Thu hộ bằng tiền hàng"
-            />
-            <TextField placeholder="0" fullWidth sx={{ mb: 4 }} />
             <div
               style={{
                 marginBottom: 4,
@@ -353,6 +338,7 @@ export default function Form() {
               type="submit"
               fullWidth
               style={{ fontWeight: "bold", background: "#003e29" }}
+              sx={{ mb: 4 }}
               onClick={generateCode}
               value={code}
               {...register("ID")}
@@ -361,11 +347,15 @@ export default function Form() {
             </Button>
             {formState ? (
               <div>
-                <Typography>Tạo đơn Thành Công</Typography>
+                <Typography
+                  sx={{ textAlign: "center", mb: 1, fontWeight: "bold" }}
+                >
+                  Tạo đơn Thành Công <TaskAltIcon sx={{ color: "green" }} />
+                </Typography>
                 <Button
                   variant="contained"
                   fullWidth
-                  style={{ fontWeight: "bold", background: "#003e29" }}
+                  style={{ fontWeight: "bold", background: "#14507a" }}
                 >
                   IN
                 </Button>

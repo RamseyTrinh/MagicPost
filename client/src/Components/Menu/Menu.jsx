@@ -112,7 +112,11 @@ export default function MiniDrawer() {
   ];
 
   const functions =
-    role === "admin" ? giaodich : role === "admin" ? tapket : "";
+    role === "transactionStaff"
+      ? giaodich
+      : role === "warehouseStaff"
+      ? tapket
+      : "";
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -130,23 +134,29 @@ export default function MiniDrawer() {
   const handleToggle = (e, index) => {
     e.persist();
     if (index === 0) {
-      if (role === "admin") {
-        navigate("/menu/admin/create");
+      if (role === "transactionStaff") {
+        navigate("/menu/transactionStaff/create");
+      }
+      if (role === "warehouseStaff") {
+        navigate("/menu/warehouseStaff/transfer");
       }
     }
     if (index === 1) {
-      if (role === "admin") {
-        navigate("/menu/admin/transfer");
+      if (role === "transactionStaff") {
+        navigate("/menu/transactionStaff/transfer");
+      }
+      if (role === "warehouseStaff") {
+        navigate("/menu/warehouseStaff/confirmation");
       }
     }
     if (index === 2) {
-      if (role === "admin") {
-        navigate("/menu/admin/confirmation");
+      if (role === "transactionStaff") {
+        navigate("/menu/transactionStaff/confirmation");
       }
     }
     if (index === 3) {
-      if (role === "admin") {
-        navigate("/menu/admin/statistics");
+      if (role === "transactionStaff") {
+        navigate("/menu/transactionStaff/statistics");
       }
     }
   };
