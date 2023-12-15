@@ -20,7 +20,7 @@ const SelectAddress = ({
       <Select
         required
         label={`${label}`}
-        defaultValue={""}
+        defaultValue=""
         value={reset ? "" : value}
         onChange={(e) =>
           !name

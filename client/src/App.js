@@ -15,7 +15,7 @@ export default function App() {
   const PrivateRoute = () => {
     const isAuthenticated = useIsAuthenticated();
     const auth = isAuthenticated();
-    console.log(auth);
+    // console.log(auth);
     return auth ? <Menu /> : <Navigate to="/login" />;
   };
 

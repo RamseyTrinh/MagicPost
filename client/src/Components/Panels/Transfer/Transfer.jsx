@@ -2,15 +2,14 @@
 // import useMediaQuery from "@mui/material/useMediaQuery";
 // import Button from "@mui/material/Button";
 // import Divider from "@mui/material/Divider";
-import Gather from "./Gather.jsx";
-import Shipper from "./Shipper.jsx";
+import Gather from "./Gather.tsx";
+import Shipper from "./Shipper.tsx";
 import Navigator from "../../Funtions/Navigator/Navigator.jsx";
 import "../../../Assets/Styles/Gather/Gather.css";
 
 import React, { useState } from "react";
 
 export default function Transfer() {
-  // const match = useMediaQuery("(max-width:800px)");
   const [select, setSelect] = useState(0);
 
   function handleClickLeft() {

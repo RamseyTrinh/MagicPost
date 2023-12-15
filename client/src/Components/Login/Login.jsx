@@ -24,11 +24,10 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("nhubuoi");
     axios
       .post("http://localhost:3005/api/v1/users/login", { email, password })
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         if (result.status === 200) {
           if (
             signIn({
@@ -42,7 +41,7 @@ export default function Login() {
           ) {
             navigate("/menu");
           }
-          console.log(result.data.role);
+          // console.log(result.data.role);
           setError("");
         }
       })

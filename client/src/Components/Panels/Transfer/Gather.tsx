@@ -6,15 +6,46 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import SelectTransaction from "../../Funtions/SelectArea/SelectTransaction.jsx";
+import SelectGather from "../../Funtions/SelectArea/SelectGather.jsx";
+import { GenerateCode } from "../../Funtions/GenerateCode/GenerateCode.jsx";
+import { useForm } from "react-hook-form";
+
 import "../../../Assets/Styles/Gather/Gather.css";
 
-import React from "react";
+import React, { useState } from "react";
 
 export default function Gather() {
   const match = useMediaQuery("(max-width:800px)");
 
+  const [code, setCode] = useState(GenerateCode);
+
+  type FormValues = {
+    ID: string;
+    from: {
+      transactionPoint: string;
+      transactionStaffID: string;
+      packageID: string;
+    };
+
+    to: {
+      gatherPoint: string;
+      note: string;
+    };
+  };
+
+  const { register, handleSubmit } = useForm<FormValues>();
+
+  const onSubmit = (data: FormValues) => {
+    console.log(data);
+  };
+
+  function generateCode() {
+    setCode(GenerateCode);
+  }
+
   return (
-    <form className="background">
+    <form className="background" onSubmit={handleSubmit(onSubmit)}>
       <Paper
         sx={{
           p: 3,
@@ -43,19 +74,16 @@ export default function Gather() {
           >
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={3} direction="column">
-                <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Điểm giao dịch"
-                  variant="outlined"
-                  required
-                ></TextField>
+                <SelectTransaction
+                  refs={{ ...register("from.transactionPoint") }}
+                />
                 <TextField
                   fullWidth
                   id="outlined-basic"
                   label="Mã nhân viên"
                   variant="outlined"
                   required
+                  {...register("from.transactionStaffID")}
                 ></TextField>
                 <TextField
                   fullWidth
@@ -63,6 +91,7 @@ export default function Gather() {
                   label="Mã bưu gửi"
                   variant="outlined"
                   required
+                  {...register("from.packageID")}
                 ></TextField>
               </Stack>
             </Paper>
@@ -77,13 +106,7 @@ export default function Gather() {
             )}
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={2} direction="column">
-                <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Điểm tập kết"
-                  variant="outlined"
-                  required
-                ></TextField>
+                <SelectGather refs={{ ...register("to.gatherPoint") }} />
                 <TextField
                   fullWidth
                   multiline
@@ -91,6 +114,7 @@ export default function Gather() {
                   id="outlined-basic"
                   label="Ghi chú"
                   variant="outlined"
+                  {...register("to.note")}
                 ></TextField>
               </Stack>
             </Paper>
@@ -106,6 +130,9 @@ export default function Gather() {
               width: "20%",
             }}
             style={{ fontWeight: "bold", background: "#003e29" }}
+            onClick={generateCode}
+            value={code}
+            {...register("ID")}
           >
             XÁC NHẬN
           </Button>
