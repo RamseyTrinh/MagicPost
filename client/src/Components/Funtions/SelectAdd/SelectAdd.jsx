@@ -11,7 +11,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 
 import React from "react";
 
-export default function ReceiverAdd({ refs }) {
+export default function SelectAdd({ refs }) {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -84,6 +84,7 @@ export default function ReceiverAdd({ refs }) {
           <Input
             variant="contained"
             fullWidth
+            readOnly
             sx={{
               "&:after": {
                 border: "2px solid green",

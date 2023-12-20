@@ -13,8 +13,7 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import "../../../../Assets/Styles/Form/Form.css";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import ReceiverAdd from "../../../Funtions/SelectAdd/ReceiverAdd.jsx";
-import SenderAdd from "../../../Funtions/SelectAdd/ReceiverAdd.jsx";
+import ReceiverAdd from "../../../Funtions/SelectAdd/SelectAdd.jsx";
 import { GenerateCode } from "../../../Funtions/GenerateCode/GenerateCode.jsx";
 import { Typography } from "@mui/material";
 
@@ -80,7 +79,6 @@ export default function Form() {
                 variant="outlined"
                 fullWidth
                 required
-                // name="sender"
                 {...register("sender.senderName")}
               />
               <TextField
@@ -89,11 +87,10 @@ export default function Form() {
                 variant="outlined"
                 fullWidth
                 required
-                // name="senderPhone"
                 {...register("sender.senderPhone")}
               />
             </Stack>
-            <SenderAdd refs={register("sender.senderAd")} />
+            <ReceiverAdd refs={register("sender.senderAd")} />
             <TextField
               id="outlined-basic"
               label="Địa chỉ"
@@ -101,7 +98,6 @@ export default function Form() {
               fullWidth
               required
               sx={{ mb: 4 }}
-              // name="senderAddr"
               {...register("sender.senderAddr")}
             />
             <div className="LABEL">NGƯỜI NHẬN</div>
@@ -113,7 +109,6 @@ export default function Form() {
                 variant="outlined"
                 fullWidth
                 required
-                // name="receiver"
                 {...register("receiver.receiverName")}
               />
               <TextField
@@ -122,7 +117,6 @@ export default function Form() {
                 variant="outlined"
                 fullWidth
                 required
-                // name="receiverPhone"
                 {...register("receiver.receiverPhone")}
               />
             </Stack>
@@ -134,7 +128,6 @@ export default function Form() {
               fullWidth
               required
               sx={{ mb: 4 }}
-              // name="receiverAddr"
               {...register("receiver.receiverAddr")}
             />
           </Paper>
@@ -148,7 +141,6 @@ export default function Form() {
               fullWidth
               required
               sx={{ mb: 4 }}
-              // name="product"
               {...register("package.productName")}
             />
             <Stack spacing={1} direction="row" sx={{ marginBottom: 4 }}>
@@ -357,7 +349,7 @@ export default function Form() {
                   fullWidth
                   style={{ fontWeight: "bold", background: "#14507a" }}
                 >
-                  IN
+                  IN giấy biên nhận
                 </Button>
               </div>
             ) : (

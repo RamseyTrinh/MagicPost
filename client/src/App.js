@@ -9,6 +9,8 @@ import Confirmation from "./Components/Panels/TransactionStaff/Confirmation/Conf
 import Statistics from "./Components/Panels/TransactionStaff/Statistics/Statistics.jsx";
 import GatherTransfer from "./Components/Panels/GatherStaff/Transfer/GatherTransfer.jsx";
 import GatherConfirmation from "./Components/Panels/GatherStaff/Confirmation/GatherConfirmation.jsx";
+import CreateAcc from "./Components/Panels/TransactionAdmin/CreateAcc.tsx";
+import PackageStatistics from "./Components/Panels/TransactionAdmin/PackageStatistics.jsx";
 import { useAuthUser } from "react-auth-kit";
 
 export default function App() {
@@ -38,6 +40,11 @@ export default function App() {
         <Route
           path="warehouseStaff/confirmation"
           element={<GatherConfirmation />}
+        />
+        <Route path="transactionAdmin/createAccount" element={<CreateAcc />} />
+        <Route
+          path="transactionAdmin/statistics"
+          element={<PackageStatistics />}
         />
       </Route>
     </Routes>
