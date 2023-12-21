@@ -25,7 +25,7 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3001/api/v1/users/login", { email, password })
+      .post("http://localhost:3005/api/v1/users/login", { email, password })
       .then((result) => {
         // console.log(result);
         if (result.status === 200) {
