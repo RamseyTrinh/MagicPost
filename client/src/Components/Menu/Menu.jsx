@@ -23,8 +23,8 @@ import AssessmentIcon from "@mui/icons-material/Assessment";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useAuthUser } from "react-auth-kit";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useAuthUser, useSignOut } from "react-auth-kit";
 import { Button } from "@mui/material";
 
 const drawerWidth = 200;
@@ -102,6 +102,7 @@ export default function MiniDrawer() {
 
   const [open, setOpen] = React.useState(true);
   const [title, setTitle] = React.useState("");
+  const signOut = useSignOut(); // biến để xử lý log out
 
   const transactionStaffFunc = [
     { name: "Tạo đơn hàng", Icon: BorderColorIcon },
@@ -203,6 +204,9 @@ export default function MiniDrawer() {
           <div>
             <Button
               variant="contained"
+              onClick={() => {
+                signOut();
+              }}
               style={{
                 fontWeight: "bold",
                 background: "#fdfdfd",
@@ -237,7 +241,9 @@ export default function MiniDrawer() {
       >
         <DrawerHeader sx={{ justifyContent: "space-between" }}>
           <i style={{ marginLeft: "1em" }}>
-            <b>MAGICPOST</b>
+            <Link to="/">
+              <b>MAGICPOST</b>
+            </Link>
           </i>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (

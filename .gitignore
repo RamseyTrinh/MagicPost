@@ -11,9 +11,8 @@ node_modules
 dist
 dist-ssr
 uploads
-server/config.env
 *.local
-.env
+
 
 # Editor directories and files
 .vscode/*
