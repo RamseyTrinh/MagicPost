@@ -4,9 +4,7 @@ import Landing from "./Components/Landing/Landing";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useIsAuthenticated } from "react-auth-kit";
 import Form from "./Components/Panels/Form/Form.tsx";
-import Transfer from "./Components/Panels/Transfer/Transfer.jsx";
-import Confirmation from "./Components/Panels/Confirmation/Confirmation.jsx";
-import Statistics from "./Components/Panels/Statistics/Statistics.jsx";
+import Transfer from "./Components/Panels/Transfer/Transfer";
 import { useAuthUser } from "react-auth-kit";
 
 export default function App() {
@@ -24,11 +22,11 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/menu" element={<PrivateRoute />}>
-        <Route index element={role && <div>{role}</div>} />
-        <Route path="create" element={<Form />} />
-        <Route path="transfer" element={<Transfer />} />
-        <Route path="confirmation" element={<Confirmation />} />
-        <Route path="statistics" element={<Statistics />} />
+        <Route index element={<div>{role}</div>} />
+        <Route path="taodonhang" element={<Form />} />
+        <Route path="chuyenhang" element={<Transfer />} />
+        {/* <Route path="xacnhan" element={<Confi />} /> */}
+        {/* <Route path="thongke" element={<Form />} /> */}
       </Route>
     </Routes>
   );

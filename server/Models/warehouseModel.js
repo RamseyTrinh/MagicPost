@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const transactionPointSchema = new mongoose.Schema({
+const warehouseSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Vui lòng nhập tên!"],
@@ -15,9 +15,6 @@ const transactionPointSchema = new mongoose.Schema({
   },
 });
 
-const TransactionPoint = mongoose.model(
-  "TransactionPoint",
-  transactionPointSchema
-);
+const Warehouse = mongoose.model("Warehouse", warehouseSchema);
 
-module.exports = TransactionPoint;
+module.exports = Warehouse;

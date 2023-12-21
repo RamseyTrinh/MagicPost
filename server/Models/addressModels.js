@@ -1,7 +1,6 @@
-import express from "express";
+const mongoose = require("mongoose");
 
 import mysql from "mysql";
-
 
 const Schema = mysql.Schema;
 const provinces = require("../utils/provinces");
