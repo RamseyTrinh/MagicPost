@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
+import Stack from "@mui/material/Stack";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
@@ -20,8 +21,11 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthUser } from "react-auth-kit";
+import { Button } from "@mui/material";
 
 const drawerWidth = 200;
 
@@ -97,14 +101,33 @@ export default function MiniDrawer() {
   const role = auth().data.role;
 
   const [open, setOpen] = React.useState(true);
-  const [title, setTitle] = React.useState("Tạo đơn hàng");
+  const [title, setTitle] = React.useState("");
 
-  const giaodich = [
+  const transactionStaffFunc = [
     { name: "Tạo đơn hàng", Icon: BorderColorIcon },
     { name: "Chuyển hàng", Icon: LocalShippingIcon },
     { name: "Xác nhận", Icon: MarkEmailReadIcon },
     { name: "Thống kê", Icon: AssessmentIcon },
   ];
+
+  const gatherStaffFunc = [
+    { name: "Chuyển hàng", Icon: LocalShippingIcon },
+    { name: "Xác nhận", Icon: MarkEmailReadIcon },
+  ];
+
+  const transactionAdminFunc = [
+    { name: "Tạo tài khoản", Icon: PersonAddIcon },
+    { name: "Thống kê", Icon: AssessmentIcon },
+  ];
+
+  const functions =
+    role === "transactionStaff"
+      ? transactionStaffFunc
+      : role === "warehouseStaff"
+      ? gatherStaffFunc
+      : role === "transactionAdmin"
+      ? transactionAdminFunc
+      : "";
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -122,23 +145,35 @@ export default function MiniDrawer() {
   const handleToggle = (e, index) => {
     e.persist();
     if (index === 0) {
-      if (role === "admin") {
-        navigate("/menu/create");
+      if (role === "transactionStaff") {
+        navigate("/menu/transactionStaff/create");
+      }
+      if (role === "warehouseStaff") {
+        navigate("/menu/warehouseStaff/transfer");
+      }
+      if (role === "transactionAdmin") {
+        navigate("/menu/transactionAdmin/createAccount");
       }
     }
     if (index === 1) {
-      if (role === "admin") {
-        navigate("/menu/transfer");
+      if (role === "transactionStaff") {
+        navigate("/menu/transactionStaff/transfer");
+      }
+      if (role === "warehouseStaff") {
+        navigate("/menu/warehouseStaff/confirmation");
+      }
+      if (role === "transactionAdmin") {
+        navigate("/menu/transactionAdmin/statistics");
       }
     }
     if (index === 2) {
-      if (role === "admin") {
-        navigate("/menu/confirmation");
+      if (role === "transactionStaff") {
+        navigate("/menu/transactionStaff/confirmation");
       }
     }
     if (index === 3) {
-      if (role === "admin") {
-        navigate("/menu/statistics");
+      if (role === "transactionStaff") {
+        navigate("/menu/transactionStaff/statistics");
       }
     }
   };
@@ -147,22 +182,47 @@ export default function MiniDrawer() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} style={{ background: "#003e29" }}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {title}
-          </Typography>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Stack sx={{ alignItems: "center" }} direction="row">
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: 5,
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              {title}
+            </Typography>
+          </Stack>
+          <div>
+            <Button
+              variant="contained"
+              style={{
+                fontWeight: "bold",
+                background: "#fdfdfd",
+                color: "#003e29",
+                marginRight: 20,
+              }}
+            >
+              LOG OUT
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                fontWeight: "bold",
+                background: "#fdfdfd",
+                color: "#003e29",
+              }}
+            >
+              <AccountCircleIcon />
+            </Button>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -189,7 +249,7 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {giaodich.map(({ name: text, Icon }, index) => (
+          {functions.map(({ name: text, Icon }, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{

@@ -18,9 +18,8 @@ const SelectAddress = ({
     <FormControl fullWidth>
       <InputLabel>{label}</InputLabel>
       <Select
-        required
         label={`${label}`}
-        defaultValue={""}
+        defaultValue=""
         value={reset ? "" : value}
         onChange={(e) =>
           !name

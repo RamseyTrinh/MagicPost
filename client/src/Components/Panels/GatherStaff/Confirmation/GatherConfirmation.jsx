@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
-import Navigator from "../../Funtions/Navigator/Navigator";
+import Button from "@mui/material/Button";
+import Navigator from "../../../Funtions/Navigator/Navigator";
 import Typography from "@mui/material/Typography";
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
   const [category, setCategory] = useState(0);
-  const [title, setTitle] = useState("THỐNG KÊ");
+  const [title, setTitle] = useState("XÁC NHẬN BƯU GỬI");
 
   const fetchData = () => {
     if (category === 1) {
@@ -52,11 +53,11 @@ export default function DataTable() {
   ];
 
   function handleClickLeft() {
-    setTitle("CHUYỂN HÀNG THÀNH CÔNG");
+    setTitle("ĐIỂM GIAO DỊCH");
     setCategory(1);
   }
   function handleClickRight() {
-    setTitle("CHUYỂN HÀNG KHÔNG THÀNH CÔNG");
+    setTitle("ĐIỂM TẬP KẾT KHÁC");
     setCategory(2);
   }
 
@@ -81,18 +82,12 @@ export default function DataTable() {
       >
         <Navigator
           type={2}
-          label1={"THÀNH CÔNG"}
-          label2={"KHÔNG THÀNH CÔNG"}
+          label1={"ĐIỂM GIAO DỊCH"}
+          label2={"ĐIỂM TẬP KẾT KHÁC"}
           function1={handleClickLeft}
           function2={handleClickRight}
         />
-        <Paper
-          sx={{
-            p: 4,
-            background: "#faf6ed",
-            width: "100%",
-          }}
-        >
+        <Paper sx={{ p: 4, background: "#faf6ed", width: "100%" }}>
           <Stack alignItems={"center"}>
             <Typography
               variant="h4"
@@ -106,7 +101,7 @@ export default function DataTable() {
                 mb: 4,
                 width: "100%",
                 background: "#fdfdfd",
-                maxHeight: "60vh",
+                maxHeight: "55vh",
               }}
               rows={rows}
               columns={columns}
@@ -115,8 +110,27 @@ export default function DataTable() {
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
-              pageSizeOptions={[5, 10, 15, 20, 25]}
+              pageSizeOptions={[5, 10, 15, 25, 30]}
+              checkboxSelection
             />
+
+            {category === 1 ? (
+              <Button
+                variant="contained"
+                sx={{ width: "150px" }}
+                style={{ fontWeight: "bold", background: "#003e29" }}
+              >
+                XÁC NHẬN
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ width: "150px" }}
+                style={{ fontWeight: "bold", background: "#003e29" }}
+              >
+                XÁC NHẬN
+              </Button>
+            )}
           </Stack>
         </Paper>
       </div>

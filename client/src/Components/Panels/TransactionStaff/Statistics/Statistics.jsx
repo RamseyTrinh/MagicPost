@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import Navigator from "../../Funtions/Navigator/Navigator";
+import Navigator from "../../../Funtions/Navigator/Navigator";
 import Typography from "@mui/material/Typography";
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
   const [category, setCategory] = useState(0);
-  const [title, setTitle] = useState("XÁC NHẬN BƯU GỬI");
+  const [title, setTitle] = useState("THỐNG KÊ");
 
   const fetchData = () => {
     if (category === 1) {
@@ -53,11 +52,11 @@ export default function DataTable() {
   ];
 
   function handleClickLeft() {
-    setTitle("ĐIỂM TẬP KẾT");
+    setTitle("CHUYỂN HÀNG THÀNH CÔNG");
     setCategory(1);
   }
   function handleClickRight() {
-    setTitle("NGƯỜI NHẬN");
+    setTitle("CHUYỂN HÀNG KHÔNG THÀNH CÔNG");
     setCategory(2);
   }
 
@@ -82,12 +81,18 @@ export default function DataTable() {
       >
         <Navigator
           type={2}
-          label1={"ĐIỂM TẬP KẾT"}
-          label2={"NGƯỜI NHẬN"}
+          label1={"THÀNH CÔNG"}
+          label2={"KHÔNG THÀNH CÔNG"}
           function1={handleClickLeft}
           function2={handleClickRight}
         />
-        <Paper sx={{ p: 4, background: "#faf6ed", width: "100%" }}>
+        <Paper
+          sx={{
+            p: 4,
+            background: "#faf6ed",
+            width: "100%",
+          }}
+        >
           <Stack alignItems={"center"}>
             <Typography
               variant="h4"
@@ -101,7 +106,7 @@ export default function DataTable() {
                 mb: 4,
                 width: "100%",
                 background: "#fdfdfd",
-                maxHeight: "55vh",
+                maxHeight: "60vh",
               }}
               rows={rows}
               columns={columns}
@@ -110,36 +115,8 @@ export default function DataTable() {
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
-              pageSizeOptions={[5, 10, 15, 25, 30]}
-              checkboxSelection
+              pageSizeOptions={[5, 10, 15, 20, 25]}
             />
-
-            {category === 1 ? (
-              <Button
-                variant="contained"
-                sx={{ width: "150px" }}
-                style={{ fontWeight: "bold", background: "#003e29" }}
-              >
-                XÁC NHẬN
-              </Button>
-            ) : (
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="contained"
-                  sx={{ width: "200px" }}
-                  style={{ fontWeight: "bold", background: "#003e29" }}
-                >
-                  THÀNH CÔNG
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ width: "200px" }}
-                  style={{ fontWeight: "bold", background: "#003e29" }}
-                >
-                  KHÔNG THÀNH CÔNG
-                </Button>
-              </Stack>
-            )}
           </Stack>
         </Paper>
       </div>
