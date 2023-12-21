@@ -6,11 +6,15 @@ const bcrypt = require("bcryptjs");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please enter your name."],
+    required: [true, "Vui lòng nhập tên nhân viên"],
+  },
+  phoneNumber: {
+    type: Number,
+    required: [true, "Vui lòng nhập số điện thoại"],
   },
   email: {
     type: String,
-    required: [true, "Please enter an email."],
+    required: [true, "Vui lòng nhập email"],
     unique: true,
     lowercase: true,
     validate: [validator.isEmail, "Please enter a valid email."],
