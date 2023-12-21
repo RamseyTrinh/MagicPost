@@ -9,8 +9,11 @@ import Confirmation from "./Components/Panels/TransactionStaff/Confirmation/Conf
 import Statistics from "./Components/Panels/TransactionStaff/Statistics/Statistics.jsx";
 import GatherTransfer from "./Components/Panels/GatherStaff/Transfer/GatherTransfer.jsx";
 import GatherConfirmation from "./Components/Panels/GatherStaff/Confirmation/GatherConfirmation.jsx";
-import CreateAcc from "./Components/Panels/TransactionAdmin/CreateAcc.tsx";
+import TransactionCreateAcc from "./Components/Panels/TransactionAdmin/TransactionCreateAcc.jsx";
 import PackageStatistics from "./Components/Panels/TransactionAdmin/PackageStatistics.jsx";
+import GatherCreateAcc from "./Components/Panels/GatherAdmin/GatherCreateAcc.jsx";
+import GatherStatistics from "./Components/Panels/GatherAdmin/GatherStatistics.jsx";
+import GatherManage from "./Components/Panels/GatherAdmin/GatherManage.jsx";
 import { useAuthUser } from "react-auth-kit";
 
 export default function App() {
@@ -56,7 +59,9 @@ export default function App() {
               />
               <Route
                 path="createAccount"
-                element={role === "transactionAdmin" ? <CreateAcc /> : null}
+                element={
+                  role === "transactionAdmin" ? <TransactionCreateAcc /> : null
+                }
               />
             </>
           )}
@@ -72,6 +77,20 @@ export default function App() {
                 path="confirmation"
                 element={
                   role === "warehouseStaff" ? <GatherConfirmation /> : null
+                }
+              />
+              <Route
+                path="createAccount"
+                element={role === "warehouseAdmin" ? <GatherCreateAcc /> : null}
+              />
+              <Route
+                path="manage"
+                element={role === "warehouseAdmin" ? <GatherManage /> : null}
+              />
+              <Route
+                path="statistics"
+                element={
+                  role === "warehouseAdmin" ? <GatherStatistics /> : null
                 }
               />
             </>

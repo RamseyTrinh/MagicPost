@@ -7,14 +7,16 @@ import SelectTransaction from "../../Funtions/SelectArea/SelectTransaction.jsx";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
+
 import "../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
-export default function CreateAcc() {
+export default function CreateAccount() {
   type FormValues = {
     name: string;
     phoneNumber: string;
     address: string;
     specificAdd: string;
+    dob: string;
     email: string;
     transactionPoint: string;
     staffID: string;
@@ -87,15 +89,24 @@ export default function CreateAcc() {
                 sx={{ mb: 3 }}
                 {...register("specificAdd")}
               />
-              <TextField
-                id="outlined-basic"
-                label="Email"
-                variant="outlined"
-                fullWidth
-                required
-                sx={{ mb: 3 }}
-                {...register("email")}
-              />
+              <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+                <TextField
+                  label="Ngày sinh"
+                  InputLabelProps={{ shrink: true }}
+                  type="date"
+                  {...register("dob")}
+                  sx={{ width: "250px" }}
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Email"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  sx={{ mb: 3 }}
+                  {...register("email")}
+                />
+              </Stack>
               <SelectTransaction refs={{ ...register("transactionPoint") }} />
               <TextField
                 id="outlined-basic"

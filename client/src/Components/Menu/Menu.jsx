@@ -23,6 +23,8 @@ import AssessmentIcon from "@mui/icons-material/Assessment";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import SearchPackage from "../Funtions/SearchPackage/SearchPackage.jsx";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuthUser, useSignOut } from "react-auth-kit";
 import { Button } from "@mui/material";
@@ -121,6 +123,12 @@ export default function MiniDrawer() {
     { name: "Thống kê", Icon: AssessmentIcon },
   ];
 
+  const warehouseAdminFunc = [
+    { name: "Tạo tài khoản", Icon: PersonAddIcon },
+    { name: "Quản lý tài khoản", Icon: ManageAccountsIcon },
+    { name: "Thống kê", Icon: AssessmentIcon },
+  ];
+
   const functions =
     role === "transactionStaff"
       ? transactionStaffFunc
@@ -128,6 +136,8 @@ export default function MiniDrawer() {
       ? gatherStaffFunc
       : role === "transactionAdmin"
       ? transactionAdminFunc
+      : role === "warehouseAdmin"
+      ? warehouseAdminFunc
       : "";
 
   const handleDrawerOpen = () => {
@@ -155,6 +165,9 @@ export default function MiniDrawer() {
       if (role === "transactionAdmin") {
         navigate("/menu/transaction/createAccount");
       }
+      if (role === "warehouseAdmin") {
+        navigate("/menu/warehouse/createAccount");
+      }
     }
     if (index === 1) {
       if (role === "transactionStaff") {
@@ -166,10 +179,16 @@ export default function MiniDrawer() {
       if (role === "transactionAdmin") {
         navigate("/menu/transaction/statistics");
       }
+      if (role === "warehouseAdmin") {
+        navigate("/menu/warehouse/manage");
+      }
     }
     if (index === 2) {
       if (role === "transactionStaff") {
         navigate("/menu/transaction/confirmation");
+      }
+      if (role === "warehouseAdmin") {
+        navigate("/menu/warehouse/statistics");
       }
     }
     if (index === 3) {
@@ -201,7 +220,8 @@ export default function MiniDrawer() {
               {title}
             </Typography>
           </Stack>
-          <div>
+          <Stack direction="row" spacing={2}>
+            <SearchPackage />
             <Button
               variant="contained"
               onClick={() => {
@@ -211,7 +231,6 @@ export default function MiniDrawer() {
                 fontWeight: "bold",
                 background: "#fdfdfd",
                 color: "#003e29",
-                marginRight: 20,
               }}
             >
               LOG OUT
@@ -226,7 +245,7 @@ export default function MiniDrawer() {
             >
               <AccountCircleIcon />
             </Button>
-          </div>
+          </Stack>
         </Toolbar>
       </AppBar>
       <Drawer
