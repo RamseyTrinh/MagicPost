@@ -73,13 +73,15 @@ export default function BackToTop(props) {
         <Toolbar
           sx={{ justifyContent: "space-between", background: "#f1f2ec" }}
         >
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ fontWeight: "bold", color: "#003e29" }}
-          >
-            <i>MAGICPOST</i>
-          </Typography>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: "bold", color: "#003e29" }}
+            >
+              <i>MAGICPOST</i>
+            </Typography>
+          </Link>
           <Link to="/Login">
             <Button
               id="button"

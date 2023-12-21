@@ -29,23 +29,54 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/menu" element={<PrivateRoute />}>
         <Route index element={role && <div>{role}</div>} />
-        <Route path="transactionStaff/create" element={<Form />} />
-        <Route path="transactionStaff/transfer" element={<Transfer />} />
-        <Route
-          path="transactionStaff/confirmation"
-          element={<Confirmation />}
-        />
-        <Route path="transactionStaff/statistics" element={<Statistics />} />
-        <Route path="warehouseStaff/transfer" element={<GatherTransfer />} />
-        <Route
-          path="warehouseStaff/confirmation"
-          element={<GatherConfirmation />}
-        />
-        <Route path="transactionAdmin/createAccount" element={<CreateAcc />} />
-        <Route
-          path="transactionAdmin/statistics"
-          element={<PackageStatistics />}
-        />
+        <Route path="transaction">
+          {(role === "transactionStaff" || role === "transactionAdmin") && (
+            <>
+              <Route
+                path="create"
+                element={role === "transactionStaff" ? <Form /> : null}
+              />
+              <Route
+                path="transfer"
+                element={role === "transactionStaff" ? <Transfer /> : null}
+              />
+              <Route
+                path="confirmation"
+                element={role === "transactionStaff" ? <Confirmation /> : null}
+              />
+              <Route
+                path="statistics"
+                element={
+                  role === "transactionStaff" ? (
+                    <Statistics />
+                  ) : role === "transactionAdmin" ? (
+                    <PackageStatistics />
+                  ) : null
+                }
+              />
+              <Route
+                path="createAccount"
+                element={role === "transactionAdmin" ? <CreateAcc /> : null}
+              />
+            </>
+          )}
+        </Route>
+        <Route path="warehouse">
+          {(role === "warehouseStaff" || role === "warehouseAdmin") && (
+            <>
+              <Route
+                path="transfer"
+                element={role === "warehouseStaff" ? <GatherTransfer /> : null}
+              />
+              <Route
+                path="confirmation"
+                element={
+                  role === "warehouseStaff" ? <GatherConfirmation /> : null
+                }
+              />
+            </>
+          )}
+        </Route>
       </Route>
     </Routes>
   );

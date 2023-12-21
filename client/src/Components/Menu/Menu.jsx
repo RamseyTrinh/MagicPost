@@ -147,34 +147,34 @@ export default function MiniDrawer() {
     e.persist();
     if (index === 0) {
       if (role === "transactionStaff") {
-        navigate("/menu/transactionStaff/create");
+        navigate("/menu/transaction/create");
       }
       if (role === "warehouseStaff") {
-        navigate("/menu/warehouseStaff/transfer");
+        navigate("/menu/warehouse/transfer");
       }
       if (role === "transactionAdmin") {
-        navigate("/menu/transactionAdmin/createAccount");
+        navigate("/menu/transaction/createAccount");
       }
     }
     if (index === 1) {
       if (role === "transactionStaff") {
-        navigate("/menu/transactionStaff/transfer");
+        navigate("/menu/transaction/transfer");
       }
       if (role === "warehouseStaff") {
-        navigate("/menu/warehouseStaff/confirmation");
+        navigate("/menu/warehouse/confirmation");
       }
       if (role === "transactionAdmin") {
-        navigate("/menu/transactionAdmin/statistics");
+        navigate("/menu/transaction/statistics");
       }
     }
     if (index === 2) {
       if (role === "transactionStaff") {
-        navigate("/menu/transactionStaff/confirmation");
+        navigate("/menu/transaction/confirmation");
       }
     }
     if (index === 3) {
       if (role === "transactionStaff") {
-        navigate("/menu/transactionStaff/statistics");
+        navigate("/menu/transaction/statistics");
       }
     }
   };
@@ -241,7 +241,7 @@ export default function MiniDrawer() {
       >
         <DrawerHeader sx={{ justifyContent: "space-between" }}>
           <i style={{ marginLeft: "1em" }}>
-            <Link to="/">
+            <Link to="/" style={{ textDecoration: "none", color: "#003e29" }}>
               <b>MAGICPOST</b>
             </Link>
           </i>
