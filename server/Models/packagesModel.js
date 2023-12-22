@@ -92,9 +92,9 @@ const packageSchema = new mongoose.Schema({
   note: {
     type: String,
   },
-  id: {
+  orderID: {
     type: String,
-    required: [true],
+    unique: true,
   },
 });
 const Packages = mongoose.model("package", packageSchema);

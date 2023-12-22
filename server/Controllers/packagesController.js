@@ -1,11 +1,11 @@
 const Packages = require("../Models/packagesModel");
 const Apifeatures = require("../Utils/ApiFeatures");
-const AppError = require("./../Utils/appError");
+const CustomError = require("./../Utils/CustomError");
+const Order = require("../Models/orderModel");
 const asyncErrorHandler = require("./../Utils/asyncErrorHandler");
 
 exports.getAllPackages = asyncErrorHandler(async (req, res, next) => {
   try {
-    //const packages = await Packages.find();
     const features = new Apifeatures(Packages.find(req.params.ID), req.query)
       .filter()
       .sort()
@@ -68,7 +68,7 @@ exports.createPackages = asyncErrorHandler(async (req, res, next) => {
 exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
   const package = await Packages.findByIdAndDelete(req.params.ID);
   if (!package) {
-    return next(new AppError("Không có bản ghi nào được tìm thấy", 404));
+    return next(new CustomError("Không có bản ghi nào được tìm thấy", 404));
   }
   res.status(204).json({
     status: "Success",
@@ -88,7 +88,7 @@ exports.updatePackage = asyncErrorHandler(async (req, res, next) => {
   });
 
   if (!package) {
-    return next(new AppError("Không có bản ghi nào được tìm thấy", 404));
+    return next(new CustomError("Không có bản ghi nào được tìm thấy", 404));
   }
 
   res.status(200).json({
@@ -98,3 +98,42 @@ exports.updatePackage = asyncErrorHandler(async (req, res, next) => {
     },
   });
 });
+
+// Hàm ấn vào tạo đơn hàng.
+async function createOrder(orderId, initialTransactionPointId) {
+  try {
+    const newOrder = new Order({
+      orderId,
+      route: [
+        {
+          transactionPointId: initialTransactionPointId,
+        },
+      ],
+    });
+
+    await newOrder.save();
+    console.log("Đã tạo đơn hàng và cập nhật quá trình di chuyển thành công!");
+  } catch (error) {
+    console.error("Lỗi khi tạo đơn hàng:", error.message);
+  }
+}
+
+// Sử dụng hàm để chuyển đơn hàng đến điểm tập kết tiếp theo
+async function moveOrderToNextPoint(orderId, nextTransactionPointId) {
+  try {
+    const order = await Order.findOne({ orderId });
+
+    if (!order) {
+      console.log("Không tìm thấy đơn hàng với ID:", orderId);
+    } else {
+      order.route.push({
+        transactionPointId: nextTransactionPointId,
+      });
+
+      await order.save();
+      console.log("Đã chuyển đơn hàng đến điểm tập kết tiếp theo!");
+    }
+  } catch (error) {
+    console.error("Lỗi khi chuyển đơn hàng:", error.message);
+  }
+}
