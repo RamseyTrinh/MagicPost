@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import LINK from "@mui/material/Link";
 import Divider from "@mui/material/Divider";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Alert } from "@mui/material";
+import { Alert, Stack } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -14,12 +14,13 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
+import WestIcon from "@mui/icons-material/West";
 
 //Hoang
 import React from "react";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSignIn } from "react-auth-kit";
 
 export default function Login() {
@@ -151,9 +152,22 @@ export default function Login() {
               Đăng nhập
             </Button>
           </form>
-          <Typography sx={{ mb: 3 }}>
-            <LINK href="#">Quên mật khẩu</LINK>
-          </Typography>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              mb: 3,
+              mt: 3,
+              justifyContent: "center",
+              ml: -3,
+              alignItems: "center",
+            }}
+          >
+            <WestIcon sx={{ fontSize: "20px" }} />
+            <Typography>
+              <Link to="/">Quay về trang chủ</Link>
+            </Typography>
+          </Stack>
           <Divider sx={{ mb: 2 }} />
           <Typography sx={{ fontSize: 12 }}>
             Mọi vấn đề thắc mắc xin liên hệ SĐT: 1900.8686 - Email:
