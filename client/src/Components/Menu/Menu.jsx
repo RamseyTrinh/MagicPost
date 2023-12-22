@@ -25,6 +25,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SearchPackage from "../Funtions/SearchPackage/SearchPackage.jsx";
+import BallotIcon from "@mui/icons-material/Ballot";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuthUser, useSignOut } from "react-auth-kit";
 import { Button } from "@mui/material";
@@ -103,7 +104,7 @@ export default function MiniDrawer() {
   const role = auth().data.role;
 
   const [open, setOpen] = React.useState(true);
-  const [title, setTitle] = React.useState("");
+  const [title, setTitle] = React.useState("Thông tin tài khoản");
   const signOut = useSignOut(); // biến để xử lý log out
 
   const transactionStaffFunc = [
@@ -129,6 +130,12 @@ export default function MiniDrawer() {
     { name: "Thống kê", Icon: AssessmentIcon },
   ];
 
+  const adminFunc = [
+    { name: "Quản lý hệ thống", Icon: BallotIcon },
+    { name: "Quản lý tài khoản", Icon: ManageAccountsIcon },
+    { name: "Thống kê", Icon: AssessmentIcon },
+  ];
+
   const functions =
     role === "transactionStaff"
       ? transactionStaffFunc
@@ -138,6 +145,8 @@ export default function MiniDrawer() {
       ? transactionAdminFunc
       : role === "warehouseAdmin"
       ? warehouseAdminFunc
+      : role === "admin"
+      ? adminFunc
       : "";
 
   const handleDrawerOpen = () => {
@@ -151,6 +160,11 @@ export default function MiniDrawer() {
   const handleTitle = (e, text) => {
     e.persist();
     setTitle(text);
+  };
+
+  const handleAccount = () => {
+    navigate("/menu");
+    setTitle("Thông tin tài khoản");
   };
 
   const handleToggle = (e, index) => {
@@ -168,6 +182,9 @@ export default function MiniDrawer() {
       if (role === "warehouseAdmin") {
         navigate("/menu/warehouse/createAccount");
       }
+      if (role === "admin") {
+        navigate("/menu/admin/managePoint");
+      }
     }
     if (index === 1) {
       if (role === "transactionStaff") {
@@ -182,6 +199,9 @@ export default function MiniDrawer() {
       if (role === "warehouseAdmin") {
         navigate("/menu/warehouse/manage");
       }
+      if (role === "admin") {
+        navigate("/menu/admin/manageAccount");
+      }
     }
     if (index === 2) {
       if (role === "transactionStaff") {
@@ -189,6 +209,9 @@ export default function MiniDrawer() {
       }
       if (role === "warehouseAdmin") {
         navigate("/menu/warehouse/statistics");
+      }
+      if (role === "admin") {
+        navigate("/menu/admin/statistics");
       }
     }
     if (index === 3) {
@@ -242,6 +265,7 @@ export default function MiniDrawer() {
                 background: "#fdfdfd",
                 color: "#003e29",
               }}
+              onClick={handleAccount}
             >
               <AccountCircleIcon />
             </Button>
