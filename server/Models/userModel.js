@@ -7,17 +7,37 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Vui lòng nhập tên nhân viên"],
+    trim: true,
+    maxLength: 60,
+    validate: {
+      validator: function (value) {
+        return validator.isAlpha(
+          vietnameseString.format(value).split(" ").join("")
+        );
+      },
+      message: (props) => `${props.value} không phải tên hợp lệ`,
+    },
   },
   phoneNumber: {
     type: Number,
+    trim: true,
     required: [true, "Vui lòng nhập số điện thoại"],
+    validate: {
+      validator: function (value) {
+        // Phone number has 10 digits
+        return /^[0-9]{10}$/.test(value);
+      },
+      message: (props) => `${props.value} không phải số điện thoại hợp lệ`,
+    },
+    unique: true,
   },
+
   email: {
     type: String,
     required: [true, "Vui lòng nhập email"],
     unique: true,
     lowercase: true,
-    validate: [validator.isEmail, "Please enter a valid email."],
+    validate: [validator.isEmail, "Không phải địa chỉ email hợp lệ"],
   },
   password: {
     type: String,
