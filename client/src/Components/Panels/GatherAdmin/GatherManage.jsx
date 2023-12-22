@@ -3,35 +3,20 @@ import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import Navigator from "../../../Funtions/Navigator/Navigator";
 import Typography from "@mui/material/Typography";
 
-export default function DataTable() {
+export default function GatherManager() {
   const [rows, setRows] = useState([]);
-  const [category, setCategory] = useState(0);
-  const [title, setTitle] = useState("XÁC NHẬN BƯU GỬI");
 
   const fetchData = () => {
-    if (category === 1) {
-      fetch("https://jsonplaceholder.typicode.com/users")
-        .then((response) => {
-          return response.json();
-        })
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => {
+        return response.json();
+      })
 
-        .then((data) => {
-          setRows(data);
-        });
-    }
-    if (category === 2) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(data);
-        });
-    }
+      .then((data) => {
+        setRows(data);
+      });
   };
 
   useEffect(() => {
@@ -52,15 +37,6 @@ export default function DataTable() {
     // },
   ];
 
-  function handleClickLeft() {
-    setTitle("ĐIỂM TẬP KẾT");
-    setCategory(1);
-  }
-  function handleClickRight() {
-    setTitle("NGƯỜI NHẬN");
-    setCategory(2);
-  }
-
   return (
     <div
       style={{
@@ -80,20 +56,13 @@ export default function DataTable() {
           alignItems: "center",
         }}
       >
-        <Navigator
-          type={2}
-          label1={"ĐIỂM TẬP KẾT"}
-          label2={"NGƯỜI NHẬN"}
-          function1={handleClickLeft}
-          function2={handleClickRight}
-        />
         <Paper sx={{ p: 4, background: "#faf6ed", width: "100%" }}>
           <Stack alignItems={"center"}>
             <Typography
               variant="h4"
               sx={{ color: "#003e29", fontWeight: "bold", mb: 4 }}
             >
-              {title}
+              Quản lý tài khoản
             </Typography>
             <DataGrid
               id="confirmationTable"
@@ -114,32 +83,13 @@ export default function DataTable() {
               checkboxSelection
             />
 
-            {category === 1 ? (
-              <Button
-                variant="contained"
-                sx={{ width: "150px" }}
-                style={{ fontWeight: "bold", background: "#003e29" }}
-              >
-                XÁC NHẬN
-              </Button>
-            ) : category === 2 ? (
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="contained"
-                  sx={{ width: "200px" }}
-                  style={{ fontWeight: "bold", background: "#003e29" }}
-                >
-                  THÀNH CÔNG
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ width: "200px" }}
-                  style={{ fontWeight: "bold", background: "#003e29" }}
-                >
-                  KHÔNG THÀNH CÔNG
-                </Button>
-              </Stack>
-            ) : null}
+            <Button
+              variant="contained"
+              sx={{ width: "150px" }}
+              style={{ fontWeight: "bold", background: "#003e29" }}
+            >
+              Xóa tài khoản
+            </Button>
           </Stack>
         </Paper>
       </div>

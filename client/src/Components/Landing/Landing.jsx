@@ -63,6 +63,8 @@ ScrollTop.propTypes = {
   window: PropTypes.func,
 };
 
+function handleSubmit() {}
+
 export default function BackToTop(props) {
   const match = useMediaQuery("(max-width:800px)");
 
@@ -149,45 +151,52 @@ export default function BackToTop(props) {
             }}
           >
             <Typography
+              variant="h3"
               sx={{
                 textAlign: "center",
                 fontWeight: "bold",
                 color: "#003e29",
                 mb: 4,
-                fontSize: "1.5em",
               }}
             >
               TRA CỨU BƯU GỬI
             </Typography>
             <Stack sx={{ alignItems: "center" }}>
-              <FormHelperText sx={{ width: "30%" }}>
+              <FormHelperText sx={{ width: `${match ? "300px" : "570px"}` }}>
                 Tra nhiều mã thêm giấu phẩy giữa các mã
               </FormHelperText>
-              <Stack
-                spacing={1}
-                direction="row"
-                sx={{ mb: 2, justifyContent: "center", width: "30%" }}
-              >
-                <TextField
-                  placeholder="Nhập mã bưu gửi"
+              <form onSubmit={handleSubmit}>
+                <Stack
+                  spacing={1}
+                  direction="row"
                   sx={{
-                    width: "100%",
-                    ".MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: "#467061",
-                      },
-                  }}
-                ></TextField>
-                <Button
-                  id="button"
-                  variant="contained"
-                  sx={{
-                    margin: 0,
+                    mb: 2,
+                    justifyContent: "center",
+                    width: `${match ? "300px" : "570px"}`,
                   }}
                 >
-                  <SearchIcon />
-                </Button>
-              </Stack>
+                  <TextField
+                    placeholder="Nhập mã bưu gửi"
+                    sx={{
+                      width: "100%",
+                      ".MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                        {
+                          borderColor: "#467061",
+                        },
+                    }}
+                  ></TextField>
+                  <Button
+                    id="button"
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      margin: 0,
+                    }}
+                  >
+                    <SearchIcon />
+                  </Button>
+                </Stack>
+              </form>
             </Stack>
           </Paper>
         </Box>
@@ -288,8 +297,8 @@ export default function BackToTop(props) {
             sx={{
               height: "10vh",
               borderColor: "white",
-              mr: 20,
-              ml: 20,
+              mr: `${match ? "80px" : "220px"}`,
+              ml: `${match ? "80px" : "220px"}`,
             }}
           />
           <FormHelperText sx={{ color: "white", mr: 5 }}>

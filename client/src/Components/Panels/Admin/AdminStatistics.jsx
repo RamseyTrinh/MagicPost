@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import Navigator from "../../../Funtions/Navigator/Navigator";
 import Typography from "@mui/material/Typography";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
 
-export default function DataTable() {
+export default function AdminStatistics() {
   const [rows, setRows] = useState([]);
   const [category, setCategory] = useState(0);
-  const [title, setTitle] = useState("XÁC NHẬN BƯU GỬI");
 
   const fetchData = () => {
     if (category === 1) {
@@ -52,14 +53,9 @@ export default function DataTable() {
     // },
   ];
 
-  function handleClickLeft() {
-    setTitle("ĐIỂM TẬP KẾT");
-    setCategory(1);
-  }
-  function handleClickRight() {
-    setTitle("NGƯỜI NHẬN");
-    setCategory(2);
-  }
+  const handleChange = (e) => {
+    setCategory(e.target.value);
+  };
 
   return (
     <div
@@ -80,28 +76,62 @@ export default function DataTable() {
           alignItems: "center",
         }}
       >
-        <Navigator
-          type={2}
-          label1={"ĐIỂM TẬP KẾT"}
-          label2={"NGƯỜI NHẬN"}
-          function1={handleClickLeft}
-          function2={handleClickRight}
-        />
-        <Paper sx={{ p: 4, background: "#faf6ed", width: "100%" }}>
+        <Paper
+          sx={{
+            p: 4,
+            background: "#faf6ed",
+            width: "100%",
+          }}
+        >
           <Stack alignItems={"center"}>
             <Typography
-              variant="h4"
+              variant="h3"
               sx={{ color: "#003e29", fontWeight: "bold", mb: 4 }}
             >
-              {title}
+              THỐNG KÊ
             </Typography>
+            <Stack
+              direction="row"
+              spacing={4}
+              sx={{ alignItems: "center", mb: 4 }}
+            >
+              <FormControl sx={{ minWidth: 120 }}>
+                <InputLabel>Nơi</InputLabel>
+                <Select
+                  label="Nơi"
+                  //   value={category}
+                  //   onChange={handleChange}
+                  value={3}
+                  displayEmpty
+                  sx={{ width: "160px", background: "#fdfdfd" }}
+                >
+                  <MenuItem value={3}>Toàn quốc</MenuItem>
+                  <MenuItem value={6}>Điểm giao dịch</MenuItem>
+                  <MenuItem value={4}>Điểm tập kết</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl sx={{ minWidth: 120 }}>
+                <InputLabel>Loại hàng</InputLabel>
+                <Select
+                  label="Loại hàng"
+                  value={category}
+                  onChange={handleChange}
+                  displayEmpty
+                  sx={{ width: "150px", background: "#fdfdfd" }}
+                >
+                  <MenuItem value={0}>Tổng</MenuItem>
+                  <MenuItem value={1}>Hàng gủi</MenuItem>
+                  <MenuItem value={2}>Hàng nhận</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
             <DataGrid
               id="confirmationTable"
               sx={{
                 mb: 4,
                 width: "100%",
                 background: "#fdfdfd",
-                maxHeight: "55vh",
+                maxHeight: "60vh",
               }}
               rows={rows}
               columns={columns}
@@ -110,36 +140,8 @@ export default function DataTable() {
                   paginationModel: { page: 0, pageSize: 5 },
                 },
               }}
-              pageSizeOptions={[5, 10, 15, 25, 30]}
-              checkboxSelection
+              pageSizeOptions={[5, 10, 15, 20, 25]}
             />
-
-            {category === 1 ? (
-              <Button
-                variant="contained"
-                sx={{ width: "150px" }}
-                style={{ fontWeight: "bold", background: "#003e29" }}
-              >
-                XÁC NHẬN
-              </Button>
-            ) : category === 2 ? (
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="contained"
-                  sx={{ width: "200px" }}
-                  style={{ fontWeight: "bold", background: "#003e29" }}
-                >
-                  THÀNH CÔNG
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ width: "200px" }}
-                  style={{ fontWeight: "bold", background: "#003e29" }}
-                >
-                  KHÔNG THÀNH CÔNG
-                </Button>
-              </Stack>
-            ) : null}
           </Stack>
         </Paper>
       </div>

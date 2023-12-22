@@ -9,8 +9,16 @@ import Confirmation from "./Components/Panels/TransactionStaff/Confirmation/Conf
 import Statistics from "./Components/Panels/TransactionStaff/Statistics/Statistics.jsx";
 import GatherTransfer from "./Components/Panels/GatherStaff/Transfer/GatherTransfer.jsx";
 import GatherConfirmation from "./Components/Panels/GatherStaff/Confirmation/GatherConfirmation.jsx";
-import CreateAcc from "./Components/Panels/TransactionAdmin/CreateAcc.tsx";
+import TransactionCreateAcc from "./Components/Panels/TransactionAdmin/TransactionCreateAcc.jsx";
 import PackageStatistics from "./Components/Panels/TransactionAdmin/PackageStatistics.jsx";
+import GatherCreateAcc from "./Components/Panels/GatherAdmin/GatherCreateAcc.jsx";
+import GatherStatistics from "./Components/Panels/GatherAdmin/GatherStatistics.jsx";
+import GatherManage from "./Components/Panels/GatherAdmin/GatherManage.jsx";
+import AdminStatistics from "./Components/Panels/Admin/AdminStatistics.jsx";
+import ManagePoint from "./Components/Panels/Admin/ManagePoint/MangePoint.jsx";
+import ManagePointAcc from "./Components/Panels/Admin/ManagePointAcc/ManagePointAcc.jsx";
+import AccountInfo from "./Components/Panels/AcountInfo/AccountInfo.jsx";
+import Unauthorized from "./Components/Panels/Unauthorized/Unauthorized.jsx";
 import { useAuthUser } from "react-auth-kit";
 
 export default function App() {
@@ -28,21 +36,31 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/menu" element={<PrivateRoute />}>
-        <Route index element={role && <div>{role}</div>} />
+        <Route index element={role && <AccountInfo />} />
         <Route path="transaction">
           {(role === "transactionStaff" || role === "transactionAdmin") && (
             <>
               <Route
                 path="create"
-                element={role === "transactionStaff" ? <Form /> : null}
+                element={
+                  role === "transactionStaff" ? <Form /> : <Unauthorized />
+                }
               />
               <Route
                 path="transfer"
-                element={role === "transactionStaff" ? <Transfer /> : null}
+                element={
+                  role === "transactionStaff" ? <Transfer /> : <Unauthorized />
+                }
               />
               <Route
                 path="confirmation"
-                element={role === "transactionStaff" ? <Confirmation /> : null}
+                element={
+                  role === "transactionStaff" ? (
+                    <Confirmation />
+                  ) : (
+                    <Unauthorized />
+                  )
+                }
               />
               <Route
                 path="statistics"
@@ -51,12 +69,20 @@ export default function App() {
                     <Statistics />
                   ) : role === "transactionAdmin" ? (
                     <PackageStatistics />
-                  ) : null
+                  ) : (
+                    <Unauthorized />
+                  )
                 }
               />
               <Route
                 path="createAccount"
-                element={role === "transactionAdmin" ? <CreateAcc /> : null}
+                element={
+                  role === "transactionAdmin" ? (
+                    <TransactionCreateAcc />
+                  ) : (
+                    <Unauthorized />
+                  )
+                }
               />
             </>
           )}
@@ -66,12 +92,74 @@ export default function App() {
             <>
               <Route
                 path="transfer"
-                element={role === "warehouseStaff" ? <GatherTransfer /> : null}
+                element={
+                  role === "warehouseStaff" ? (
+                    <GatherTransfer />
+                  ) : (
+                    <Unauthorized />
+                  )
+                }
               />
               <Route
                 path="confirmation"
                 element={
-                  role === "warehouseStaff" ? <GatherConfirmation /> : null
+                  role === "warehouseStaff" ? (
+                    <GatherConfirmation />
+                  ) : (
+                    <Unauthorized />
+                  )
+                }
+              />
+              <Route
+                path="createAccount"
+                element={
+                  role === "warehouseAdmin" ? (
+                    <GatherCreateAcc />
+                  ) : (
+                    <Unauthorized />
+                  )
+                }
+              />
+              <Route
+                path="manage"
+                element={
+                  role === "warehouseAdmin" ? (
+                    <GatherManage />
+                  ) : (
+                    <Unauthorized />
+                  )
+                }
+              />
+              <Route
+                path="statistics"
+                element={
+                  role === "warehouseAdmin" ? (
+                    <GatherStatistics />
+                  ) : (
+                    <Unauthorized />
+                  )
+                }
+              />
+            </>
+          )}
+        </Route>
+        <Route path="admin">
+          {role === "admin" && (
+            <>
+              <Route
+                path="managePoint"
+                element={role === "admin" ? <ManagePoint /> : <Unauthorized />}
+              />
+              <Route
+                path="manageAccount"
+                element={
+                  role === "admin" ? <ManagePointAcc /> : <Unauthorized />
+                }
+              />
+              <Route
+                path="statistics"
+                element={
+                  role === "admin" ? <AdminStatistics /> : <Unauthorized />
                 }
               />
             </>
