@@ -15,7 +15,7 @@ import Button from "@mui/material/Button";
 import bgimg from "../../Assets/Images/bg.jpg";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
@@ -24,6 +24,12 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import "../../Assets/Styles/Landing/Landing.css";
 import Divider from "@mui/material/Divider";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useIsAuthenticated, useSignOut } from "react-auth-kit";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function ScrollTop(props) {
   const { children, window } = props;
@@ -67,6 +73,30 @@ function handleSubmit() {}
 
 export default function BackToTop(props) {
   const match = useMediaQuery("(max-width:800px)");
+  const navigate = useNavigate();
+  const signOut = useSignOut();
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleContinue = () => {
+    setAnchorEl(null);
+    navigate("/menu");
+  };
+
+  const handleLogout = () => {
+    setAnchorEl(null);
+    signOut();
+  };
+
+  const isAuthenticated = useIsAuthenticated();
+  const auth = isAuthenticated();
 
   return (
     <React.Fragment>
@@ -84,18 +114,51 @@ export default function BackToTop(props) {
               <i>MAGICPOST</i>
             </Typography>
           </Link>
-          <Link to="/Login">
-            <Button
-              id="button"
-              variant="contained"
-              sx={{
-                fontFamily: "Arial",
-                fontWeight: "bold",
-              }}
-            >
-              Đăng nhập
-            </Button>
-          </Link>
+          {auth ? (
+            <div>
+              <Button
+                id="button"
+                variant="contained"
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+              >
+                <AccountCircleIcon />
+              </Button>
+              <Menu
+                id="landingMenu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem onClick={handleContinue}>
+                  Tiếp tục làm việc
+                  <ArrowRightIcon />
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  Đăng xuất
+                  <LogoutIcon sx={{ ml: 1 }} />
+                </MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            <Link to="/login">
+              <Button
+                id="button"
+                variant="contained"
+                sx={{
+                  fontFamily: "Arial",
+                  fontWeight: "bold",
+                }}
+              >
+                Đăng nhập
+              </Button>
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
       <Toolbar id="back-to-top-anchor" />
