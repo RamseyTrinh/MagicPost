@@ -1,24 +1,62 @@
 const mongoose = require("mongoose");
 
-const orderSchema = new mongoose.Schema({
+const ordersSchema = new mongoose.Schema({
   orderId: {
     type: String,
-    required: true,
     unique: true,
+    required: true,
   },
-  route: [
-    {
-      transactionPointId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "TransactionPoint",
-        ref: "Warehouse",
-      },
-      timestamp: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
+  orderStatus: {
+    type: String,
+    required: true,
+  },
+  startLocation: {
+    type: String,
+    required: true,
+  },
+  endLocation: {
+    type: String,
+    required: true,
+  },
+  senderInfo: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+  recipientInfo: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+  recipientFees: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+  goodsType: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: String,
+    required: true,
+  },
+  costInfo: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+  weightInfo: {
+    type: mongoose.Schema.Types.Mixed,
+  },
+  sizeInfo: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+  createdDate: {
+    type: String,
+    required: true,
+  },
+  doneDate: {
+    type: String,
+    required: false,
+  },
 });
 
-const Order = mongoose.model("Order", orderSchema);
+module.exports = mongoose.model("Order", ordersSchema);

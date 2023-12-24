@@ -4,23 +4,19 @@ const bcrypt = require("bcryptjs");
 
 //name, email, password, confirmPassword, photo
 const userSchema = new mongoose.Schema({
+  userId: {
+    type: Number,
+    unique: true,
+    required: true,
+  },
   name: {
     type: String,
     required: [true, "Vui lòng nhập tên nhân viên"],
     trim: true,
     maxLength: 60,
-    validate: {
-      validator: function (value) {
-        return validator.isAlpha(
-          vietnameseString.format(value).split(" ").join("")
-        );
-      },
-      message: (props) => `${props.value} không phải tên hợp lệ`,
-    },
   },
   phoneNumber: {
-    type: Number,
-    trim: true,
+    type: String,
     required: [true, "Vui lòng nhập số điện thoại"],
     validate: {
       validator: function (value) {
@@ -31,7 +27,18 @@ const userSchema = new mongoose.Schema({
     },
     unique: true,
   },
-
+  avartar: {
+    type: String,
+    trim: true,
+  },
+  role: {
+    type: String,
+    // required: [true, "Vui lòng nhập chức vụ"],
+    enum: {
+      values: ["Admin", "Employer", "Staff"],
+      message: (props) => `${props.value} không phải vai trò hợp lệ`,
+    },
+  },
   email: {
     type: String,
     required: [true, "Vui lòng nhập email"],
@@ -55,15 +62,9 @@ const userSchema = new mongoose.Schema({
       message: "Password does not match",
     },
   },
-  role: {
-    type: String,
-    enum: {
-      values: ["admin", "host1", "host2", "employee1", "employee2"],
-      message: (props) => `${props.value} không phải vai trò hợp lệ`,
-    },
-  },
 });
 
+// Các hàm tiền xử lý
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
