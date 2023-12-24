@@ -167,6 +167,11 @@ export default function MiniDrawer() {
     setTitle("Thông tin tài khoản");
   };
 
+  const handleSignOut = () => {
+    signOut();
+    navigate("/login");
+  };
+
   const handleToggle = (e, index) => {
     e.persist();
     if (index === 0) {
@@ -247,9 +252,7 @@ export default function MiniDrawer() {
             <SearchPackage />
             <Button
               variant="contained"
-              onClick={() => {
-                signOut();
-              }}
+              onClick={handleSignOut}
               style={{
                 fontWeight: "bold",
                 background: "#fdfdfd",
