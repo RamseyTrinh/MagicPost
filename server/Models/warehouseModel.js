@@ -10,32 +10,29 @@ const userAccountSchema = new mongoose.Schema({
   password: String,
 });
 
-const agentSchema = new mongoose.Schema({
-  name: String,
-  contact: contactSchema,
-  userAccount: userAccountSchema,
-});
-
-const warehouseSchema = new mongoose.Schema({
+const wareHouseSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Vui lòng nhập tên điểm tập kết"],
     trim: true,
+    unique: true,
+  },
+  province: {
+    type: String,
+    required: [true, "Vui lòng nhập địa chỉ của điểm tập kết"],
+    enum: ["Miền Bắc", "Miền Trung", "Miền Nam"],
   },
   address: {
-    // required: [true, "Vui lòng nhập địa chỉ điểm tập kết"],
-    city: String,
-    detail: String,
+    type: String,
   },
-  contacts: [contactSchema],
+
   manager: {
     name: String,
     contact: contactSchema,
     userAccount: userAccountSchema,
   },
-  agents: [agentSchema],
 });
 
-const Warehouse = mongoose.model("Warehouse", warehouseSchema);
+const wareHouse = mongoose.model("wareHouse", wareHouseSchema);
 
-module.exports = Warehouse;
+module.exports = wareHouse;

@@ -1,115 +1,178 @@
 const Order = require("../Models/orderModel");
+const { getPackagesById } = require("./packagesController");
 
-const { generateOrderId } = require("../Service/uuid");
+//test
+async function transferOrderToWarehouse(orderId) {
+  try {
+    // Lấy thông tin đơn hàng, bao gồm cả thông tin về điểm đi và điểm đến
+    const order = await Order.findOne({ orderId })
+      .populate("startLocation")
+      .populate("endLocation");
 
-async function getAllOrders(startLoc, endLoc, type, status, searchTerm) {
-  const startRegex = new RegExp(startLoc, "i");
-  const endRegex = new RegExp(endLoc, "i");
-  const termRegex = new RegExp(searchTerm, "i");
-  const typeRegex = new RegExp(type, "i");
-  const statusRegex = new RegExp(status, "i");
-  return await Order.find({
-    startLocation: startRegex,
-    endLocation: endRegex,
-    goodsType: typeRegex,
-    orderStatus: statusRegex,
-    orderId: termRegex,
-  }).select(
-    "orderId -_id orderStatus startLocation endLocation goodsType createdDate"
-  );
-}
+    // Kiểm tra xem đơn hàng có tồn tại không
+    if (!order) {
+      return {
+        success: false,
+        message: "Đơn hàng không tồn tại",
+      };
+    }
 
-async function getOrderById(orderId) {
-  return await Order.findOne({ orderId: orderId });
-}
+    // Lấy thông tin điểm giao dịch từ điểm đi
+    const transactionPoint = order.startLocation;
 
-async function getOrderCountWithStatus(statuses, location, start) {
-  const locRegex = new RegExp(location, "i");
-  if (start) {
-    return await Order.countDocuments({
-      startLocation: locRegex,
-      orderStatus: { $in: statuses },
-    });
-  } else {
-    return await Order.countDocuments({
-      endLocation: locRegex,
-      orderStatus: { $in: statuses },
-    });
+    // Kiểm tra xem điểm giao dịch có tồn tại không
+    if (!transactionPoint) {
+      return {
+        success: false,
+        message: "Điểm giao dịch không tồn tại",
+      };
+    }
+
+    // Lấy thông tin điểm tập kết từ điểm đến
+    const warehouse = order.endLocation;
+
+    // Kiểm tra xem điểm tập kết có tồn tại không
+    if (!warehouse) {
+      return {
+        success: false,
+        message: "Điểm tập kết không tồn tại",
+      };
+    }
+
+    // Cập nhật trạng thái đơn hàng và địa điểm mới
+    order.orderStatus = "Đang vận chuyển";
+    order.startLocation = warehouse;
+    order.endLocation = warehouse;
+    await order.save();
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: "Có lỗi xảy ra",
+    };
   }
 }
 
-async function getOrderCountWithType(type, location) {
-  const locRegex = new RegExp(location, "i");
-  return await Order.countDocuments({
-    startLocation: locRegex,
-    goodsType: type,
+async function http_TransferOrder(req, res) {
+  const { orderId } = req.params;
+
+  try {
+    const result = await transferOrderToWarehouse(orderId);
+
+    if (result.success) {
+      return res.status(200).json({ message: result.message });
+    } else {
+      return res.status(404).json({ error: result.message });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Có lỗi xảy ra" });
+  }
+}
+
+//.......................................... test
+
+async function checkMatchedOrder(fromLoc, toLoc, orderId) {
+  return await Order.findOne({
+    fromLocation: fromLoc,
+    toLocation: toLoc,
+    orderId: orderId,
   });
-}
-
-async function getLatestOrders(location) {
-  const locRegex = new RegExp(location, "i");
-  return await Order.find({ startLocation: locRegex })
-    .sort({ createdDate: -1 })
-    .limit(6);
-}
-
-async function getOrderCountByMonths(location) {
-  const locRegex = new RegExp(location, "i");
-  return await Order.aggregate([
-    {
-      $match: {
-        startLocation: locRegex,
-      },
-    },
-    {
-      $group: {
-        _id: { $month: { $toDate: "$createdDate" } },
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-}
-
-async function changeOrderStatusById(orderId, newStatus) {
-  const order = await getOrderById(orderId);
-  if (!order) {
-    return null;
-  }
-  order.orderStatus = newStatus;
-  order.save();
-  return order;
-}
-
-async function saveOrder(order) {
-  await Order.create(order);
 }
 
 async function createNewOrder(order) {
   const now = new Date().toLocaleString();
 
   const newOrder = Object.assign(order, {
-    orderId: generateOrderId(),
-    orderStatus: "processing",
-    startLocation: order.startLocation,
-    endLocation: order.endLocation,
-    senderInfo: order.senderInfo,
-    recipientInfo: order.recipientInfo,
-    cost: order.costInfo,
-    weight: order.weightInfo,
-    createdDate: now,
+    orderId: order.orderId,
+    fromLocation: order.fromLocation,
+    toLocation: order.toLocation,
+    orderDate: now,
+    done: false,
   });
-  await saveOrder(newOrder);
+  await Order.create(newOrder);
+}
 
-  return newOrder;
+async function http_addNewOrder(req, res) {
+  const order = req.body;
+  const packages = await getPackagesById(order.orderId);
+
+  if (!packages) {
+    return res.status(400).json({
+      error: "Đơn hàng không tồn tại",
+    });
+  }
+
+  const matchedOrder = await checkMatchedOrder(
+    order.fromLocation,
+    order.toLocation,
+    order.orderId
+  );
+
+  console.log(matchedOrder);
+  if (matchedOrder) {
+    return res.status(400).json({
+      error: "Order matched",
+    });
+  }
+
+  try {
+    await createNewOrder(order);
+    if (order.orderStatus === "Đang xử lý") {
+      await changeOrderStatusById(order.orderId, "Đang vận chuyển");
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: err.message,
+    });
+  }
+
+  return res.status(201).json(order);
+}
+
+async function httpFinishTransferById(req, res) {
+  const transferId = req.params.id;
+
+  const transfer = await getTransferById(transferId);
+  if (!transfer) {
+    return res.status(400).json({
+      error: "Transfer not found",
+    });
+  }
+
+  const requestingUser = await getUserById(req.uid);
+  if (transfer.toLocation !== requestingUser.location) {
+    return res.status(400).json({
+      error: "Package not available at your location",
+    });
+  }
+
+  const confirmedTransfer = await finishTransferById(transferId);
+
+  return res.status(200).json(confirmedTransfer);
+}
+
+// Sử dụng hàm để chuyển đơn hàng đến điểm tập kết tiếp theo
+async function moveOrderToNextPoint(orderId, nextTransactionPointId) {
+  try {
+    const order = await Order.findOne({ orderId });
+
+    if (!order) {
+      console.log("Không tìm thấy đơn hàng với ID:", orderId);
+    } else {
+      order.route.push({
+        transactionPointId: nextTransactionPointId,
+      });
+
+      await order.save();
+      console.log("Đã chuyển đơn hàng đến điểm tập kết tiếp theo!");
+    }
+  } catch (error) {
+    console.error("Lỗi khi chuyển đơn hàng:", error.message);
+  }
 }
 
 module.exports = {
-  getAllOrders,
-  getOrderById,
-  getOrderCountWithStatus,
-  getOrderCountWithType,
-  getOrderCountByMonths,
-  getLatestOrders,
-  changeOrderStatusById,
-  createNewOrder,
+  transferOrderToWarehouse,
 };
