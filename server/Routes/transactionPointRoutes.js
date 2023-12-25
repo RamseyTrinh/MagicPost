@@ -4,10 +4,14 @@ const TransactionPointController = require("../Controllers/transactionPointContr
 const router = express.Router();
 
 router
-  .route("/createNewTransactionPoint")
+  .route("/createNewT_Point")
   .post(TransactionPointController.createtransactionPoint);
+
 router
-  .route("/getAllTransactionPoint")
+  .route("/allTransactionPoint")
   .get(TransactionPointController.getAlltransactionPoint);
 
+router
+  .route("/:province")
+  .get(TransactionPointController.getLocationByProvince);
 module.exports = router;

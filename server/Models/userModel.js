@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 //name, email, password, confirmPassword, photo
 const userSchema = new mongoose.Schema({
   userId: {
-    type: Number,
+    type: String,
     unique: true,
-    required: true,
+    required: false,
   },
   name: {
     type: String,
@@ -15,6 +18,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
     maxLength: 60,
   },
+
   phoneNumber: {
     type: String,
     required: [true, "Vui lòng nhập số điện thoại"],
@@ -27,6 +31,10 @@ const userSchema = new mongoose.Schema({
     },
     unique: true,
   },
+  location: {
+    type: String,
+    required: false,
+  },
   avartar: {
     type: String,
     trim: true,
@@ -35,7 +43,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     // required: [true, "Vui lòng nhập chức vụ"],
     enum: {
-      values: ["Admin", "Employer", "Staff"],
+      values: [
+        "admin",
+        "transactionStaff",
+        "warehouseStaff",
+        "transactionAdmin",
+        "warehouseAdmin",
+      ],
       message: (props) => `${props.value} không phải vai trò hợp lệ`,
     },
   },
@@ -48,18 +62,18 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Please enter a password."],
+    required: [false, "Vui lòng nhập mật khẩu"],
     minlength: 8,
     select: false,
   },
   confirmPassword: {
     type: String,
-    required: [true, "Please confirm your password."],
+    required: [false, "Vui lòng xác nhận lại mật khẩu"],
     validate: {
       validator: function (val) {
         return val == this.password;
       },
-      message: "Password does not match",
+      message: "Mật khẩu không trùng nhau",
     },
   },
 });
@@ -69,7 +83,7 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   //encrypt the password before saving
-  this.password = await bcrypt.hash(this.password, 8);
+  this.password = await bcrypt.hash(this.password, 10);
 
   this.confirmPassword = undefined;
   next();

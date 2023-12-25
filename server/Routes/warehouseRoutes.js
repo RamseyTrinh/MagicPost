@@ -3,7 +3,7 @@ const warehouseController = require("../Controllers/warehouseController");
 
 const router = express.Router();
 
-router.route("/createNewWarehouse").post(warehouseController.createwarehouse);
-router.route("/getAllWarehouse").get(warehouseController.getAllWarehouse);
+router.route("/newWarehouse").post(warehouseController.createwarehouse);
+router.route("/allWarehouse").get(warehouseController.getAllWarehouse);
 
 module.exports = router;
