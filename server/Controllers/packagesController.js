@@ -1,10 +1,17 @@
 const Packages = require("../Models/packagesModel");
 const Apifeatures = require("../Utils/ApiFeatures");
 const CustomError = require("./../Utils/CustomError");
-const Order = require("../Models/orderModel");
 const asyncErrorHandler = require("./../Utils/asyncErrorHandler");
+const { randomBytes } = require("crypto");
+const { getTransactionPointName } = require("./transactionPointController");
 
-exports.getAllPackages = asyncErrorHandler(async (req, res, next) => {
+function generatePackagesId() {
+  const randomBuffer = randomBytes(4); // 4 bytes (32 bits)
+  const packagesId = parseInt(randomBuffer.toString("hex"), 16);
+  return `DH${packagesId}VN`;
+}
+
+exports.getAllPackages = asyncErrorHandler(async (req, res) => {
   try {
     const features = new Apifeatures(Packages.find(req.params.ID), req.query)
       .filter()
@@ -28,27 +35,34 @@ exports.getAllPackages = asyncErrorHandler(async (req, res, next) => {
     });
   }
 });
-exports.getPackages = asyncErrorHandler(async (req, res, next) => {
-  //const packages = await Packages.find({ _id: req.params.id });
-  try {
-    console.log(req.params.ID);
-    const packages = await Packages.findById(req.params.ID);
 
-    res.status(200).json({
-      status: "Success",
-      length: packages.length,
-      data: {
-        data: packages,
-      },
-    });
+// use for orderController
+exports.getPackagesById = async function getPackagesById(packagesId) {
+  return await Packages.findOne({ packagesId: packagesId });
+};
+
+exports.http_getPackagesById = asyncErrorHandler(async (req, res) => {
+  const packagesId = req.params.id;
+  try {
+    const packages = await Packages.findOne({ packagesId: packagesId });
+
+    if (!packages) {
+      return res.status(404).json({
+        error: "packages not found",
+      });
+    }
+
+    return res.status(200).json(packages);
   } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: "Không có bản ghi nào được tìm thấy",
+    console.error(error);
+    return res.status(500).json({
+      error: "Internal Server Error",
     });
   }
 });
-exports.createPackages = asyncErrorHandler(async (req, res, next) => {
+
+//Hàm tạo đơn hàng đơn giản
+exports.createPackages = asyncErrorHandler(async (req, res) => {
   try {
     const packages = await Packages.create(req.body);
     res.status(201).json({
@@ -66,8 +80,8 @@ exports.createPackages = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
-  const package = await Packages.findByIdAndDelete(req.params.ID);
-  if (!package) {
+  const packages = await Packages.findByIdAndDelete(req.params.ID);
+  if (!packages) {
     return next(new CustomError("Không có bản ghi nào được tìm thấy", 404));
   }
   res.status(204).json({
@@ -81,59 +95,191 @@ exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-exports.updatePackage = asyncErrorHandler(async (req, res, next) => {
-  const package = await Model.findByIdAndUpdate(req.params.ID, req.body, {
-    new: true,
-    runValidators: true,
-  });
+exports.createNewpackages = asyncErrorHandler(async (req, res) => {
+  const packages = req.body;
+  console.log(packages);
 
-  if (!package) {
-    return next(new CustomError("Không có bản ghi nào được tìm thấy", 404));
-  }
+  const requestingUser = await await User.findOne({ userId: req.params.id }); // có thể là req.body
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      data: doc,
-    },
-  });
-});
+  packages.startLocation = requestingUser.location;
 
-// Hàm ấn vào tạo đơn hàng.
-async function createOrder(orderId, initialTransactionPointId) {
   try {
-    const newOrder = new Order({
-      orderId,
-      route: [
-        {
-          transactionPointId: initialTransactionPointId,
-        },
-      ],
+    const now = new Date().toLocaleString();
+
+    const newpackages = Object.assign(packages, {
+      packagesId: generatePackagesId(),
+      packagesStatus: "Đang xử lý",
+      startLocation: packages.startLocation,
+      endLocation: packages.endLocation,
+      senderInfo: packages.senderInfo,
+      receiverInfo: packages.receiverInfo,
+      createdDate: now,
     });
 
-    await newOrder.save();
-    console.log("Đã tạo đơn hàng và cập nhật quá trình di chuyển thành công!");
-  } catch (error) {
-    console.error("Lỗi khi tạo đơn hàng:", error.message);
+    await Packages.create(newpackages);
+
+    return res.status(201).json(newpackages);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: err.message,
+    });
   }
-}
+});
 
-// Sử dụng hàm để chuyển đơn hàng đến điểm tập kết tiếp theo
-async function moveOrderToNextPoint(orderId, nextTransactionPointId) {
+// lấy theo trạng thái
+exports.getPackageWithStatus = async function getPackageWithStatus(req, res) {
+  const { status } = req.params;
+
   try {
-    const order = await Order.findOne({ orderId });
+    const packages = await Packages.find({ packageStatus: status });
+    res.status(200).json({
+      success: true,
+      message: `Các đơn hàng có trạng thái '${status}':`,
+      data: packages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo trạng thái.",
+      error: error.message,
+    });
+  }
+};
 
-    if (!order) {
-      console.log("Không tìm thấy đơn hàng với ID:", orderId);
-    } else {
-      order.route.push({
-        transactionPointId: nextTransactionPointId,
+//Để thống kê
+exports.getPackages_SLocation = async function getPackages_SLocation(req, res) {
+  const { startLocation } = req.params;
+
+  try {
+    const packages = await Packages.find({
+      startLocation: startLocation,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Các đơn hàng từ ${startLocation}: `,
+      data: packages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đến",
+      error: error.message,
+    });
+  }
+};
+exports.getPackages_ELocation = async function getPackages_ELocation(req, res) {
+  const { endLocation } = req.params;
+
+  try {
+    const packages = await Packages.find({
+      endLocation: endLocation,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Các đơn hàng đến ${endLocation}:`,
+      data: packages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đi.",
+      error: error.message,
+    });
+  }
+};
+
+exports.updatePackageStatus = async function updatePackageStatus(req, res) {
+  const { packageId, newStatus } = req.body;
+
+  try {
+    const packageToUpdate = await Packages.findOne({ packageId: packageId });
+
+    if (!packageToUpdate) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy đơn hàng với ID cung cấp.",
+      });
+    }
+
+    packageToUpdate.packageStatus = newStatus;
+    await packageToUpdate.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Trạng thái của đơn hàng với ID ${packageId} đã được cập nhật thành ${newStatus}.`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi cập nhật trạng thái của đơn hàng.",
+      error: error.message,
+    });
+  }
+};
+
+exports.getPackageIdByTransactionPoint =
+  async function getPackageIdByTransactionPoint(req, res) {
+    try {
+      // Lấy tên của điểm giao dịch từ request query parameters
+      const transactionPointName = req.query.transactionPointName;
+
+      // Kiểm tra xem tên điểm giao dịch có được cung cấp không
+      if (!transactionPointName) {
+        return res.status(400).json({
+          error: "Vui lòng cung cấp tên điểm giao dịch",
+        });
+      }
+
+      // Tìm kiếm điểm giao dịch trong cơ sở dữ liệu
+      const transactionPoint = await getTransactionPointName({
+        name: transactionPointName,
       });
 
-      await order.save();
-      console.log("Đã chuyển đơn hàng đến điểm tập kết tiếp theo!");
+      // Kiểm tra xem điểm giao dịch có tồn tại không
+      if (!transactionPoint) {
+        return res.status(404).json({
+          error: "Không tìm thấy điểm giao dịch",
+        });
+      }
+
+      // Lấy tất cả các đơn hàng với FromLocation trùng với location của điểm giao dịch
+      const orders = await Packages.find({
+        startLocation: transactionPoint.location,
+      });
+
+      // Lấy tất cả các packageId từ các đơn hàng
+      const packageIds = orders.flatMap((order) => order.packageId);
+
+      return res.status(200).json({ packageIds });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        error: "Có lỗi xảy ra",
+      });
     }
-  } catch (error) {
-    console.error("Lỗi khi chuyển đơn hàng:", error.message);
-  }
-}
+  };
+
+// exports.updatePackage = asyncErrorHandler(async (req, res, next) => {
+//   const package = await Model.findByIdAndUpdate(req.params.ID, req.body, {
+//     new: true,
+//     runValidators: true,
+//   });
+
+//   if (!package) {
+//     return next(new CustomError("Không có bản ghi nào được tìm thấy", 404));
+//   }
+
+//   res.status(200).json({
+//     status: "success",
+//     data: {
+//       data: doc,
+//     },
+//   });
+// });

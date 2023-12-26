@@ -1,9 +1,11 @@
 const CustomError = require("../Utils/CustomError");
-const User = require("./../Models/userModel");
-const asyncErrorHandler = require("./../Utils/asyncErrorHandler");
+const User = require("../Models/userModel");
+const asyncErrorHandler = require("../Utils/asyncErrorHandler");
 const jwt = require("jsonwebtoken");
 const util = require("util");
 const dotenv = require("dotenv");
+const { randomBytes } = require("crypto");
+// const bcrypt = require("bcryptjs");
 dotenv.config();
 
 // Lấy defaultId để khi tạo nhân viên mới có ID là kế tiếp
@@ -15,47 +17,36 @@ const signToken = (id) => {
   });
 };
 
-// Hàm lấy ra tất cả các nhân viên
 exports.getAllUsers = async function getAllUsers(req, res) {
-  const { role, location, searchTerm } = req.query;
+  try {
+    // Truy vấn tất cả người dùng từ cơ sở dữ liệu
+    const users = await User.find();
 
-  const roleRegex = new RegExp(role, "i");
-  const locRegex = new RegExp(location, "i");
-  const termRegex = new RegExp(searchTerm, "i");
-
-  const queryFilter = {
-    location: locRegex,
-    $or: [{ name: { $regex: termRegex } }, { email: { $regex: termRegex } }],
-  };
-
-  if (role === "") {
-    queryFilter.role = { $ne: "Admin" };
-  } else {
-    queryFilter.role = roleRegex;
+    // Trả về danh sách người dùng
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Có lỗi xảy ra khi lấy danh sách người dùng",
+    });
   }
-
-  const users = await User.find(queryFilter);
-
-  return res.status(200).json(users);
 };
 
 exports.getUserById = async function getUserById(req, res) {
-  const userId = Number(req.params.id);
+  const userId = req.params.id;
   const user = await User.findOne({ userId });
 
   return res
     .status(user ? 200 : 404)
-    .json(user ? user : { error: "User not found" });
+    .json(user ? user : { error: "Không tìm thấy nhân viên" });
 };
 
 exports.ChangeUserProfile = async function ChangeUserProfile(req, res) {
-  const userId = req.body.userId; // Tại sao console.log trả ra undefined
+  const userId = req.body.userId;
   const userProfile = req.body;
   console.log(userProfile);
   console.log(req.body);
-  const user = await User.findOne({ userId: Number(userId) });
-  console.log(user);
-  console.log(userId);
+  const user = await User.findOne({ userId: userId });
 
   try {
     if (userProfile.name) {
@@ -70,6 +61,7 @@ exports.ChangeUserProfile = async function ChangeUserProfile(req, res) {
     if (userProfile.avartar) {
       user.avartar = userProfile.avartar;
     }
+
     await user.save();
     return res.status(200).json(userProfile);
   } catch (err) {
@@ -78,24 +70,40 @@ exports.ChangeUserProfile = async function ChangeUserProfile(req, res) {
   }
 };
 
-// async function getUserByEmail(email) {
-//   return await User.findOne({ email: email });
-// }
+exports.getUserByName = async function getUserByName(req, res) {
+  try {
+    const userName = req.params.name;
 
-// Các hàm để tạo người dùng mới
-async function getLatestUserId() {
-  const latestUser = await User.findOne().sort("-userId");
-  if (!latestUser) {
-    return DEFAULT_USER_ID;
+    // Truy vấn người dùng theo tên từ cơ sở dữ liệu
+    const user = await User.findOne({ name: userName });
+
+    // Kiểm tra xem người dùng có tồn tại không
+    if (!user) {
+      return res.status(404).json({
+        error: "Người dùng không tồn tại",
+      });
+    }
+
+    // Trả về thông tin người dùng
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Có lỗi xảy ra khi lấy thông tin người dùng",
+    });
   }
+};
 
-  return latestUser.userId;
+function generateUserId() {
+  const randomBuffer = randomBytes(3); // 4 bytes (32 bits)
+  const packagesId = parseInt(randomBuffer.toString("hex"), 16);
+  return `MNV${packagesId}`;
 }
 
 async function createNewUser(user) {
   const existedUser = await User.findOne({ email: `${user.email}` });
   if (existedUser) {
-    throw new Error(`Account with the same email existed`);
+    throw new Error(`Email trùng với tài khoản trước`);
   }
 
   if (user.role === "Manager") {
@@ -104,41 +112,24 @@ async function createNewUser(user) {
       role: "Manager",
     });
     if (manager) {
-      throw new Error("This location already had a Manager");
+      throw new Error("Điểm này đã có quản lý!");
     }
   }
 
-  const newUserId = (await getLatestUserId()) + 1;
+  const newUserId = generateUserId();
   const newUser = Object.assign(user, {
     userId: newUserId,
     name: user.name,
     email: user.email,
     role: user.role,
     location: user.location,
-    password: await getHashedPassword(user.password),
+    password: user.password,
   });
   await User.create(newUser);
 }
 
 exports.addNewUser = async function addNewUser(req, res) {
   const user = req.body;
-
-  // Lấy thông tin người dùng đang thực hiện yêu cầu
-  // console.log(req.uid);
-  const requestingUser = await User.findOne(req.uid);
-  if (
-    requestingUser.role !== "Admin" &&
-    !(
-      requestingUser.role == "Manager" &&
-      requestingUser.location == user.location
-    )
-  ) {
-    console.log(user.location);
-    return res.status(401).json({
-      error: "Bạn không có quyền truy cập!",
-    });
-  }
-
   try {
     await createNewUser(user);
   } catch (err) {
@@ -146,13 +137,16 @@ exports.addNewUser = async function addNewUser(req, res) {
       error: err.message,
     });
   }
-  return res.status(201).json(user);
+  return res.status(201).json({
+    status: "create success",
+    user,
+  });
 };
 
 // SignUp function
-exports.signup = asyncErrorHandler(async (req, res, next) => {
+exports.signup = asyncErrorHandler(async (req, res) => {
   const newUser = await User.create(req.body);
-
+  // newUser.userId = generateUserId();
   const token = signToken(newUser._id);
 
   res.status(201).json({

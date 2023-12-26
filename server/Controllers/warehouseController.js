@@ -17,7 +17,26 @@ exports.getAllWarehouse = async (req, res) => {
     });
   }
 };
-exports.getwarehouse = async (req, res) => {
+
+exports.getLocationByProvince = async function getLocationByProvince(req, res) {
+  try {
+    const province = decodeURI(req.params.province);
+    const location = await Warehouse.findOne({
+      province,
+    });
+
+    if (!location) {
+      return res.status(404).json({ error: "Không tìm thấy điểm tập kết này" });
+    }
+
+    return res.status(200).json(location);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getwarehouseById = async (req, res) => {
   try {
     const warehouse = await Warehouse.findById();
     res.status(200).json({
@@ -34,6 +53,7 @@ exports.getwarehouse = async (req, res) => {
     });
   }
 };
+
 exports.createwarehouse = async (req, res) => {
   try {
     const warehouse = await Warehouse.create(req.body);
@@ -49,4 +69,8 @@ exports.createwarehouse = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+exports.findWareHouseById = async function findWareHouseById(wareHouseId) {
+  return await Warehouse.findById(wareHouseId);
 };
