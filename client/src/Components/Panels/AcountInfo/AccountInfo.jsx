@@ -9,10 +9,12 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import PlaceIcon from "@mui/icons-material/Place";
 import { Button } from "@mui/material";
+import { useState } from "react";
+import React, { useEffect } from "react";
 
 export default function AccountInfo() {
   const auth = useAuthUser();
-  const role = auth().data.role;
+  const user = auth().data;
 
   function DisplayInfo({ value, Icon }) {
     return (
@@ -66,25 +68,25 @@ export default function AccountInfo() {
       <Paper sx={{ padding: 1, width: "400px" }}>
         <Stack sx={{ alignItems: "center" }} direction="column">
           <PersonIcon sx={{ color: "action.active", fontSize: "250px" }} />
-          <DisplayInfo value={""} Icon={AccountCircle} />
-          <DisplayInfo value={""} Icon={BadgeIcon} />
+          <DisplayInfo value={user.name} Icon={AccountCircle} />
+          <DisplayInfo value={user.userId} Icon={BadgeIcon} />
           <DisplayInfo
             value={
-              role === "admin"
+              user.role === "admin"
                 ? "Lãnh đạo"
-                : role === "transactionAdmin"
+                : user.role === "transactionAdmin"
                 ? "Trưởng điểm giao dịch"
-                : role === "warehouseAdmin"
+                : user.role === "warehouseAdmin"
                 ? "Trưởng điểm tập kết"
-                : role === "transactionStaff"
+                : user.role === "transactionStaff"
                 ? "Giao dịch viên"
-                : role === "warehouseStaff"
+                : user.role === "warehouseStaff"
                 ? "Nhân viên tập kết"
                 : ""
             }
             Icon={AssignmentIcon}
           />
-          <DisplayInfo value={""} Icon={PlaceIcon} />
+          <DisplayInfo value={user.location} Icon={PlaceIcon} />
           <Button
             variant="contained"
             style={{ fontWeight: "bold", background: "#003e29" }}
