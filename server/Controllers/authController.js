@@ -184,6 +184,7 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
     token,
     user: {
       role: user.role,
+      email: user.email,
     },
   });
 });
