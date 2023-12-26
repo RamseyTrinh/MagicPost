@@ -10,34 +10,39 @@ const orderSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  fromtransactionPoint: {
-    type: String,
-    required: true,
-  },
-  totransactionPoint: {
-    type: String,
-    required: true,
-  },
-  toWareHouse: {
-    type: String,
-    required: true,
-  },
-  fromWareHouse: {
-    type: String,
-    required: true,
-  },
-  confirmDate: {
-    type: String,
-    required: true,
-  },
-  transferDate: {
-    type: String,
-    required: true,
-  },
-  shippingDate: {
-    type: String,
-    requied: true,
-  },
+  // fromtransactionPoint: {
+  //   type: String,
+  //   // required: true,
+  // },
+  // totransactionPoint: {
+  //   type: String,
+  //   // required: true,
+  // },
+  // toWareHouse: {
+  //   type: String,
+  //   // required: true,
+  // },
+  // fromWareHouse: {
+  //   type: String,
+  //   // required: true,
+  // },
+  route: [
+    {
+      typePoint: {
+        type: String,
+        enum: ['transaction', 'warehouse'],
+        require: true,
+      },
+      pointName: {
+        type: String,
+        required: true,
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
   done: {
     type: Boolean,
     require: true,

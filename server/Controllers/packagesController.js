@@ -2,6 +2,7 @@ const Packages = require("../Models/packagesModel");
 const Apifeatures = require("../Utils/ApiFeatures");
 const CustomError = require("./../Utils/CustomError");
 const asyncErrorHandler = require("./../Utils/asyncErrorHandler");
+const orderController = require("./orderController");
 const { randomBytes } = require("crypto");
 const { getTransactionPointName } = require("./transactionPointController");
 
@@ -10,6 +11,18 @@ function generatePackagesId() {
   const packagesId = parseInt(randomBuffer.toString("hex"), 16);
   const fixedLengthId = `DH${String(packagesId).padStart(6, "0")}`;
   return fixedLengthId;
+}
+
+function extractLocation(address) {
+  
+  const regex = /, (Tỉnh |Thành Phố )\s*([^,]+)/;
+  const match = address.match(regex);
+
+  if (match && match[2]) {
+    return match[2].trim();
+  }
+
+  return null;
 }
 
 exports.getAllPackages = asyncErrorHandler(async (req, res) => {
@@ -107,6 +120,8 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
   try {
     const now = new Date().toLocaleString();
 
+    packages.startLocation = extractLocation(packages.sender.senderAdd);
+    packages.endLocation = extractLocation(packages.receiver.receiverAdd);
     const newpackages = Object.assign(packages, {
       packagesId: generatePackagesId(),
       packagesStatus: "Đang xử lý",
@@ -117,8 +132,8 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       createdDate: now,
     });
 
-    await Packages.create(newpackages);
-
+    const package =  await Packages.create(newpackages);
+    const order = orderController.createNewOrderWithPackage(package);
     return res.status(201).json(newpackages);
   } catch (err) {
     console.log(err);
@@ -127,6 +142,7 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
     });
   }
 });
+
 
 // lấy theo trạng thái
 exports.getPackageWithStatus = async function getPackageWithStatus(req, res) {
@@ -266,6 +282,23 @@ exports.getPackageIdByTransactionPoint =
       });
     }
   };
+
+  // exports.getAllPackagesByStartTransactionPointAndStatus = sync getAllPackagesByStartTransactionPointAndStatus(req, rea) {
+  //   try {
+  //     // Assuming you have a field named 'packagesStatus' in your Packages model
+  //     const status = "Đang xử lý";
+  
+  //     const packages = await Packages.find({
+  //       startTransactionPoint: startTransactionPoint,
+  //       packagesStatus: status,
+  //     });
+  
+  //     return packages;
+  //   } catch (error) {
+  //     throw new Error(error.message);
+  //   }
+  // }
+  
 
 // async function getTransactionIdFromPackageId(packageId) {
 //   try {

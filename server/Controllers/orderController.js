@@ -1,6 +1,12 @@
 const Order = require("../Models/orderModel");
 const { getPackagesById } = require("./packagesController");
+const { randomBytes } = require("crypto");
 
+function generateOrderId() {
+  const randomBuffer = randomBytes(4); // 4 bytes (32 bits)
+  const orderId = parseInt(randomBuffer.toString("hex"), 16);
+  return `OD${orderId}VN`;
+}
 //test
 async function transferOrderToWarehouse(orderId) {
   try {
@@ -78,6 +84,33 @@ async function checkMatchedOrder(fromLoc, toLoc, orderId) {
     toLocation: toLoc,
     orderId: orderId,
   });
+}
+// Tạo order khi package được tạo
+async function createNewOrderWithPackage(package) {
+  try {
+  const newOrderData = {
+    orderId: generateOrderId(),
+    packagesId: package.packagesId,
+    // fromtransactionPoint: fromLocation, // Assuming fromLocation is the transaction point
+    // totransactionPoint: toLocation,     // Assuming toLocation is the transaction point
+    // toWareHouse: package.endLocation,    // Assuming endLocation is the warehouse
+    // fromWareHouse: package.startLocation, // Assuming startLocation is the warehouse
+    route: [
+      {
+        typePoint: 'transaction',
+        pointId: package.startLocation, // You need to replace this with the actual point ID
+        timestamp: package.createdDate,
+      },
+    ],
+    done: false,
+  };
+
+  const order = await Order.create(newOrderData);
+
+  return order;
+} catch (error) {
+  throw new Error(error.message);
+}
 }
 
 async function createNewOrder(order) {
@@ -174,5 +207,6 @@ async function moveOrderToNextPoint(orderId, nextTransactionPointId) {
 }
 
 module.exports = {
+  createNewOrderWithPackage,
   transferOrderToWarehouse,
 };
