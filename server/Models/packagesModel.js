@@ -100,6 +100,24 @@ const packageSchema = new mongoose.Schema({
   note: {
     type: String,
   },
+
+  route: [
+    {
+      pointName: {
+        type: String,
+        //required: true,
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+
+  currentPoint: {
+    type: String,
+    //require: true,
+  }
 });
 const Packages = mongoose.model("Package", packageSchema);
 
