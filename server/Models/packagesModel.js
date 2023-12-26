@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 
 const packageSchema = new mongoose.Schema({
-  packageId: {
+  packagesId: {
     type: String,
   },
-  packageStatus: {
+  packagesStatus: {
+    type: String,
+  },
+  createdDate: {
     type: String,
   },
   startLocation: {
@@ -65,7 +68,7 @@ const packageSchema = new mongoose.Schema({
       type: String,
       required: [true, "Vui lòng nhập giá trị thực"],
     },
-    productWeigh: {
+    productWeight: {
       type: String,
       required: [true],
     },
@@ -86,7 +89,7 @@ const packageSchema = new mongoose.Schema({
     },
 
     productCategory: {
-      type: String,
+      type: { type: String },
     },
   },
 
