@@ -3,20 +3,15 @@ const mongoose = require("mongoose");
 const packageSchema = new mongoose.Schema({
   packageId: {
     type: String,
-    // required: true,
-    // unique: true,
   },
   packageStatus: {
     type: String,
-    // require: true,
   },
   startLocation: {
     type: String,
-    // required: true,
   },
   endLocation: {
     type: String,
-    // required: true,
   },
   sender: {
     senderName: {
@@ -30,6 +25,9 @@ const packageSchema = new mongoose.Schema({
     senderAddr: {
       type: String,
       require: [true, "Vui lòng nhập địa chỉ người gửi"],
+    },
+    senderAdd: {
+      type: String,
     },
   },
 
@@ -45,6 +43,9 @@ const packageSchema = new mongoose.Schema({
     receiverAddr: {
       type: String,
       require: [true, "Vui lòng nhập địa chỉ người nhận"],
+    },
+    receiverAdd: {
+      type: String,
     },
   },
 
@@ -68,33 +69,30 @@ const packageSchema = new mongoose.Schema({
       type: String,
       required: [true],
     },
-    quantity: {
-      type: String,
-      required: [true],
-    },
+    // quantity: {
+    //   type: String,
+    //   required: [true],
+    // },
     size: {
       length: {
         type: String,
-        required: [true],
       },
       width: {
         type: String,
-        required: [true],
       },
       height: {
         type: String,
-        required: true,
       },
     },
 
     productCategory: {
-      type: [String],
+      type: String,
     },
   },
 
   payment: {
     type: String,
-    required: [true],
+    required: true,
   },
   note: {
     type: String,
