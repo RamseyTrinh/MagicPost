@@ -188,6 +188,43 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
+exports.getUserByEmail = async function getUserByEmail(req, res) {
+  const { email } = req.params;
+
+  try {
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found with the provided email.",
+      });
+    }
+
+    // You can customize the response based on your user model structure
+    const userData = {
+      userId: user.userId,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      location: user.location,
+      // Add other fields as needed
+    };
+
+    res.status(200).json({
+      success: true,
+      message: "User information retrieved successfully.",
+      data: userData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while fetching user information.",
+      error: error.message,
+    });
+  }
+};
+
 exports.protect = asyncErrorHandler(async (req, res, next) => {
   //1. Read the token & check if it exist
   const testToken = req.headers.authorization;

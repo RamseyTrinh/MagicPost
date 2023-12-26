@@ -7,9 +7,11 @@ router.route("/createPackages").post(packagesController.createPackages);
 router.route("/create").post(packagesController.createNewpackages);
 
 router.route("/getAllPackages").get(packagesController.getAllPackages);
-// router
-//   .route("/:ID")
-//   .get(packagesController.getPackagesById)
+router
+  .route("/getPackageWithStatus/:status")
+  .get(packagesController.getPackageWithStatus);
+router.route("/updateStatus").patch(packagesController.updatePackageStatus);
+router.route("/:Id").get(packagesController.http_getPackagesById);
 //   .patch(packagesController.updatePackage)
 //   .delete(packagesController.deletePackage);
 
