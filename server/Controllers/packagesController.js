@@ -112,8 +112,8 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       packagesStatus: "Đang xử lý",
       startLocation: packages.startLocation,
       endLocation: packages.endLocation,
-      senderInfo: packages.senderInfo,
-      receiverInfo: packages.receiverInfo,
+      sender: packages.sender,
+      receiver: packages.receiver,
       createdDate: now,
     });
 

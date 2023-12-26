@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const packageSchema = new mongoose.Schema({
-  packageId: {
+  packagesId: {
     type: String,
   },
   packageStatus: {
@@ -52,27 +52,25 @@ const packageSchema = new mongoose.Schema({
   package: {
     productType: {
       type: String,
-      require: true,
-      enum: {
-        values: ["parcel", "document"],
-      },
+      // require: true,
+      // enum: {
+      //   values: ["parcel", "document"],
+      // },
     },
     productName: {
       type: String,
-      required: [true, "Vui lòng nhập tên kiện hàng"],
+      // required: [true, "Vui lòng nhập tên kiện hàng"],
     },
     productValue: {
       type: String,
-      required: [true, "Vui lòng nhập giá trị thực"],
+      // required: [true, "Vui lòng nhập giá trị thực"],
     },
-    productWeigh: {
+    productWeight: {
       type: String,
-      required: [true],
     },
-    // quantity: {
-    //   type: String,
-    //   required: [true],
-    // },
+    quantity: {
+      type: String,
+    },
     size: {
       length: {
         type: String,
