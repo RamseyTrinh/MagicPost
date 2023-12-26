@@ -29,13 +29,13 @@ export default function Form() {
       senderName: string;
       senderPhone: string;
       senderAddr: string;
-      senderAd: string;
+      senderAdd: string;
     };
     receiver: {
       receiverName: string;
       receiverPhone: string;
       receiverAddr: string;
-      receiverAd: string;
+      receiverAdd: string;
     };
     package: {
       productType: string;
@@ -52,14 +52,22 @@ export default function Form() {
     };
     payment: string;
     note: string;
-    ID: string;
   };
 
   const { register, handleSubmit } = useForm<FormValues>();
 
   const onSubmit = (data: FormValues) => {
-    setFormState(true);
     console.log(data);
+
+    try {
+      const result = axios.post(
+        "http://localhost:3005/api/v1/packages/create",
+        data
+      );
+      console.log(result);
+    } catch (error) {}
+
+    setFormState(true);
   };
 
   function generateCode() {
@@ -91,7 +99,7 @@ export default function Form() {
                 {...register("sender.senderPhone")}
               />
             </Stack>
-            <ReceiverAdd refs={register("sender.senderAd")} />
+            <ReceiverAdd refs={register("sender.senderAdd")} />
             <TextField
               id="outlined-basic"
               label="Địa chỉ"
@@ -121,7 +129,7 @@ export default function Form() {
                 {...register("receiver.receiverPhone")}
               />
             </Stack>
-            <ReceiverAdd refs={register("receiver.receiverAd")} />
+            <ReceiverAdd refs={register("receiver.receiverAdd")} />
             <TextField
               id="outlined-basic"
               label="Địa chỉ"
@@ -334,7 +342,6 @@ export default function Form() {
               sx={{ mb: 4 }}
               onClick={generateCode}
               value={code}
-              {...register("ID")}
             >
               Tạo bưu gửi
             </Button>
@@ -362,3 +369,31 @@ export default function Form() {
     </div>
   );
 }
+
+// "sender": {
+//   "senderName": "test";
+//   "senderPhone": "test";
+//   "senderAddr": "test";
+//   "senderAd": "test";
+// };
+// receiver: {
+//   receiverName: "test";
+//   receiverPhone: "test";
+//   receiverAddr: "test";
+//   receiverAd: "test";
+// };
+// package: {
+//   productType: "test";
+//   productName: "test";
+//   productValue: "test";
+//   productWeight: "test";
+//   quantity: "test";
+//   size: {
+//     length: "test";
+//     width: "test";
+//     height: "test";
+//   };
+//   productCategory: "test";
+// };
+// payment: "test";
+// note: "test";

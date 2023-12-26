@@ -4,7 +4,10 @@ const packageSchema = new mongoose.Schema({
   packagesId: {
     type: String,
   },
-  packageStatus: {
+  packagesStatus: {
+    type: String,
+  },
+  createdDate: {
     type: String,
   },
   startLocation: {
@@ -68,7 +71,7 @@ const packageSchema = new mongoose.Schema({
     productWeight: {
       type: String,
     },
-    quantity: {
+    productWeigh: {
       type: String,
     },
     size: {
@@ -84,7 +87,7 @@ const packageSchema = new mongoose.Schema({
     },
 
     productCategory: {
-      type: String,
+      type: { type: String },
     },
   },
 
