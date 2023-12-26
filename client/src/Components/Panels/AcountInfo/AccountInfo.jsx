@@ -9,8 +9,7 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import PlaceIcon from "@mui/icons-material/Place";
 import { Button } from "@mui/material";
-import { useState } from "react";
-import React, { useEffect } from "react";
+import React from "react";
 
 export default function AccountInfo() {
   const auth = useAuthUser();
