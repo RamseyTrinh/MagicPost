@@ -6,9 +6,10 @@ const { randomBytes } = require("crypto");
 const { getTransactionPointName } = require("./transactionPointController");
 
 function generatePackagesId() {
-  const randomBuffer = randomBytes(4); // 4 bytes (32 bits)
+  const randomBuffer = randomBytes(3); // 4 bytes (32 bits)
   const packagesId = parseInt(randomBuffer.toString("hex"), 16);
-  return `DH${packagesId}VN`;
+  const fixedLengthId = `DH${String(packagesId).padStart(6, "0")}`;
+  return fixedLengthId;
 }
 
 exports.getAllPackages = asyncErrorHandler(async (req, res) => {
@@ -65,10 +66,14 @@ exports.http_getPackagesById = asyncErrorHandler(async (req, res) => {
 exports.createPackages = asyncErrorHandler(async (req, res) => {
   try {
     const packages = await Packages.create(req.body);
+    packages.packageId = generatePackagesId();
+    const id = packages.packageId;
+    await packages.save();
     res.status(201).json({
       status: "Success",
       data: {
         packages,
+        id,
       },
     });
   } catch (error) {
@@ -98,10 +103,6 @@ exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
 exports.createNewpackages = asyncErrorHandler(async (req, res) => {
   const packages = req.body;
   console.log(packages);
-
-  const requestingUser = await await User.findOne({ userId: req.params.id }); // có thể là req.body
-
-  packages.startLocation = requestingUser.location;
 
   try {
     const now = new Date().toLocaleString();
@@ -265,6 +266,23 @@ exports.getPackageIdByTransactionPoint =
       });
     }
   };
+
+// async function getTransactionIdFromPackageId(packageId) {
+//   try {
+//     const package = await Packages.findById(packageId);
+
+//     // Kiểm tra xem package có tồn tại không
+//     if (!package) {
+//       return null; // Hoặc bạn có thể throw một lỗi tùy thuộc vào logic ứng dụng của bạn
+//     }
+
+//     // Trả về transactionId của package
+//     return package.startLocation;
+//   } catch (error) {
+//     console.error("Lỗi khi lấy transactionId từ packageId:", error);
+//     throw error;
+//   }
+// }
 
 // exports.updatePackage = asyncErrorHandler(async (req, res, next) => {
 //   const package = await Model.findByIdAndUpdate(req.params.ID, req.body, {

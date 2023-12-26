@@ -10,11 +10,19 @@ const orderSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  fromLocation: {
+  fromtransactionPoint: {
     type: String,
     required: true,
   },
-  toLocation: {
+  totransactionPoint: {
+    type: String,
+    required: true,
+  },
+  toWareHouse: {
+    type: String,
+    required: true,
+  },
+  fromWareHouse: {
     type: String,
     required: true,
   },

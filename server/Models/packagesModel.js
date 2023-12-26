@@ -4,19 +4,19 @@ const packageSchema = new mongoose.Schema({
   packageId: {
     type: String,
     // required: true,
-    unique: true,
+    // unique: true,
   },
   packageStatus: {
     type: String,
-    require: true,
+    // require: true,
   },
   startLocation: {
     type: String,
-    required: true,
+    // required: true,
   },
   endLocation: {
     type: String,
-    required: true,
+    // required: true,
   },
   sender: {
     senderName: {

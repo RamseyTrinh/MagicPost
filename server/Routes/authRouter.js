@@ -13,7 +13,7 @@ router.route("/login").post(authController.login);
 router.get("/allUser", authController.getAllUsers);
 router.get("/:id", authController.getUserById);
 router.get("/name/:name", authController.getUserByName);
-
+router.get("/getUser/:email", authController.getUserByEmail);
 router.post("/addNewUser", authController.addNewUser);
 router.patch("/:id/changeinfo", authController.ChangeUserProfile);
 
