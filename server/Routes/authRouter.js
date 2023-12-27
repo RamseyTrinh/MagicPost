@@ -14,8 +14,8 @@ router.route("/allUser").get(authController.getAllUsers);
 router.route("/:id", authController.getUserById);
 router.route("/name/:name", authController.getUserByName);
 
-router.route("/allTracsactionAdmin").get(authController.getTransactionAdmin);
-router.route("/allWarehouse").get(authController.getWarehouseAdmin);
+router.route("/allTransactionAdmin").get(authController.getTransactionAdmin);
+router.route("/allWarehouseAdmin").get(authController.getWarehouseAdmin);
 
 router.route("/getUser/:email").get(authController.getUserByEmail);
 router.route("/addNewUser").post(authController.addNewUser);

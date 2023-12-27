@@ -14,23 +14,33 @@ export default function ListPoint() {
 
   const fetchData = () => {
     if (category === 1) {
-      fetch("https://jsonplaceholder.typicode.com/users")
+      fetch("http://localhost:3005/api/v1/transactionPoint/AllTransactionPoint")
         .then((response) => {
           return response.json();
         })
 
         .then((data) => {
-          setRows(data);
+          setRows(
+            data.data.transactionPoint?.map((d) => {
+              return { id: d._id, ...d };
+            })
+          );
         });
     }
     if (category === 2) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
+      fetch("http://localhost:3005/api/v1/warehouse/allWareHouse")
         .then((response) => {
           return response.json();
         })
 
         .then((data) => {
-          setRows(data);
+          console.log(data);
+
+          setRows(
+            data.data.warehouse?.map((d) => {
+              return { id: d._id, ...d };
+            })
+          );
         });
     }
   };
@@ -40,9 +50,44 @@ export default function ListPoint() {
   });
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "email", headerName: "Email", width: 250 },
+    category === 1
+      ? {
+          field: "transactionPointId",
+          headerName: "ID",
+          width: 70,
+          valueGetter: (params) => params.row.transactionPointId,
+        }
+      : {
+          field: "warehouseId",
+          headerName: "ID",
+          width: 70,
+          valueGetter: (params) => params.row.warehouseId,
+        },
+    {
+      field: "name",
+      headerName: "Tên điểm",
+      width: 250,
+      valueGetter: (params) => params.row.name,
+    },
+    {
+      field: "address",
+      headerName: "Địa chỉ",
+      width: 250,
+      valueGetter: (params) => params.row.address,
+    },
+    category === 1
+      ? {
+          field: "warehouseLocation",
+          headerName: "Vùng",
+          width: 150,
+          valueGetter: (params) => params.row.warehouseLocation,
+        }
+      : {
+          field: "location",
+          headerName: "Vùng",
+          width: 150,
+          valueGetter: (params) => params.row.location,
+        },
     // {
     //   field: "street",
     //   headerName: "Street",
@@ -80,7 +125,7 @@ export default function ListPoint() {
                 background: "#fdfdfd",
               }}
             >
-              <MenuItem value={0}>Tổng</MenuItem>
+              <MenuItem value={0}>-</MenuItem>
               <MenuItem value={1}>Điểm giao dịch</MenuItem>
               <MenuItem value={2}>Điểm tập kết</MenuItem>
             </Select>
