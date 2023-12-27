@@ -116,11 +116,8 @@ exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
 
 exports.createNewpackages = asyncErrorHandler(async (req, res) => {
   const packages = req.body;
-  console.log(packages);
-  console.log(packages.sender.senderAdd);
   try {
     const now = new Date().toLocaleString();
-
     packages.startLocation = extractLocation(packages.sender.senderAdd);
     packages.endLocation = extractLocation(packages.receiver.receiverAdd);
 
@@ -142,8 +139,13 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
     });
 
     const package = await Packages.create(newpackages);
-    const order = orderController.createNewOrderWithPackage(package);
-    return res.status(201).json(newpackages);
+    const order = await orderController.createNewOrderWithPackage(package);
+    console.log(order);
+    return res.status(201).json({
+      newpackages,
+      message: "Tạo đơn hàng thành công",
+      order,
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({

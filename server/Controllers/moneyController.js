@@ -44,14 +44,11 @@ function calculateShippingCost(fromRegion, toRegion, weight) {
   return shippingCost;
 }
 
-exports.calculateMoney = (req, res) => {
-  const { fromProvince, toProvince, weight } = req.body;
+// exports.calculateMoney = (req, res) => {
+//   const { fromProvince, toProvince, weight } = req.body;
 
-  // Giả lập tính giá vận chuyển
-  const shippingCost = calculateShippingCost(fromProvince, toProvince, weight);
+//   // Giả lập tính giá vận chuyển
+//   const shippingCost = calculateShippingCost(fromProvince, toProvince, weight);
 
-  res.json({
-    success: true,
-    shippingCost: shippingCost,
-  });
-};
+//   return res.status(200).json(shippingCost);
+// };

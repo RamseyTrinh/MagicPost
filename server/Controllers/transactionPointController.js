@@ -1,3 +1,4 @@
+const Packages = require("../Models/packagesModel");
 const TransactionPoint = require("../Models/transactionPointModel");
 
 const { findWareHouseById } = require("./warehouseController");
@@ -104,11 +105,7 @@ exports.getWarehouseNameByTransactionPoint =
     }
   };
 
-exports.getTransactionPointName = async function getTransactionPointName(name) {
-  return await TransactionPoint.findOne(name);
-};
-// Lấy tên của warehouse khi chuyển từ giao dịch 1 sang tập kết 1
-exports.getWarehouseByTransactionPoint = async function getWarehouseByTransactionPoint(location) {
-  const transactionPoint = await TransactionPoint.findOne({location});
-  return transactionPoint.location;
+exports.getWHfromLocation = async function getWHfromLocation(location) {
+  const packages = Packages.findOne(location);
+  return packages.warehouseLocation;
 };

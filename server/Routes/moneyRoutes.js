@@ -1,8 +1,8 @@
-const express = require("express");
-const money = require("../Controllers/moneyController");
+// const express = require("express");
+// const money = require("../Controllers/moneyController");
 
-const router = express.Router();
+// const router = express.Router();
 
-router.route("/").post(money.calculateMoney);
+// router.route("/").post(money.calculateMoney);
 
-module.exports = router;
+// module.exports = router;

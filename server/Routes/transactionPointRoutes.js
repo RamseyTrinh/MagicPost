@@ -14,4 +14,5 @@ router
 router
   .route("/:province")
   .get(TransactionPointController.getLocationByProvince);
+
 module.exports = router;

@@ -24,7 +24,7 @@ app.use("/api/v1/users", authRouter);
 app.use("/api/v1/warehouse", warehouseRouter);
 app.use("/api/v1/T_Point", transactionPointRouter);
 app.use("/api/v1/packages", packagesRouter);
-app.use("/api/vi/money", moneyRouter);
+// app.use("/api/vi/money", moneyRouter);
 
 app.all("*", (req, res, next) => {
   const err = new CustomError(
