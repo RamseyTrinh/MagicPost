@@ -68,7 +68,7 @@ export default function PackageSearch() {
         minHeight: "100vh",
         width: "100%",
         flexDirection: "column",
-        padding: "10px",
+        padding: "5px",
       }}
     >
       <Paper
@@ -131,8 +131,8 @@ export default function PackageSearch() {
                 direction={`${match ? "column" : "row"}`}
                 spacing={match ? 2 : 10}
               >
+                <PackageLabel label={"Tên bưu gửi:"} />
                 <PackageLabel label={"Loại hàng:"} />
-                <PackageLabel label={"Người trả cước:"} />
               </Stack>
               <PackageLabel label={"Trạng thái hiện tại:"} />
             </Stack>
@@ -145,7 +145,7 @@ export default function PackageSearch() {
                 fontWeight: "bold",
                 fontSize: "30px",
                 color: "#003e29",
-                mb: 3,
+                mb: 2,
               }}
             >
               THÔNG TIN PHÁT
@@ -153,7 +153,7 @@ export default function PackageSearch() {
             <DataGrid
               id="confirmationTable"
               sx={{
-                mb: 4,
+                mb: 2,
                 width: "100%",
                 background: "#fxfxfx",
                 maxHeight: "60vh",
