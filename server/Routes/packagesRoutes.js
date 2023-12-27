@@ -15,5 +15,6 @@ router.route("/updateStatus").patch(packagesController.updatePackageStatus);
 router.route("/:Id").get(packagesController.http_getPackagesById);
 //   .patch(packagesController.updatePackage)
 //   .delete(packagesController.deletePackage);
-
+router.patch("/:Id/updateRouteAndCurrentPoint")
+      .patch(packagesController.updateRouteAndCurrentPoint);
 module.exports = router;

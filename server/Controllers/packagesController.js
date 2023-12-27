@@ -143,7 +143,7 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
     });
 
     const package =  await Packages.create(newpackages);
-    //const order = orderController.createNewOrderWithPackage(package);
+    const order = orderController.createNewOrderWithPackage(package);
     return res.status(201).json(newpackages);
   } catch (err) {
     console.log(err);
@@ -315,19 +315,20 @@ exports.getPackageIdByTransactionPoint =
     }
   };
 
+exports.packageWarehouseToWareHouse = async function packageWarehouseToWareHouse(req, req) {
+  return await Packages.findOne({ packagesId: packagesId });
+}
+
 // update sau khi package chuyển qua các điểm
-exports.updateRouteAndCurrentPoint = async function updateRouteAndCurrentPoint (req, res) {
-  const { packageId } = req.params;
-  const { newPointName, newCurrentPoint } = req.body;
+exports.updateRouteAndCurrentPoint = async function updateRouteAndCurrentPoint (packagesId, newCurrentPoint) {
 
   try {
     const updatedPackage = await Packages.findOneAndUpdate(
-      { packagesId: packageId },
+      { packagesId: packagesId },
       {
         $push: {
           route: {
-            pointName: newPointName,
-            timestamp: new Date(),
+            pointName: newCurrentPoint,
           },
         },
         $set: {
@@ -401,4 +402,4 @@ async function getWarehouseEnd(endLocation) {
 //       data: doc,
 //     },
 //   });
-// });
+// }); 

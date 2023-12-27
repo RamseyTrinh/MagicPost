@@ -11,15 +11,18 @@ const userAccountSchema = new mongoose.Schema({
 });
 
 const transactionPointSchema = new mongoose.Schema({
+  transactionPointId: {
+    type: String,
+  },
   name: {
     type: String,
-    required: [true, "Vui lòng nhập tên điểm giao dịch"],
+    // required: [true, "Vui lòng nhập tên điểm giao dịch"],
     trim: true,
     unique: true,
   },
-  province: {
+  location: {
     type: String,
-    required: [true, "Vui lòng nhập tỉnh của điểm giao dịch"],
+    // required: [true, "Vui lòng nhập tỉnh của điểm giao dịch"],
     enum: [
       "An Giang",
       "Bà Rịa - Vũng Tàu",

@@ -1,41 +1,40 @@
 const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
-  orderId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+  // orderId: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  // },
   packagesId: {
     type: String,
     required: true,
     unique: true,
   },
-  // fromtransactionPoint: {
-  //   type: String,
-  //   // required: true,
-  // },
-  // totransactionPoint: {
-  //   type: String,
-  //   // required: true,
-  // },
-  // toWareHouse: {
-  //   type: String,
-  //   // required: true,
-  // },
-  // fromWareHouse: {
-  //   type: String,
-  //   // required: true,
-  // },
+  fromtransactionPoint: {
+    type: String,
+    // required: true,
+  },
+  totransactionPoint: {
+    type: String,
+    // required: true,
+  },
+  toWareHouse: {
+    type: String,
+    // required: true,
+  },
+  fromWareHouse: {
+    type: String,
+    // required: true,
+  },
+  currentPoint: {
+    type: String,
+    //require: true,
+  },
   route: [
     {
-      typePoint: {
-        type: String,
-        enum: ['transaction', 'warehouse'],
-        require: true,
-      },
       pointName: {
         type: String,
-        required: true,
+        //required: true,
       },
       timestamp: {
         type: Date,
