@@ -131,13 +131,6 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       sender: packages.sender,
       receiver: packages.receiver,
       createdDate: now,
-      route: [
-        {
-          pointName: packages.startLocation,
-          timestamp: now,
-        },
-      ],
-      currentPoint: packages.startLocation,
     });
 
     const package = await Packages.create(newpackages);

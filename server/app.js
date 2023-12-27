@@ -6,6 +6,7 @@ const packagesRouter = require("./Routes/packagesRoutes");
 const authRouter = require("./Routes/authRouter");
 const warehouseRouter = require("./Routes/warehouseRoutes");
 const transactionPointRouter = require("./Routes/transactionPointRoutes");
+const orderRouter = require("./Routes/orderRoutes")
 const moneyRouter = require("./Routes/moneyRoutes");
 const CustomError = require("./Utils/CustomError");
 const globalErrorHandler = require("./Controllers/errorController");
@@ -24,6 +25,7 @@ app.use("/api/v1/users", authRouter);
 app.use("/api/v1/warehouse", warehouseRouter);
 app.use("/api/v1/TransactionPoint", transactionPointRouter);
 app.use("/api/v1/packages", packagesRouter);
+app.use("/api/v1/order", orderRouter);
 // app.use("/api/vi/money", moneyRouter);
 
 app.all("*", (req, res, next) => {
