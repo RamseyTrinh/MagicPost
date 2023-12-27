@@ -74,3 +74,5 @@ exports.createwarehouse = async (req, res) => {
 exports.findWareHouseById = async function findWareHouseById(wareHouseId) {
   return await Warehouse.findById(wareHouseId);
 };
+
+

@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
-  orderId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+  // orderId: {
+  //   type: String,
+  //   required: true,
+  //   unique: true,
+  // },
   packagesId: {
     type: String,
     required: true,
@@ -12,32 +12,36 @@ const orderSchema = new mongoose.Schema({
   },
   fromtransactionPoint: {
     type: String,
-    required: true,
+    // required: true,
   },
   totransactionPoint: {
     type: String,
-    required: true,
+    // required: true,
   },
   toWareHouse: {
     type: String,
-    required: true,
+    // required: true,
   },
   fromWareHouse: {
     type: String,
-    required: true,
+    // required: true,
   },
-  confirmDate: {
+  currentPoint: {
     type: String,
-    required: true,
+    //require: true,
   },
-  transferDate: {
-    type: String,
-    required: true,
-  },
-  shippingDate: {
-    type: String,
-    requied: true,
-  },
+  route: [
+    {
+      pointName: {
+        type: String,
+        //required: true,
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
   done: {
     type: Boolean,
     require: true,
