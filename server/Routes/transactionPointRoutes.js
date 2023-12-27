@@ -1,18 +1,18 @@
 const express = require("express");
-const TransactionPointController = require("../Controllers/transactionPointController");
+const transactionPointController = require("../Controllers/transactionPointController");
 
 const router = express.Router();
 
 router
   .route("/newTransactionPoint")
-  .post(TransactionPointController.createtransactionPoint);
+  .post(transactionPointController.createtransactionPoint);
 
 router
   .route("/allTransactionPoint")
-  .get(TransactionPointController.getAlltransactionPoint);
+  .get(transactionPointController.getAlltransactionPoint);
 
 router
   .route("/:province")
-  .get(TransactionPointController.getLocationByProvince);
+  .get(transactionPointController.getLocationByProvince);
 
 module.exports = router;

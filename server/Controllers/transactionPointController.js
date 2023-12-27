@@ -3,7 +3,8 @@ const TransactionPoint = require("../Models/transactionPointModel");
 
 const { findWareHouseById } = require("./warehouseController");
 // Hàm lấy tất cả điểm giao dịch
-exports.getAlltransactionPoint = async (req, res) => {
+
+exports.getAlltransactionPoint = async (_, res) => {
   try {
     const transactionPoint = await TransactionPoint.find();
     res.status(200).json({
