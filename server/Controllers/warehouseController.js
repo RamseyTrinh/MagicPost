@@ -1,5 +1,6 @@
 const Warehouse = require("../Models/warehouseModel");
 
+const { getWarehouseIdByTP } = require("./transactionPointController");
 exports.getAllWarehouse = async (req, res) => {
   try {
     const warehouse = await Warehouse.find();
@@ -74,5 +75,10 @@ exports.createwarehouse = async (req, res) => {
 exports.findWareHouseById = async function findWareHouseById(wareHouseId) {
   return await Warehouse.findById(wareHouseId);
 };
-
-
+exports.getWarehouseByLocation = async function getWarehouseByLocation(
+  location
+) {
+  const wareHouseId = await getWarehouseIdByTP(location);
+  const wareHouse = Warehouse.findById(wareHouseId);
+  return wareHouse.location;
+};

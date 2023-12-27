@@ -13,16 +13,15 @@ const userAccountSchema = new mongoose.Schema({
 const wareHouseSchema = new mongoose.Schema({
   warehouseId: {
     type: String,
+    unique: true,
   },
   name: {
     type: String,
-    // required: [true, "Vui lòng nhập tên điểm tập kết"],
     trim: true,
     unique: true,
   },
   location: {
     type: String,
-    //required: [true, "Vui lòng nhập địa chỉ của điểm tập kết"],
     enum: ["Miền Bắc", "Miền Trung", "Miền Nam"],
   },
   address: {

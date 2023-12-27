@@ -16,13 +16,11 @@ const transactionPointSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    // required: [true, "Vui lòng nhập tên điểm giao dịch"],
     trim: true,
     unique: true,
   },
   location: {
     type: String,
-    // required: [true, "Vui lòng nhập tỉnh của điểm giao dịch"],
     enum: [
       "An Giang",
       "Bà Rịa - Vũng Tàu",
@@ -92,13 +90,12 @@ const transactionPointSchema = new mongoose.Schema({
   address: {
     type: String,
   },
-
   manager: {
     name: String,
     contact: contactSchema,
     userAccount: userAccountSchema,
   },
-  wareHouseId: {
+  warehouseLocation: {
     type: String,
   },
 });
