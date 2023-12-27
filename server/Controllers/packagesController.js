@@ -62,27 +62,26 @@ exports.http_getPackagesById = asyncErrorHandler(async (req, res) => {
   }
 });
 
-//Hàm tạo đơn hàng đơn giản
-exports.createPackages = asyncErrorHandler(async (req, res) => {
-  try {
-    const packages = await Packages.create(req.body);
-    packages.packageId = generatePackagesId();
-    const id = packages.packageId;
-    await packages.save();
-    res.status(201).json({
-      status: "Success",
-      data: {
-        packages,
-        id,
-      },
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: error.message,
-    });
-  }
-});
+// //Hàm tạo đơn hàng đơn giản
+// exports.createPackages = asyncErrorHandler(async (req, res) => {
+//   try {
+//     const packages = await Packages.create(req.body);
+//     packages.packagesId = generatePackagesId();
+//     await packages.save();
+//     res.status(201).json({
+//       status: "Success",
+//       data: {
+//         packages,
+//         id,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: "fail",
+//       message: error.message,
+//     });
+//   }
+// });
 
 exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
   const packages = await Packages.findByIdAndDelete(req.params.ID);
@@ -106,7 +105,6 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
 
   try {
     const now = new Date().toLocaleString();
-
     const newpackages = Object.assign(packages, {
       packagesId: generatePackagesId(),
       packagesStatus: "Đang xử lý",
@@ -115,6 +113,13 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       sender: packages.sender,
       receiver: packages.receiver,
       createdDate: now,
+      route: [
+        {
+          pointName: packages.startLocation,
+          timestamp: now,
+        },
+      ],
+      currentPoint: packages.currentPoint,
     });
 
     await Packages.create(newpackages);
@@ -127,6 +132,32 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
     });
   }
 });
+
+exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
+  req,
+  res
+) {
+  const { currentPoint } = req.params;
+
+  try {
+    const packages = await Packages.find({
+      currentPoint: currentPoint,
+      packagesStatus: "Đang xử lý",
+    });
+    res.status(200).json({
+      success: true,
+      message: `Các đơn hàng từ '${currentPoint}': `,
+      data: packages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+};
 
 // lấy theo trạng thái
 exports.getPackageWithStatus = async function getPackageWithStatus(req, res) {
@@ -194,6 +225,7 @@ exports.getPackages_ELocation = async function getPackages_ELocation(req, res) {
     });
   }
 };
+// ----------------
 
 exports.updatePackageStatus = async function updatePackageStatus(req, res) {
   const { packageId, newStatus } = req.body;

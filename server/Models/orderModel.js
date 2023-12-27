@@ -14,15 +14,15 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  fromWareHouse: {
+    type: String,
+    required: true,
+  },
   totransactionPoint: {
     type: String,
     required: true,
   },
   toWareHouse: {
-    type: String,
-    required: true,
-  },
-  fromWareHouse: {
     type: String,
     required: true,
   },
