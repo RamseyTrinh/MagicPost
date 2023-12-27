@@ -55,6 +55,9 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, "Không phải địa chỉ email hợp lệ"],
   },
+  home: {
+    type: String,
+  },
   password: {
     type: String,
     required: [false, "Vui lòng nhập mật khẩu"],
