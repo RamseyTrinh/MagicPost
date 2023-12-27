@@ -1,10 +1,5 @@
 const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
-  // orderId: {
-  //   type: String,
-  //   required: true,
-  //   unique: true,
-  // },
   packagesId: {
     type: String,
     required: true,
@@ -12,33 +7,26 @@ const orderSchema = new mongoose.Schema({
   },
   fromtransactionPoint: {
     type: String,
-    // required: true,
+  },
+  fromWarehouse: {
+    type: String,
   },
   totransactionPoint: {
     type: String,
-    // required: true,
   },
-  toWareHouse: {
+  toWarehouse: {
     type: String,
-    // required: true,
-  },
-  fromWareHouse: {
-    type: String,
-    // required: true,
   },
   currentPoint: {
     type: String,
-    //require: true,
   },
   route: [
     {
       pointName: {
         type: String,
-        //required: true,
       },
       timestamp: {
-        type: Date,
-        default: Date.now,
+        type: String,
       },
     },
   ],

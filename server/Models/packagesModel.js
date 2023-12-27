@@ -16,6 +16,9 @@ const packageSchema = new mongoose.Schema({
   endLocation: {
     type: String,
   },
+  currentPoint: {
+    type: String,
+  },
   sender: {
     senderName: {
       type: String,
@@ -55,27 +58,19 @@ const packageSchema = new mongoose.Schema({
   package: {
     productType: {
       type: String,
-      require: true,
-      enum: {
-        values: ["parcel", "document"],
-      },
     },
     productName: {
       type: String,
-      required: [true, "Vui lòng nhập tên kiện hàng"],
     },
     productValue: {
       type: String,
-      required: [true, "Vui lòng nhập giá trị thực"],
     },
     productWeight: {
       type: String,
-      required: [true],
     },
-    // quantity: {
-    //   type: String,
-    //   required: [true],
-    // },
+    productWeigh: {
+      type: String,
+    },
     size: {
       length: {
         type: String,
