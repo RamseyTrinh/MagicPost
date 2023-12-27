@@ -10,30 +10,26 @@ const userSchema = new mongoose.Schema({
   userId: {
     type: String,
     unique: true,
-    required: false,
   },
   name: {
     type: String,
     required: [true, "Vui lòng nhập tên nhân viên"],
     trim: true,
-    maxLength: 60,
   },
-
   phoneNumber: {
     type: String,
-    required: [true, "Vui lòng nhập số điện thoại"],
     validate: {
       validator: function (value) {
-        // Phone number has 10 digits
         return /^[0-9]{10}$/.test(value);
       },
       message: (props) => `${props.value} không phải số điện thoại hợp lệ`,
     },
-    unique: true,
   },
   location: {
     type: String,
-    required: false,
+  },
+  home: {
+    type: String,
   },
   avartar: {
     type: String,

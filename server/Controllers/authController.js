@@ -8,7 +8,6 @@ const { randomBytes } = require("crypto");
 // const bcrypt = require("bcryptjs");
 dotenv.config();
 
-// Lấy defaultId để khi tạo nhân viên mới có ID là kế tiếp
 const DEFAULT_USER_ID = 0;
 
 const signToken = (id) => {
@@ -93,6 +92,7 @@ exports.getUserByName = async function getUserByName(req, res) {
     });
   }
 };
+
 exports.getTransactionAdmin = async (_, res) => {
   try {
     const specificRoles = ["transactionAdmin"];
@@ -119,6 +119,54 @@ exports.getWarehouseAdmin = async (_, res) => {
     });
   }
 };
+exports.getTransactionStaff = async (req, res) => {
+  try {
+    const location = req.params.location;
+    const users = await User.find({
+      location: location,
+      role: "transactionStaff",
+    });
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        error: `Không có nhân viên tại điểm này`,
+      });
+    }
+
+    return res.status(200).json({
+      length: users.length,
+      users: users,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Có lỗi xảy ra khi lấy thông tin người dùng",
+    });
+  }
+};
+exports.getWarehouseStaff = async (req, res) => {
+  try {
+    const location = req.params.location;
+    const users = await User.find({
+      location: location,
+      role: "warehouseStaff",
+    });
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        error: `Không có nhân viên đó tại điểm này`,
+      });
+    }
+
+    return res.status(200).json({
+      length: users.length,
+      users: users,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Có lỗi xảy ra khi lấy thông tin người dùng",
+    });
+  }
+};
 
 function generateUserId() {
   const randomBuffer = randomBytes(3); // 4 bytes (32 bits)
@@ -126,38 +174,24 @@ function generateUserId() {
   return `MNV${packagesId}`;
 }
 
-async function createNewUser(user) {
-  const existedUser = await User.findOne({ email: `${user.email}` });
-  if (existedUser) {
-    throw new Error(`Email trùng với tài khoản trước`);
-  }
-
-  if (user.role === "Manager") {
-    const manager = await User.findOne({
-      location: user.location,
-      role: "Manager",
-    });
-    if (manager) {
-      throw new Error("Điểm này đã có quản lý!");
-    }
-  }
-
-  const newUserId = generateUserId();
-  const newUser = Object.assign(user, {
-    userId: newUserId,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    location: user.location,
-    password: user.password,
-  });
-  await User.create(newUser);
-}
-
 exports.addNewUser = async function addNewUser(req, res) {
   const user = req.body;
+
   try {
-    await createNewUser(user);
+    if (user.role === "transactionAdmin" || user.role === "warehouseAdmin") {
+      const manager = await User.findOne({
+        location: user.location,
+        role: user.role,
+      });
+      if (manager) {
+        throw new Error("Điểm này đã có quản lý!");
+      }
+    }
+    const newUserId = generateUserId();
+    const newUser = Object.assign(user, {
+      userId: newUserId,
+    });
+    await User.create(newUser);
   } catch (err) {
     return res.status(400).json({
       error: err.message,

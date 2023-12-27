@@ -17,6 +17,14 @@ router.route("/name/:name", authController.getUserByName);
 router.route("/allTransactionAdmin").get(authController.getTransactionAdmin);
 router.route("/allWarehouseAdmin").get(authController.getWarehouseAdmin);
 
+router
+  .route("/allTransactionStaff/:location")
+  .get(authController.getTransactionStaff);
+
+router
+  .route("/allWarehouseStaff/:location")
+  .get(authController.getWarehouseStaff);
+
 router.route("/getUser/:email").get(authController.getUserByEmail);
 router.route("/addNewUser").post(authController.addNewUser);
 router.route("/:id/changeinfo").patch(authController.ChangeUserProfile);
