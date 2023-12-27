@@ -6,22 +6,21 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-// import SelectTransaction from "../../../Funtions/SelectArea/SelectTransaction.jsx";
 import SelectGather from "../../../Funtions/SelectArea/SelectGather.jsx";
-import { GenerateCode } from "../../../Funtions/GenerateCode/GenerateCode.jsx";
 import { useForm } from "react-hook-form";
+import { useAuthUser } from "react-auth-kit";
 
 import "../../../../Assets/Styles/Gather/Gather.css";
 
-import React, { useState } from "react";
+import React from "react";
 
 export default function Gather() {
+  const auth = useAuthUser();
+  const user = auth()?.data;
+
   const match = useMediaQuery("(max-width:800px)");
 
-  const [code, setCode] = useState(GenerateCode);
-
   type FormValues = {
-    ID: string;
     from: {
       gatherPoint: string;
       gatherStaffID: string;
@@ -39,10 +38,6 @@ export default function Gather() {
   const onSubmit = (data: FormValues) => {
     console.log(data);
   };
-
-  function generateCode() {
-    setCode(GenerateCode);
-  }
 
   return (
     <form className="background" onSubmit={handleSubmit(onSubmit)}>
@@ -74,12 +69,23 @@ export default function Gather() {
           >
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={3} direction="column">
-                <SelectGather refs={{ ...register("from.gatherPoint") }} />
                 <TextField
                   fullWidth
+                  inputProps={{ readOnly: true }}
+                  id="outlined-basic"
+                  label="Điểm tập kết"
+                  variant="outlined"
+                  value={user.location}
+                  required
+                  {...register("from.gatherPoint")}
+                ></TextField>
+                <TextField
+                  fullWidth
+                  inputProps={{ readOnly: true }}
                   id="outlined-basic"
                   label="Mã nhân viên"
                   variant="outlined"
+                  value={user.userId}
                   required
                   {...register("from.gatherStaffID")}
                 ></TextField>
@@ -128,9 +134,6 @@ export default function Gather() {
               width: "20%",
             }}
             style={{ fontWeight: "bold", background: "#003e29" }}
-            onClick={generateCode}
-            value={code}
-            {...register("ID")}
           >
             XÁC NHẬN
           </Button>
