@@ -95,6 +95,7 @@ const packageSchema = new mongoose.Schema({
   note: {
     type: String,
   },
+
 });
 const Packages = mongoose.model("Package", packageSchema);
 

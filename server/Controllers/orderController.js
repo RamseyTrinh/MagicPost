@@ -1,81 +1,78 @@
 const Order = require("../Models/orderModel");
 const { getPackagesById } = require("./packagesController");
 const { randomBytes } = require("crypto");
-
-function generateOrderId() {
-  const randomBuffer = randomBytes(4); // 4 bytes (32 bits)
-  const orderId = parseInt(randomBuffer.toString("hex"), 16);
-  return `OD${orderId}VN`;
-}
+const {
+  getWarehouseByTransactionPoint,
+} = require("./transactionPointController");
 
 //test
-async function transferOrderToWarehouse(orderId) {
-  try {
-    // Lấy thông tin đơn hàng, bao gồm cả thông tin về điểm đi và điểm đến
-    const order = await Order.findOne({ orderId })
-      .populate("startLocation")
-      .populate("endLocation");
+// async function transferOrderToWarehouse(orderId) {
+//   try {
+//     // Lấy thông tin đơn hàng, bao gồm cả thông tin về điểm đi và điểm đến
+//     const order = await Order.findOne({ orderId })
+//       .populate("startLocation")
+//       .populate("endLocation");
 
-    // Kiểm tra xem đơn hàng có tồn tại không
-    if (!order) {
-      return {
-        success: false,
-        message: "Đơn hàng không tồn tại",
-      };
-    }
+//     // Kiểm tra xem đơn hàng có tồn tại không
+//     if (!order) {
+//       return {
+//         success: false,
+//         message: "Đơn hàng không tồn tại",
+//       };
+//     }
 
-    // Lấy thông tin điểm giao dịch từ điểm đi
-    const transactionPoint = order.startLocation;
+//     // Lấy thông tin điểm giao dịch từ điểm đi
+//     const transactionPoint = order.startLocation;
 
-    // Kiểm tra xem điểm giao dịch có tồn tại không
-    if (!transactionPoint) {
-      return {
-        success: false,
-        message: "Điểm giao dịch không tồn tại",
-      };
-    }
+//     // Kiểm tra xem điểm giao dịch có tồn tại không
+//     if (!transactionPoint) {
+//       return {
+//         success: false,
+//         message: "Điểm giao dịch không tồn tại",
+//       };
+//     }
 
-    // Lấy thông tin điểm tập kết từ điểm đến
-    const warehouse = order.endLocation;
+//     // Lấy thông tin điểm tập kết từ điểm đến
+//     const warehouse = order.endLocation;
 
-    // Kiểm tra xem điểm tập kết có tồn tại không
-    if (!warehouse) {
-      return {
-        success: false,
-        message: "Điểm tập kết không tồn tại",
-      };
-    }
+//     // Kiểm tra xem điểm tập kết có tồn tại không
+//     if (!warehouse) {
+//       return {
+//         success: false,
+//         message: "Điểm tập kết không tồn tại",
+//       };
+//     }
 
-    // Cập nhật trạng thái đơn hàng và địa điểm mới
-    order.orderStatus = "Đang vận chuyển";
-    order.startLocation = warehouse;
-    order.endLocation = warehouse;
-    await order.save();
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      message: "Có lỗi xảy ra",
-    };
-  }
-}
+//     // Cập nhật trạng thái đơn hàng và địa điểm mới
+//     order.orderStatus = "Đang vận chuyển";
+//     order.startLocation = warehouse;
+//     order.endLocation = warehouse;
+//     await order.save();
+//   } catch (error) {
+//     console.error(error);
+//     return {
+//       success: false,
+//       message: "Có lỗi xảy ra",
+//     };
+//   }
+// }
 
-async function http_TransferOrder(req, res) {
-  const { orderId } = req.params;
+// async function http_TransferOrder(req, res) {
+//   const { orderId } = req.params;
 
-  try {
-    const result = await transferOrderToWarehouse(orderId);
+//   try {
+//     const result = await transferOrderToWarehouse(orderId);
 
-    if (result.success) {
-      return res.status(200).json({ message: result.message });
-    } else {
-      return res.status(404).json({ error: result.message });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Có lỗi xảy ra" });
-  }
-}
+//     if (result.success) {
+//       return res.status(200).json({ message: result.message });
+//     } else {
+//       return res.status(404).json({ error: result.message });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: "Có lỗi xảy ra" });
+//   }
+// }
 
 //.......................................... test
 
@@ -85,6 +82,34 @@ async function checkMatchedOrder(fromLoc, toLoc, orderId) {
     toLocation: toLoc,
     orderId: orderId,
   });
+}
+// Tạo order khi package được tạo
+async function createNewOrderWithPackage(packages) {
+  const toWarehouse = getWarehouseByTransactionPoint(packages.endLocation);
+  const fromWarehouse = getWarehouseByTransactionPoint(packages.startLocation);
+  try {
+    const newOrderData = {
+      packagesId: packages.packagesId,
+      fromtransactionPoint: packages.startLocation, // Assuming fromLocation is the transaction point
+      totransactionPoint: packages.endLocation, // Assuming toLocation is the transaction point
+      // toWareHouse: {toWarehouse},    // Assuming endLocation is the warehouse
+      // fromWareHouse: {fromWarehouse}, // Assuming startLocation is the warehouse
+      currentPoint: packages.startLocation,
+      route: [
+        {
+          pointId: packages.startLocation, // You need to replace this with the actual point ID
+          timestamp: packages.createdDate,
+        },
+      ],
+      done: false,
+    };
+
+    const order = await Order.create(newOrderData);
+
+    return order;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 async function createNewOrder(order) {
@@ -209,6 +234,6 @@ async function createNewOrderWithPackage(package) {
 }
 
 module.exports = {
-  transferOrderToWarehouse,
   createNewOrderWithPackage,
+  // transferOrderToWarehouse,
 };

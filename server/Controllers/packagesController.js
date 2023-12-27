@@ -2,14 +2,29 @@ const Packages = require("../Models/packagesModel");
 const Apifeatures = require("../Utils/ApiFeatures");
 const CustomError = require("./../Utils/CustomError");
 const asyncErrorHandler = require("./../Utils/asyncErrorHandler");
+const orderController = require("./orderController");
 const { randomBytes } = require("crypto");
 const { getTransactionPointName } = require("./transactionPointController");
+const {
+  getWarehouseByTransactionPoint,
+} = require("./transactionPointController");
 
 function generatePackagesId() {
   const randomBuffer = randomBytes(3); // 4 bytes (32 bits)
   const packagesId = parseInt(randomBuffer.toString("hex"), 16);
   const fixedLengthId = `DH${String(packagesId).padStart(6, "0")}`;
   return fixedLengthId;
+}
+
+function extractLocation(address) {
+  const regex = /, (Tỉnh |Thành Phố )\s*([^,]+)/;
+  const match = address.match(regex);
+
+  if (match && match[2]) {
+    return match[2].trim();
+  }
+
+  return null;
 }
 
 exports.getAllPackages = asyncErrorHandler(async (req, res) => {
@@ -102,9 +117,13 @@ exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
 exports.createNewpackages = asyncErrorHandler(async (req, res) => {
   const packages = req.body;
   console.log(packages);
-
+  console.log(packages.sender.senderAdd);
   try {
     const now = new Date().toLocaleString();
+
+    packages.startLocation = extractLocation(packages.sender.senderAdd);
+    packages.endLocation = extractLocation(packages.receiver.receiverAdd);
+
     const newpackages = Object.assign(packages, {
       packagesId: generatePackagesId(),
       packagesStatus: "Đang xử lý",
@@ -119,11 +138,11 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
           timestamp: now,
         },
       ],
-      currentPoint: packages.currentPoint,
+      currentPoint: packages.startLocation,
     });
 
-    await Packages.create(newpackages);
-
+    const package = await Packages.create(newpackages);
+    const order = orderController.createNewOrderWithPackage(package);
     return res.status(201).json(newpackages);
   } catch (err) {
     console.log(err);
@@ -203,6 +222,33 @@ exports.getPackages_SLocation = async function getPackages_SLocation(req, res) {
     });
   }
 };
+//lấy tất package của point hiện tại
+exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
+  req,
+  res
+) {
+  const { currentPoint } = req.params;
+
+  try {
+    const packages = await Packages.find({
+      currentPoint: currentPoint,
+      packagesStatus: "Đang xử lý",
+    });
+    res.status(200).json({
+      success: true,
+      message: `Các đơn hàng từ '${currentPoint}': `,
+      data: packages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+};
+
 exports.getPackages_ELocation = async function getPackages_ELocation(req, res) {
   const { endLocation } = req.params;
 
@@ -298,6 +344,55 @@ exports.getPackageIdByTransactionPoint =
       });
     }
   };
+
+exports.packageWarehouseToWareHouse =
+  async function packageWarehouseToWareHouse(req, req) {
+    return await Packages.findOne({ packagesId: packagesId });
+  };
+
+// update sau khi package chuyển qua các điểm
+exports.updateRouteAndCurrentPoint = async function updateRouteAndCurrentPoint(
+  packagesId,
+  newCurrentPoint
+) {
+  try {
+    const updatedPackage = await Packages.findOneAndUpdate(
+      { packagesId: packagesId },
+      {
+        $push: {
+          route: {
+            pointName: newCurrentPoint,
+          },
+        },
+        $set: {
+          currentPoint: newCurrentPoint,
+        },
+      },
+      { new: true }
+    );
+    if (!updatedPackage) {
+      throw new Error("Không tìm thấy gói hàng");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật thành công",
+      data: updatedPackage,
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật gói hàng:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi cập nhật gói hàng",
+      error: error.message,
+    });
+  }
+};
+
+//Lấy warehouse đích từ packages đang ở warehouse gửi
+async function getWarehouseEnd(endLocation) {
+  return getWarehouseByTransactionPoint(endLocation);
+}
 
 // async function getTransactionIdFromPackageId(packageId) {
 //   try {
