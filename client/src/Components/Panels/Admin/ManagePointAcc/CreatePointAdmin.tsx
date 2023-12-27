@@ -22,7 +22,6 @@ export default function CreatePointAdmin() {
     dob: string;
     email: string;
     pointAssigned: string;
-    staffID: string;
   };
 
   const { register, handleSubmit } = useForm<FormValues>();
@@ -111,15 +110,7 @@ export default function CreatePointAdmin() {
                 />
               </Stack>
               <Stack direction="row" spacing={2}>
-                <TextField
-                  id="outlined-basic"
-                  label="Mã nhân viên"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  {...register("staffID")}
-                />
-                <FormControl sx={{ width: "250px" }}>
+                <FormControl sx={{ width: "100%" }}>
                   <InputLabel>Tại điểm</InputLabel>
                   <Select
                     defaultValue=""

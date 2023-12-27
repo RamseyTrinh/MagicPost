@@ -19,6 +19,7 @@ import ManagePoint from "./Components/Panels/Admin/ManagePoint/MangePoint.jsx";
 import ManagePointAcc from "./Components/Panels/Admin/ManagePointAcc/ManagePointAcc.jsx";
 import AccountInfo from "./Components/Panels/AcountInfo/AccountInfo.jsx";
 import Unauthorized from "./Components/Panels/Unauthorized/Unauthorized.jsx";
+import PackageSearch from "./Components/Panels/PackageSearch/PackageSearch.jsx";
 import { useAuthUser } from "react-auth-kit";
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/search" element={<PackageSearch />} />
       <Route path="/login" element={<Login />} />
       <Route path="/menu" element={<PrivateRoute />}>
         <Route index element={role && <AccountInfo />} />

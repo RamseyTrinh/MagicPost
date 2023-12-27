@@ -7,10 +7,14 @@ import SelectTransaction from "../../Funtions/SelectArea/SelectTransaction.jsx";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
+import { useAuthUser } from "react-auth-kit";
 
 import "../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
 export default function CreateAccount() {
+  const auth = useAuthUser();
+  const user = auth()?.data;
+
   type FormValues = {
     name: string;
     phoneNumber: string;
@@ -19,7 +23,6 @@ export default function CreateAccount() {
     dob: string;
     email: string;
     transactionPoint: string;
-    staffID: string;
   };
 
   const { register, handleSubmit } = useForm<FormValues>();
@@ -61,7 +64,7 @@ export default function CreateAccount() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack direction="column">
             <Paper sx={{ height: "590px", padding: 3, background: "#fdfdfd" }}>
-              <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+              <Stack direction="row" spacing={2} sx={{ mb: 5 }}>
                 <TextField
                   id="outlined-basic"
                   label="Họ và tên"
@@ -89,7 +92,7 @@ export default function CreateAccount() {
                 sx={{ mb: 3 }}
                 {...register("specificAdd")}
               />
-              <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+              <Stack direction="row" spacing={2} sx={{ mb: 5 }}>
                 <TextField
                   label="Ngày sinh"
                   InputLabelProps={{ shrink: true }}
@@ -107,16 +110,16 @@ export default function CreateAccount() {
                   {...register("email")}
                 />
               </Stack>
-              <SelectTransaction refs={{ ...register("transactionPoint") }} />
               <TextField
-                id="outlined-basic"
-                label="Mã nhân viên"
-                variant="outlined"
                 fullWidth
+                id="outlined-basic"
+                label="Điểm giao dịch"
+                InputProps={{ readOnly: true }}
+                variant="outlined"
+                value={user.location}
                 required
-                sx={{ mt: 3, mb: 3 }}
-                {...register("staffID")}
-              />
+                {...register("transactionPoint")}
+              ></TextField>
             </Paper>
             <Button
               variant="contained"
@@ -126,7 +129,7 @@ export default function CreateAccount() {
                 background: "#003e29",
                 width: "150px",
               }}
-              sx={{ mt: 4, ml: "auto", mr: "auto" }}
+              sx={{ mt: 3, ml: "auto", mr: "auto" }}
             >
               TẠO
             </Button>
