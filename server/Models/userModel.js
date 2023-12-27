@@ -41,7 +41,6 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    // required: [true, "Vui lòng nhập chức vụ"],
     enum: {
       values: [
         "admin",

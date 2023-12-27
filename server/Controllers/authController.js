@@ -93,6 +93,32 @@ exports.getUserByName = async function getUserByName(req, res) {
     });
   }
 };
+exports.getTransactionAdmin = async (_, res) => {
+  try {
+    const specificRoles = ["transactionAdmin"];
+    const users = await User.find({ role: specificRoles });
+    console.log(users);
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Có lỗi xảy ra khi lấy thông tin người dùng",
+    });
+  }
+};
+exports.getWarehouseAdmin = async (_, res) => {
+  try {
+    const specificRoles = ["warehouseAdmin"];
+    const users = await User.find({ role: specificRoles });
+    console.log(users);
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Có lỗi xảy ra khi lấy thông tin người dùng",
+    });
+  }
+};
 
 function generateUserId() {
   const randomBuffer = randomBytes(3); // 4 bytes (32 bits)

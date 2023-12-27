@@ -10,11 +10,15 @@ const router = express.Router();
 router.route("/signup").post(authController.signup);
 router.route("/login").post(authController.login);
 
-router.get("/allUser", authController.getAllUsers);
-router.get("/:id", authController.getUserById);
-router.get("/name/:name", authController.getUserByName);
-router.get("/getUser/:email", authController.getUserByEmail);
-router.post("/addNewUser", authController.addNewUser);
-router.patch("/:id/changeinfo", authController.ChangeUserProfile);
+router.route("/allUser").get(authController.getAllUsers);
+router.route("/:id", authController.getUserById);
+router.route("/name/:name", authController.getUserByName);
+
+router.route("/allTracsactionAdmin").get(authController.getTransactionAdmin);
+router.route("/allWarehouse").get(authController.getWarehouseAdmin);
+
+router.route("/getUser/:email").get(authController.getUserByEmail);
+router.route("/addNewUser").post(authController.addNewUser);
+router.route("/:id/changeinfo").patch(authController.ChangeUserProfile);
 
 module.exports = router;
