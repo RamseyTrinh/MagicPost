@@ -369,31 +369,3 @@ export default function Form() {
     </div>
   );
 }
-
-// "sender": {
-//   "senderName": "test";
-//   "senderPhone": "test";
-//   "senderAddr": "test";
-//   "senderAd": "test";
-// };
-// receiver: {
-//   receiverName: "test";
-//   receiverPhone: "test";
-//   receiverAddr: "test";
-//   receiverAd: "test";
-// };
-// package: {
-//   productType: "test";
-//   productName: "test";
-//   productValue: "test";
-//   productWeight: "test";
-//   quantity: "test";
-//   size: {
-//     length: "test";
-//     width: "test";
-//     height: "test";
-//   };
-//   productCategory: "test";
-// };
-// payment: "test";
-// note: "test";

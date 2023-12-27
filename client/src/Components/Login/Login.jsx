@@ -164,7 +164,9 @@ export default function Login() {
           >
             <WestIcon sx={{ fontSize: "20px" }} />
             <Typography>
-              <Link to="/">Quay về trang chủ</Link>
+              <Link to="/" style={{ textDecoration: "none", color: "black" }}>
+                Quay về trang chủ
+              </Link>
             </Typography>
           </Stack>
           <Divider sx={{ mb: 2 }} />
