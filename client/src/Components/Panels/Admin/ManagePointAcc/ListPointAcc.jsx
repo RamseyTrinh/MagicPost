@@ -14,23 +14,42 @@ export default function ListPointAcc() {
 
   const fetchData = () => {
     if (category === 1) {
-      fetch("https://jsonplaceholder.typicode.com/users")
+      fetch("http://localhost:3005/api/v1/users/allTransactionAdmin")
         .then((response) => {
           return response.json();
         })
 
         .then((data) => {
-          setRows(data);
+          console.log(data);
+          setRows(
+            data.map((d) => {
+              const role = d.role;
+              let roleToVN;
+              if (role === "transactionAdmin") {
+                roleToVN = "Trưởng điểm giao dịch";
+              }
+              return { ...d, id: d._id, role: roleToVN };
+            })
+          );
         });
     }
     if (category === 2) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
+      fetch("http://localhost:3005/api/v1/users/allWarehouseAdmin")
         .then((response) => {
           return response.json();
         })
 
         .then((data) => {
-          setRows(data);
+          setRows(
+            data.map((d) => {
+              const role = d.role;
+              let roleToVN;
+              if (role === "warehouseAdmin") {
+                roleToVN = "Trưởng điểm tập kết";
+              }
+              return { ...d, id: d._id, role: roleToVN };
+            })
+          );
         });
     }
   };
@@ -40,8 +59,10 @@ export default function ListPointAcc() {
   });
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
+    { field: "userId", headerName: "Mã nhân viên", width: 200 },
+    { field: "name", headerName: "Họ và tên", width: 200 },
+    { field: "location", headerName: "Địa điểm", width: 150 },
+    { field: "role", headerName: "Chức danh", width: 200 },
     { field: "email", headerName: "Email", width: 250 },
     // {
     //   field: "street",
@@ -80,7 +101,7 @@ export default function ListPointAcc() {
                 background: "#fdfdfd",
               }}
             >
-              <MenuItem value={0}>Tổng</MenuItem>
+              <MenuItem value={0}>-</MenuItem>
               <MenuItem value={1}>Điểm giao dịch</MenuItem>
               <MenuItem value={2}>Điểm tập kết</MenuItem>
             </Select>
