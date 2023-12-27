@@ -5,16 +5,18 @@ const { getWHfromLocation } = require("./transactionPointController");
 exports.createNewOrderWithPackage = async function createNewOrderWithPackage(
   packages
 ) {
+  console.log(packages.endLocation);
   const toWarehouse = await getWHfromLocation(packages.endLocation);
   const fromWarehouse = await getWHfromLocation(packages.startLocation);
+  console.log(toWarehouse, fromWarehouse);
   try {
     const now = new Date().toLocaleString();
     const newOrderData = {
       packagesId: packages.packagesId,
       fromtransactionPoint: packages.startLocation,
       totransactionPoint: packages.endLocation,
-      toWareHouse: toWarehouse,
-      fromWareHouse: fromWarehouse,
+      toWarehouse,
+      fromWarehouse,
       currentPoint: packages.startLocation,
       route: [
         {

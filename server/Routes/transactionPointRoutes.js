@@ -4,7 +4,7 @@ const TransactionPointController = require("../Controllers/transactionPointContr
 const router = express.Router();
 
 router
-  .route("/createNewT_Point")
+  .route("/newTransactionPoint")
   .post(TransactionPointController.createtransactionPoint);
 
 router

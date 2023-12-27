@@ -8,16 +8,13 @@ const orderSchema = new mongoose.Schema({
   fromtransactionPoint: {
     type: String,
   },
-  fromWareHouse: {
+  fromWarehouse: {
     type: String,
   },
   totransactionPoint: {
     type: String,
   },
-  toWareHouse: {
-    type: String,
-  },
-  fromWareHouse: {
+  toWarehouse: {
     type: String,
   },
   currentPoint: {

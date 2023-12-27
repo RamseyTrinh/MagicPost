@@ -106,6 +106,8 @@ exports.getWarehouseNameByTransactionPoint =
   };
 
 exports.getWHfromLocation = async function getWHfromLocation(location) {
-  const packages = Packages.findOne(location);
+  console.log(location);
+  const packages = await TransactionPoint.findOne({ location });
+  console.log(packages);
   return packages.warehouseLocation;
 };

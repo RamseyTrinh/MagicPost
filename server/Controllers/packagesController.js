@@ -17,9 +17,9 @@ function generatePackagesId() {
 }
 
 function extractLocation(address) {
-  const regex = /, (Tỉnh |Thành Phố )\s*([^,]+)/;
+  const regex = /, (Tỉnh |Thành phố )\s*([^,]+)/;
   const match = address.match(regex);
-
+  console.log("djttme" + match);
   if (match && match[2]) {
     return match[2].trim();
   }
@@ -116,11 +116,13 @@ exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
 
 exports.createNewpackages = asyncErrorHandler(async (req, res) => {
   const packages = req.body;
+  console.log(packages.sender.senderAdd);
   try {
     const now = new Date().toLocaleString();
     packages.startLocation = extractLocation(packages.sender.senderAdd);
     packages.endLocation = extractLocation(packages.receiver.receiverAdd);
 
+    console.log(packages.startLocation);
     const newpackages = Object.assign(packages, {
       packagesId: generatePackagesId(),
       packagesStatus: "Đang xử lý",
@@ -139,12 +141,13 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
     });
 
     const package = await Packages.create(newpackages);
-    const order = await orderController.createNewOrderWithPackage(package);
-    console.log(order);
+    console.log(package);
+    await orderController.createNewOrderWithPackage(package);
+    // console.log(order);
     return res.status(201).json({
-      newpackages,
+      package,
       message: "Tạo đơn hàng thành công",
-      order,
+      // order,
     });
   } catch (err) {
     console.log(err);
