@@ -15,6 +15,8 @@ export default function AccountInfo() {
   const auth = useAuthUser();
   const user = auth().data;
 
+  console.log(user);
+
   function DisplayInfo({ value, Icon }) {
     return (
       <Box
