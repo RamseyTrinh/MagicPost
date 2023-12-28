@@ -178,13 +178,35 @@ exports.addNewUser = async function addNewUser(req, res) {
   });
 };
 
-exports.addNewUserByManager = async (req, res) => {
+exports.addNewUserByTransactionAdmin = async (req, res) => {
   const user = req.body;
-
   try {
     const newUserId = generateUserId();
     const newUser = Object.assign(user, {
       userId: newUserId,
+      location: user.location,
+      role: "transactionStaff",
+    });
+    await User.create(newUser);
+  } catch (err) {
+    return res.status(400).json({
+      error: err.message,
+    });
+  }
+  return res.status(201).json({
+    status: "create success",
+    user,
+  });
+};
+
+exports.addNewUserByWarehouseAdmin = async (req, res) => {
+  const user = req.body;
+  try {
+    const newUserId = generateUserId();
+    const newUser = Object.assign(user, {
+      userId: newUserId,
+      location: user.location,
+      role: "warehouseStaff",
     });
     await User.create(newUser);
   } catch (err) {
