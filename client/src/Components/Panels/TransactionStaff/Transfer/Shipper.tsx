@@ -6,9 +6,11 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Autocomplete from "@mui/material/Autocomplete";
 import { useForm } from "react-hook-form";
 import React from "react";
 import { useAuthUser } from "react-auth-kit";
+import { useEffect, useState } from "react";
 
 import "../../../../Assets/Styles/Gather/Gather.css";
 
@@ -17,6 +19,23 @@ export default function Gather() {
 
   const auth = useAuthUser();
   const user = auth()?.data;
+
+  const [rows, setRows] = useState([]);
+
+  const fetchData = () => {
+    fetch(`http://localhost:3005/api/v1/packages/currentPoint/${user.location}`)
+      .then((response) => {
+        return response.json();
+      })
+
+      .then((data) => {
+        setRows(data.data);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+  });
 
   type FormValues = {
     from: {
@@ -84,14 +103,18 @@ export default function Gather() {
                   required
                   {...register("from.transactionStaffID")}
                 ></TextField>
-                <TextField
+                <Autocomplete
+                  disablePortal
+                  options={rows}
                   fullWidth
-                  id="outlined-basic"
-                  label="Mã bưu gửi"
-                  variant="outlined"
-                  required
-                  {...register("from.packageID")}
-                ></TextField>
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Mã bưu gửi"
+                      {...register("from.packageID")}
+                    />
+                  )}
+                />
               </Stack>
             </Paper>
             {match ? (

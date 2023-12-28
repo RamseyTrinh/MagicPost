@@ -3,11 +3,12 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import SelectAdd from "../../Funtions/SelectAdd/SelectAdd.jsx";
-import SelectTransaction from "../../Funtions/SelectArea/SelectTransaction.jsx";
+import FormHelperText from "@mui/material/FormHelperText";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
 import { useAuthUser } from "react-auth-kit";
+import axios from "axios";
 
 import "../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
@@ -20,16 +21,29 @@ export default function CreateAccount() {
     phoneNumber: string;
     address: string;
     specificAdd: string;
-    dob: string;
     email: string;
     transactionPoint: string;
   };
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
+
+    try {
+      const result = await axios.post(
+        "http://localhost:3005/api/v1/users/addNewUser",
+        data
+      );
+      console.log(result);
+    } catch (error) {}
   };
+
+  const handleErrors = (errors) => {};
 
   return (
     <div
@@ -61,9 +75,12 @@ export default function CreateAccount() {
         >
           TẠO TÀI KHOẢN
         </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit, handleErrors)}>
           <Stack direction="column">
             <Paper sx={{ height: "590px", padding: 3, background: "#fdfdfd" }}>
+              <FormHelperText sx={{ textAlign: "right", color: "red" }}>
+                {errors?.phoneNumber && errors.phoneNumber.message}
+              </FormHelperText>
               <Stack direction="row" spacing={2} sx={{ mb: 5 }}>
                 <TextField
                   id="outlined-basic"
@@ -79,9 +96,19 @@ export default function CreateAccount() {
                   variant="outlined"
                   fullWidth
                   required
-                  {...register("phoneNumber")}
+                  {...register("phoneNumber", {
+                    minLength: {
+                      value: 10,
+                      message: "Số điện thoại phải có 10 chữ số",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "Số điện thoại phải có 10 chữ số",
+                    },
+                  })}
                 />
               </Stack>
+
               <SelectAdd refs={{ ...register("address") }} />
               <TextField
                 id="outlined-basic"
@@ -93,13 +120,6 @@ export default function CreateAccount() {
                 {...register("specificAdd")}
               />
               <Stack direction="row" spacing={2} sx={{ mb: 5 }}>
-                <TextField
-                  label="Ngày sinh"
-                  InputLabelProps={{ shrink: true }}
-                  type="date"
-                  {...register("dob")}
-                  sx={{ width: "250px" }}
-                />
                 <TextField
                   id="outlined-basic"
                   label="Email"
