@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
   },
   contentBottomRow: {
-    width: 140,
+    width: 141,
     height: 90,
     borderRightWidth: 1,
     borderBottomWidth: 1,
@@ -114,8 +114,16 @@ const PDFrender = ({ rows }) => {
           >
             <Text>PHIẾU BƯU GỬI</Text>
           </View>
-          <View style={{ width: 180, height: 50, textAlign: "center" }}>
+          <View
+            style={{
+              width: 180,
+              height: 50,
+              textAlign: "center",
+              justifyContent: "center",
+            }}
+          >
             <Text>QR</Text>
+            <Text style={{ fontSize: 7 }}>{rows.packagesId}</Text>
           </View>
         </View>
 
@@ -179,21 +187,28 @@ const PDFrender = ({ rows }) => {
                 <Text style={styles.content}>
                   Khối lượng {"(kg)"}: {rows.package.productWeight}
                 </Text>
-                <Text style={styles.content}>
-                  Tính chất: {rows.package.productCategory}
-                </Text>
               </View>
             </View>
             <View style={{ display: "flex", flexDirection: "row" }}>
               <View style={styles.contentColumn}>
                 <Text style={styles.label}>4. Cước phí</Text>
-                <Text style={styles.content}>Cước chính: {}</Text>
-                <Text style={styles.content}>Phụ phí: {}</Text>
-                <Text style={styles.content}>VAT: {}</Text>
-                <Text style={styles.content}>Tổng thu: {}</Text>
+                <Text style={styles.content}>
+                  Cước chính: {rows.cost.shippingCost}₫
+                </Text>
+                <Text style={styles.content}>
+                  Phụ phí: {rows.cost.additionalFee}₫
+                </Text>
+                <Text style={styles.content}>VAT: {rows.cost.vat}₫</Text>
+                <Text style={styles.content}>
+                  Tổng thu: {rows.cost.totalCost}₫
+                </Text>
               </View>
               <View style={styles.contentColumn}>
                 <Text style={styles.label}>5. Thu người nhận</Text>
+                <Text style={styles.content}>
+                  Tổng thu:{" "}
+                  {rows.payment === "sender" ? 0 : rows.cost.totalCost}₫
+                </Text>
               </View>
               <View style={styles.contentColumn}>
                 <Text style={styles.label}>6. Chứng nhận </Text>
@@ -236,7 +251,7 @@ const PDFrender = ({ rows }) => {
     </Document>
   );
   return (
-    <PDFDownloadLink document={<Doc />} fileName={`${null}.pdf`}>
+    <PDFDownloadLink document={<Doc />} fileName={`${rows.packagesId}.pdf`}>
       <Button>Đồng ý</Button>
     </PDFDownloadLink>
   );
