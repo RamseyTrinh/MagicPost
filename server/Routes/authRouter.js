@@ -1,15 +1,18 @@
 const express = require("express");
 const authController = require("../Controllers/authController");
-const authen = require("../Controllers/Authentication/authentication");
 
 const router = express.Router();
 
-// router.use(authen.validateUser);
-// router.use(authen.extractAuthorization);
-
 router.route("/signup").post(authController.signup);
-router.route("/addnewUserByManager").post(authController.addNewUserByManager);
-router.route("/addNewUser").post(authController.addNewUser);
+router.route("/addnewUser").post(authController.addNewUser);
+
+router
+  .route("/addNewUserByTransactionAdmin")
+  .post(authController.addNewUserByTransactionAdmin);
+router
+  .route("/addNewUserByWarehouseAdmin")
+  .post(authController.addNewUserByWarehouseAdmin);
+
 router.route("/login").post(authController.login);
 
 router.route("/allUser").get(authController.getAllUsers);
