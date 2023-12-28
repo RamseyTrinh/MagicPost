@@ -17,6 +17,6 @@ router
   .route("/warehouseToTransaction/:packagesId")
   .patch(orderController.warehouseToTransaction);
 router.route("/orderSuccess/:packagesId").patch(orderController.orderSuccess);
-router.route("/:packagesId").get(orderController.getRouteByPackagesId);
+router.route("/order/:packagesId").get(orderController.getRouteByPackagesId);
 
 module.exports = router;
