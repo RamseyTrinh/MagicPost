@@ -221,6 +221,22 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
+// Hàm xóa tài khoản người dùng
+exports.deleteUser = async (req, res, next) => {
+  const userId = req.body.id;
+
+  const deletedUser = await User.findByIdAndDelete(userId);
+
+  if (!deletedUser) {
+    const error = new CustomError("Người dùng không tìm thấy", 404);
+    return next(error);
+  }
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+};
+
 exports.getUserByEmail = async function getUserByEmail(req, res) {
   const { email } = req.params;
 
