@@ -66,30 +66,6 @@ exports.ChangeUserProfile = async function ChangeUserProfile(req, res) {
   }
 };
 
-// exports.getUserByName = async function getUserByName(req, res) {
-//   try {
-//     const userName = req.params.name;
-
-//     // Truy vấn người dùng theo tên từ cơ sở dữ liệu
-//     const user = await User.findOne({ name: userName });
-
-//     // Kiểm tra xem người dùng có tồn tại không
-//     if (!user) {
-//       return res.status(404).json({
-//         error: "Người dùng không tồn tại",
-//       });
-//     }
-
-//     // Trả về thông tin người dùng
-//     return res.status(200).json(user);
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({
-//       error: "Có lỗi xảy ra khi lấy thông tin người dùng",
-//     });
-//   }
-// };
-
 exports.getTransactionAdmin = async (_, res) => {
   try {
     const specificRoles = ["transactionAdmin"];

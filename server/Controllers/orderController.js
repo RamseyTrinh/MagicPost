@@ -16,6 +16,7 @@ async function createNewOrderWithPackage(packages) {
       totransactionPoint: packages.endLocation,
       toWarehouse,
       fromWarehouse,
+      orderStatus: "Đang xử lý",
       currentPoint: packages.startLocation,
       route: [
         {
@@ -76,6 +77,7 @@ async function transactionToWarehouse(req, res) {
       {
         $set: {
           currentPoint: newCurrentPoint,
+          orderStatus: "Đang vận chuyển",
         },
         $push: {
           route: {
@@ -220,7 +222,6 @@ async function orderSuccess(req, res) {
 
   try {
     const order = await Order.findOne({ packagesId: packagesId });
-
     if (!order) {
       return res.status(404).json({
         success: false,
@@ -228,13 +229,12 @@ async function orderSuccess(req, res) {
       });
     }
 
-    const newstatus = true;
-
     const updatedOrder = await Order.findOneAndUpdate(
       { packagesId: packagesId },
       {
         $set: {
-          done: newstatus,
+          done: true,
+          orderStatus: "Đã thành công",
         },
       },
       { new: true }
@@ -270,9 +270,15 @@ async function getRouteByPackagesId(req, res) {
     const order = await Order.find({ packagesId: packagesId });
     const packagesIds = order.map((order) => order.route);
     console.log(packagesIds);
+    if (packagesIds.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: `Không tìm thấy đơn hàng với packagesId '${packagesId}'.`,
+      });
+    }
     res.status(200).json({
       success: true,
-      message: `Các đơn hàng từ '${route}': `,
+      message: "Đường đi của đơn hàng",
       data: packagesIds,
     });
   } catch (error) {

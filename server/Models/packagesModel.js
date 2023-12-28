@@ -54,7 +54,6 @@ const packageSchema = new mongoose.Schema({
       type: String,
     },
   },
-
   package: {
     productType: {
       type: String,
@@ -65,7 +64,7 @@ const packageSchema = new mongoose.Schema({
     productValue: {
       type: String,
     },
-    productWeigh: {
+    productWeight: {
       type: String,
     },
     size: {
@@ -79,7 +78,6 @@ const packageSchema = new mongoose.Schema({
         type: String,
       },
     },
-
     productCategory: {
       type: { type: String },
     },
