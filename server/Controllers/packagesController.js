@@ -8,6 +8,7 @@ const { getTransactionPointName } = require("./transactionPointController");
 const {
   getWarehouseByTransactionPoint,
 } = require("./transactionPointController");
+const { getWHfromLocation } = require("./transactionPointController");
 
 function generatePackagesId() {
   const randomBuffer = randomBytes(3); // 4 bytes (32 bits)
@@ -113,12 +114,67 @@ exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
+function calculateShippingCost(fromRegion, toRegion, weight) {
+  const baseShippingCost = 10000;
+  const distanceTable = {
+    "Miền Bắc": {
+      "Miền Bắc": 0,
+      "Miền Trung": 500,
+      "Miền Nam": 1200,
+    },
+    "Miền Trung": {
+      "Miền Bắc": 500,
+      "Miền Trung": 0,
+      "Miền Nam": 800,
+    },
+    "Miền Nam": {
+      "Miền Bắc": 1200,
+      "Miền Trung": 800,
+      "Miền Nam": 0,
+    },
+  };
+
+  const distance =
+    distanceTable[fromRegion] && distanceTable[fromRegion][toRegion]
+      ? distanceTable[fromRegion][toRegion]
+      : 0;
+
+  const calculateDistanceFactor = (distance) => {
+    if (distance < 100) {
+      return 1;
+    } else if (distance >= 100 && distance < 500) {
+      return 2;
+    } else {
+      return 3;
+    }
+  };
+
+  const distanceFactor = calculateDistanceFactor(distance);
+  if (weight < 5) {
+    weightFactor = 1.5;
+  } else if (weight >= 5 && weight < 10) {
+    weightFactor = 2;
+  } else {
+    weightFactor = 3;
+  }
+  const shippingCost = baseShippingCost * distanceFactor * weightFactor;
+  return shippingCost;
+}
+
 exports.createNewpackages = asyncErrorHandler(async (req, res) => {
   const packages = req.body;
   try {
     const now = new Date().toLocaleString();
     packages.startLocation = extractLocation(packages.sender.senderAdd);
     packages.endLocation = extractLocation(packages.receiver.receiverAdd);
+
+    const toWarehouse = await getWHfromLocation(packages.endLocation);
+    const fromWarehouse = await getWHfromLocation(packages.startLocation);
+    const shippingCost = calculateShippingCost(
+      fromWarehouse,
+      toWarehouse,
+      packages.package.productWeight
+    );
     const newpackages = Object.assign(packages, {
       packagesId: generatePackagesId(),
       packagesStatus: "Đang xử lý",
@@ -127,17 +183,13 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       sender: packages.sender,
       receiver: packages.receiver,
       createdDate: now,
-      route: [
-        {
-          pointName: packages.startLocation,
-          timestamp: now,
-        },
-      ],
-      currentPoint: packages.startLocation,
+      cost: Number(shippingCost),
     });
 
     const package = await Packages.create(newpackages);
+
     await orderController.createNewOrderWithPackage(package);
+
     return res.status(201).json({
       package,
       message: "Tạo đơn hàng thành công",
