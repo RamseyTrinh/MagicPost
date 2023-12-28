@@ -194,6 +194,7 @@ exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
     });
     res.status(200).json({
       success: true,
+      length: packages.length,
       message: `Các đơn hàng từ '${currentPoint}': `,
       data: packages,
     });
