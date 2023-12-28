@@ -9,10 +9,13 @@ router.route("/packagesFail").get(orderController.getpackagesFail);
 router
   .route("/currentPoint/:currentPoint")
   .get(orderController.getPackagesIdByCurrentPoint);
-
 router
   .route("/transactionToWarehouse/:packagesId")
   .patch(orderController.transactionToWarehouse);
+
+router
+  .route("/transportingPackages/:packagesId")
+  .patch(orderController.transportingPackages);
 router
   .route("/warehouseToWarehouse/:packagesId")
   .patch(orderController.warehouseToWarehouse);
