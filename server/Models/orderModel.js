@@ -30,9 +30,11 @@ const orderSchema = new mongoose.Schema({
       },
     },
   ],
+  orderStatus: {
+    type: String,
+  },
   done: {
     type: Boolean,
-    require: true,
   },
 });
 const Order = mongoose.model("Order", orderSchema);
