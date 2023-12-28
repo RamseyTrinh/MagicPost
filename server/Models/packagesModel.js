@@ -65,9 +65,6 @@ const packageSchema = new mongoose.Schema({
     productValue: {
       type: String,
     },
-    productWeight: {
-      type: String,
-    },
     productWeigh: {
       type: String,
     },
@@ -96,6 +93,9 @@ const packageSchema = new mongoose.Schema({
     type: String,
   },
 
+  cost: {
+    type: Number,
+  },
 });
 const Packages = mongoose.model("Package", packageSchema);
 
