@@ -6,9 +6,11 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Autocomplete from "@mui/material/Autocomplete";
 import SelectGather from "../../../Funtions/SelectArea/SelectGather.jsx";
 import { useForm } from "react-hook-form";
 import { useAuthUser } from "react-auth-kit";
+import { useEffect, useState } from "react";
 
 import "../../../../Assets/Styles/Gather/Gather.css";
 
@@ -17,6 +19,24 @@ import React from "react";
 export default function Gather() {
   const auth = useAuthUser();
   const user = auth()?.data;
+
+  const [rows, setRows] = useState([]);
+
+  const fetchData = () => {
+    fetch(`http://localhost:3005/api/v1/packages/${user.location}`)
+      .then((response) => {
+        return response.json();
+      })
+
+      .then((data) => {
+        setRows(data.data);
+        // console.log(rows);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+  });
 
   const match = useMediaQuery("(max-width:800px)");
 
@@ -89,14 +109,26 @@ export default function Gather() {
                   required
                   {...register("from.transactionStaffID")}
                 ></TextField>
-                <TextField
+                {/* <TextField
                   fullWidth
                   id="outlined-basic"
                   label="Mã bưu gửi"
                   variant="outlined"
                   required
                   {...register("from.packageID")}
-                ></TextField>
+                ></TextField> */}
+                <Autocomplete
+                  disablePortal
+                  options={rows}
+                  fullWidth
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Mã bưu gửi"
+                      {...register("from.packageID")}
+                    />
+                  )}
+                />
               </Stack>
             </Paper>
             {match ? (
