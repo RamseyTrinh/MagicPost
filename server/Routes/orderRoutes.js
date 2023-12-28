@@ -6,10 +6,13 @@ const router = express.Router();
 router
   .route("/currentPoint/:currentPoint")
   .get(orderController.getPackagesIdByCurrentPoint);
-
 router
   .route("/transactionToWarehouse/:packagesId")
   .patch(orderController.transactionToWarehouse);
+
+router
+  .route("/transportingPackages/:packagesId")
+  .patch(orderController.transportingPackages);
 router
   .route("/warehouseToWarehouse/:packagesId")
   .patch(orderController.warehouseToWarehouse);
@@ -17,6 +20,6 @@ router
   .route("/warehouseToTransaction/:packagesId")
   .patch(orderController.warehouseToTransaction);
 router.route("/orderSuccess/:packagesId").patch(orderController.orderSuccess);
-router.route("/:packagesId").get(orderController.getRouteByPackagesId);
+router.route("/order/:packagesId").get(orderController.getRouteByPackagesId);
 
 module.exports = router;

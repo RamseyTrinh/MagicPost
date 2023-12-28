@@ -6,9 +6,6 @@ const asyncErrorHandler = require("./../Utils/asyncErrorHandler");
 const orderController = require("./orderController");
 const { randomBytes } = require("crypto");
 const { getTransactionPointName } = require("./transactionPointController");
-const {
-  getWarehouseByTransactionPoint,
-} = require("./transactionPointController");
 const { getWHfromLocation } = require("./transactionPointController");
 
 function generatePackagesId() {
@@ -27,72 +24,6 @@ function extractLocation(address) {
 
   return null;
 }
-
-exports.getAllPackages = asyncErrorHandler(async (req, res) => {
-  try {
-    const features = new Apifeatures(Packages.find(req.params.ID), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .paginate();
-
-    const packages = await features.query;
-
-    res.status(200).json({
-      status: "Success",
-      length: packages.length,
-      data: {
-        packages,
-      },
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: "Không có bản ghi nào được tìm thấy",
-    });
-  }
-});
-
-exports.getPackagesById = asyncErrorHandler(async (req, res) => {
-  const packagesId = req.params.Id;
-  try {
-    const packages = await Packages.findOne({ packagesId: packagesId });
-    const order = await Order.findOne({ packagesId: packagesId });
-    console.log(order);
-    if (!packages) {
-      return res.status(404).json({
-        error: "packages not found",
-      });
-    }
-
-    return res.status(200).json({
-      packages,
-      order,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      error: "Internal Server Error",
-    });
-  }
-});
-
-exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
-  const packages = await Packages.findByIdAndDelete(req.params.ID);
-  if (!packages) {
-    return next(new CustomError("Không có bản ghi nào được tìm thấy", 404));
-  }
-  res.status(204).json({
-    status: "Success",
-    data: null,
-  });
-
-  res.status(400).json({
-    status: "fail",
-    message: error.message,
-  });
-});
-
 function calculateShippingCost(fromRegion, toRegion, weight) {
   const baseShippingCost = 10000;
   const distanceTable = {
@@ -129,6 +60,8 @@ function calculateShippingCost(fromRegion, toRegion, weight) {
   };
 
   const distanceFactor = calculateDistanceFactor(distance);
+
+  let weightFactor;
   if (weight < 5) {
     weightFactor = 1.5;
   } else if (weight >= 5 && weight < 10) {
@@ -136,8 +69,20 @@ function calculateShippingCost(fromRegion, toRegion, weight) {
   } else {
     weightFactor = 3;
   }
-  const shippingCost = baseShippingCost * distanceFactor * weightFactor;
-  return shippingCost;
+
+  const shippingCost = Number(baseShippingCost * distanceFactor * weightFactor);
+  const additionalFee = weight * 5000; // Phụ phí: 5000 VND cho mỗi kg
+  const vatRate = 0.1; // VAT: 10%
+  const vat = (shippingCost + additionalFee) * vatRate;
+
+  const totalCost = shippingCost + additionalFee + vat;
+
+  return {
+    shippingCost: shippingCost,
+    additionalFee: additionalFee,
+    vat: vat,
+    totalCost: totalCost,
+  };
 }
 
 exports.createNewpackages = asyncErrorHandler(async (req, res) => {
@@ -149,11 +94,7 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
 
     const toWarehouse = await getWHfromLocation(packages.endLocation);
     const fromWarehouse = await getWHfromLocation(packages.startLocation);
-    const shippingCost = calculateShippingCost(
-      fromWarehouse,
-      toWarehouse,
-      packages.package.productWeight
-    );
+
     const newpackages = Object.assign(packages, {
       packagesId: generatePackagesId(),
       packagesStatus: "Đang xử lý",
@@ -162,7 +103,11 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       sender: packages.sender,
       receiver: packages.receiver,
       createdDate: now,
-      cost: Number(shippingCost),
+      cost: calculateShippingCost(
+        fromWarehouse,
+        toWarehouse,
+        packages.package.productWeight
+      ),
     });
 
     const package = await Packages.create(newpackages);
@@ -170,13 +115,62 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
     await orderController.createNewOrderWithPackage(package);
 
     return res.status(201).json({
+      message: "Tạo hàng gửi thành công",
       package,
-      message: "Tạo đơn hàng thành công",
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
       error: err.message,
+    });
+  }
+});
+
+exports.getAllPackages = asyncErrorHandler(async (req, res) => {
+  try {
+    const features = new Apifeatures(Packages.find(req.params.ID), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const packages = await features.query;
+
+    res.status(200).json({
+      status: "Success",
+      length: packages.length,
+      data: {
+        packages,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: "Không có bản ghi nào được tìm thấy",
+    });
+  }
+});
+
+exports.getPackagesById = asyncErrorHandler(async (req, res) => {
+  const packagesId = req.params.packagesId;
+  try {
+    const packages = await Packages.findOne({ packagesId: packagesId });
+    const order = await Order.findOne({ packagesId: packagesId });
+    console.log(order);
+    if (!packages) {
+      return res.status(404).json({
+        error: "packages not found",
+      });
+    }
+
+    return res.status(200).json({
+      packages,
+      order,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Internal Server Error",
     });
   }
 });
@@ -188,7 +182,7 @@ exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
   const { currentPoint } = req.params;
 
   try {
-    const packages = await Packages.find({
+    const packages = await Order.find({
       currentPoint: currentPoint,
       // packagesStatus: "Đang xử lý",
     });
@@ -232,55 +226,6 @@ exports.getPackageWithStatus = async function getPackageWithStatus(req, res) {
   }
 };
 
-//Để thống kê
-exports.getPackages_SLocation = async function getPackages_SLocation(req, res) {
-  const { startLocation } = req.params;
-
-  try {
-    const packages = await Packages.find({
-      startLocation: startLocation,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: `Các đơn hàng từ ${startLocation}: `,
-      data: packages,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đến",
-      error: error.message,
-    });
-  }
-};
-//lấy tất package của point hiện tại
-
-exports.getPackages_ELocation = async function getPackages_ELocation(req, res) {
-  const { endLocation } = req.params;
-
-  try {
-    const packages = await Packages.find({
-      endLocation: endLocation,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: `Các đơn hàng đến ${endLocation}:`,
-      data: packages,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đi.",
-      error: error.message,
-    });
-  }
-};
-// ----------------
-
 exports.updatePackageStatus = async function updatePackageStatus(req, res) {
   const { packageId, newStatus } = req.body;
 
@@ -294,7 +239,7 @@ exports.updatePackageStatus = async function updatePackageStatus(req, res) {
       });
     }
 
-    packageToUpdate.packageStatus = newStatus;
+    packageToUpdate.packagesStatus = newStatus;
     await packageToUpdate.save();
 
     res.status(200).json({
@@ -310,6 +255,22 @@ exports.updatePackageStatus = async function updatePackageStatus(req, res) {
     });
   }
 };
+
+exports.getPackagesReceiver = asyncErrorHandler(async (req, res) => {
+  const packagesId = req.params.Id;
+  try {
+    const packages = await Packages.findOne({ packagesId: packagesId });
+    const { receiverName, receiverPhone, receiverAddr, receiverAdd } =
+      packages.receiver;
+
+    return res.json({ receiverName, receiverPhone, receiverAddr });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
 
 exports.getPackageIdByTransactionPoint =
   async function getPackageIdByTransactionPoint(req, res) {
@@ -396,12 +357,51 @@ exports.updateRouteAndCurrentPoint = async function updateRouteAndCurrentPoint(
     });
   }
 };
+// exports.getPackages_SLocation = async function getPackages_SLocation(req, res) {
+//   const { startLocation } = req.params;
 
-//Lấy warehouse đích từ packages đang ở warehouse gửi
-async function getWarehouseEnd(endLocation) {
-  return getWarehouseByTransactionPoint(endLocation);
-}
+//   try {
+//     const packages = await Packages.find({
+//       startLocation: startLocation,
+//     });
 
+//     res.status(200).json({
+//       success: true,
+//       message: `Các đơn hàng từ ${startLocation}: `,
+//       data: packages,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đến",
+//       error: error.message,
+//     });
+//   }
+// };
+
+// exports.getPackages_ELocation = async function getPackages_ELocation(req, res) {
+//   const { endLocation } = req.params;
+
+//   try {
+//     const packages = await Packages.find({
+//       endLocation: endLocation,
+//     });
+
+//     res.status(200).json({
+//       success: true,
+//       message: `Các đơn hàng đến ${endLocation}:`,
+//       data: packages,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đi.",
+//       error: error.message,
+//     });
+//   }
+// };
 // async function getTransactionIdFromPackageId(packageId) {
 //   try {
 //     const package = await Packages.findById(packageId);
