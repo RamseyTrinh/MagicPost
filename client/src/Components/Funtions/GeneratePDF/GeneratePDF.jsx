@@ -65,26 +65,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const PDFrender = (pkgId) => {
+const PDFrender = ({ pkgId }) => {
   const [rows, setRows] = useState([]);
 
-  console.log(pkgId);
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       await fetch(`http://localhost:3005/api/v1/packages/${pkgId}`)
+  //         .then((response) => {
+  //           return response.json();
+  //         })
 
-  const fetchData = () => {
-    fetch(`http://localhost:3005/api/v1/packages/${pkgId}`)
-      .then((response) => {
-        return response.json();
-      })
-
-      .then((data) => {
-        console.log(data);
-        setRows(data);
-      });
-  };
-
-  useEffect(() => {
-    fetchData();
-  });
+  //         .then((data) => {
+  //           console.log(data);
+  //           setRows(data);
+  //         });
+  //     };
+  //     fetchData();
+  //   }, [pkgId]);
 
   const Doc = () => (
     <Document>
@@ -192,6 +189,17 @@ const PDFrender = (pkgId) => {
         variant="contained"
         fullWidth
         style={{ fontWeight: "bold", background: "#14507a" }}
+        onClick={() => {
+          fetch(`http://localhost:3005/api/v1/packages/${pkgId}`)
+            .then((response) => {
+              return response.json();
+            })
+
+            .then((data) => {
+              console.log(data);
+              setRows(data);
+            });
+        }}
       >
         IN giấy biên nhận
       </Button>
