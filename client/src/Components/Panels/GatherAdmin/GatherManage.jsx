@@ -9,13 +9,17 @@ export default function GatherManager() {
   const [rows, setRows] = useState([]);
 
   const fetchData = () => {
-    fetch("https://jsonplaceholder.typicode.com/users")
+    fetch("http://localhost:3005/api/v1/users/allWarehouseStaff/Miền Bắc")
       .then((response) => {
         return response.json();
       })
 
       .then((data) => {
-        setRows(data);
+        setRows(
+          data.users?.map((d) => {
+            return { id: d._id, ...d };
+          })
+        );
       });
   };
 
@@ -24,9 +28,11 @@ export default function GatherManager() {
   });
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
+    { field: "id", headerName: "Mã nhân viên", width: 150 },
+    { field: "name", headerName: "Họ và tên", width: 200 },
+    { field: "phoneNumber", headerName: "Số điện thoại", width: 150 },
     { field: "email", headerName: "Email", width: 250 },
+    { field: "home", headerName: "Địa chỉ", width: 400 },
     // {
     //   field: "street",
     //   headerName: "Street",
