@@ -25,7 +25,8 @@
     "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
     "styled-components": "^6.1.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "@react-pdf/renderer": "^3.1.14"
   },
   "scripts": {
     "start": "react-scripts start",
