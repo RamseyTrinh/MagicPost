@@ -155,7 +155,7 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       packages.package.productWeight
     );
     const newpackages = Object.assign(packages, {
-      packagesId: generatePackagesId(),
+      packagesId: packages.packagesId,
       packagesStatus: "Đang xử lý",
       startLocation: packages.startLocation,
       endLocation: packages.endLocation,
