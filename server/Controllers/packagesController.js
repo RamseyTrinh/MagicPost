@@ -169,7 +169,6 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       sender: packages.sender,
       receiver: packages.receiver,
       createdDate: now,
-      package: packages.package,
       cost: calculateShippingCost(
         fromWarehouse,
         toWarehouse,
@@ -178,7 +177,6 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
     });
 
     const package = await Packages.create(newpackages);
-
     await orderController.createNewOrderWithPackage(package);
 
     return res.status(201).json({
@@ -323,7 +321,7 @@ exports.updatePackageStatus = async function updatePackageStatus(req, res) {
   }
 };
 
-exports.getPackagesReceiver = asyncErrorHandler(async (req, res) => {
+exports.getPackagesReceiverById = asyncErrorHandler(async (req, res) => {
   const packagesId = req.params.Id;
   try {
     const packages = await Packages.findOne({ packagesId: packagesId });

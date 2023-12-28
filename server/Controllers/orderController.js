@@ -176,7 +176,7 @@ async function warehouseToTransaction(req, res) {
       });
     }
 
-    const newCurrentPoint = order.fromtransactionPoint;
+    const newCurrentPoint = order.totransactionPoint;
     const now = new Date().toLocaleString();
     const updatedOrder = await Order.findOneAndUpdate(
       { packagesId: packagesId },
