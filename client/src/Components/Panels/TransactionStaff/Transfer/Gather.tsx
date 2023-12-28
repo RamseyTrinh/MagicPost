@@ -7,7 +7,6 @@ import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrow
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
-import SelectGather from "../../../Funtions/SelectArea/SelectGather.jsx";
 import { useForm } from "react-hook-form";
 import { useAuthUser } from "react-auth-kit";
 import { useEffect, useState } from "react";
@@ -21,21 +20,38 @@ export default function Gather() {
   const user = auth()?.data;
 
   const [rows, setRows] = useState([]);
+  const [warehouse, setWarehouse] = useState("");
 
   const fetchData = () => {
-    fetch(`http://localhost:3005/api/v1/packages/${user.location}`)
+    fetch(`http://localhost:3005/api/v1/packages/currentPoint/${user.location}`)
       .then((response) => {
         return response.json();
       })
 
       .then((data) => {
         setRows(data.data);
-        // console.log(rows);
       });
   };
 
   useEffect(() => {
     fetchData();
+  });
+
+  const fetchWarehouse = () => {
+    fetch(
+      `http://localhost:3005/api/v1/TransactionPoint/getWarehouse/${user.location}`
+    )
+      .then((response) => {
+        return response.json();
+      })
+
+      .then((data) => {
+        setWarehouse(data.data);
+      });
+  };
+
+  useEffect(() => {
+    fetchWarehouse();
   });
 
   const match = useMediaQuery("(max-width:800px)");
@@ -109,14 +125,6 @@ export default function Gather() {
                   required
                   {...register("from.transactionStaffID")}
                 ></TextField>
-                {/* <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Mã bưu gửi"
-                  variant="outlined"
-                  required
-                  {...register("from.packageID")}
-                ></TextField> */}
                 <Autocomplete
                   disablePortal
                   options={rows}
@@ -142,7 +150,16 @@ export default function Gather() {
             )}
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={2} direction="column">
-                <SelectGather refs={{ ...register("to.gatherPoint") }} />
+                <TextField
+                  fullWidth
+                  InputProps={{ readOnly: true }}
+                  id="outlined-basic"
+                  label="Điểm tập kết"
+                  variant="outlined"
+                  value={warehouse}
+                  required
+                  {...register("to.gatherPoint")}
+                ></TextField>
                 <TextField
                   fullWidth
                   multiline
