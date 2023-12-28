@@ -259,7 +259,7 @@ export default function MiniDrawer() {
                 color: "#003e29",
               }}
             >
-              LOG OUT
+              Đăng xuất
             </Button>
             <Button
               variant="contained"

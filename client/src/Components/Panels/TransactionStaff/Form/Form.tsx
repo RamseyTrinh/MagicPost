@@ -14,15 +14,16 @@ import "../../../../Assets/Styles/Form/Form.css";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import ReceiverAdd from "../../../Funtions/SelectAdd/SelectAdd.jsx";
-import { GenerateCode } from "../../../Funtions/GenerateCode/GenerateCode.jsx";
 import { Typography } from "@mui/material";
 import axios from "axios";
+import GeneratePDF from "../../../Funtions/GeneratePDF/GeneratePDF.jsx";
 
 export default function Form() {
   const match = useMediaQuery("(max-width:800px)");
 
-  const [code, setCode] = useState(GenerateCode);
+  // console.log(num);
   const [formState, setFormState] = useState(false);
+  const [pkgId, setPkgId] = useState("");
 
   type FormValues = {
     sender: {
@@ -56,23 +57,24 @@ export default function Form() {
 
   const { register, handleSubmit } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
 
     try {
-      const result = axios.post(
+      const result = await axios.post(
         "http://localhost:3005/api/v1/packages/create",
         data
       );
+      setPkgId(result.data.package.packagesId);
       console.log(result);
     } catch (error) {}
 
     setFormState(true);
   };
 
-  function generateCode() {
-    setCode(GenerateCode);
-  }
+  // function generateCode() {
+  //   setCode(GenerateCode);
+  // }
 
   return (
     <div>
@@ -340,8 +342,6 @@ export default function Form() {
               fullWidth
               style={{ fontWeight: "bold", background: "#003e29" }}
               sx={{ mb: 4 }}
-              onClick={generateCode}
-              value={code}
             >
               Tạo bưu gửi
             </Button>
@@ -352,13 +352,7 @@ export default function Form() {
                 >
                   Tạo đơn Thành Công <TaskAltIcon sx={{ color: "green" }} />
                 </Typography>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  style={{ fontWeight: "bold", background: "#14507a" }}
-                >
-                  IN giấy biên nhận
-                </Button>
+                <GeneratePDF pkgId={pkgId} />
               </div>
             ) : (
               ""

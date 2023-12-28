@@ -190,13 +190,16 @@ exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
   try {
     const packages = await Packages.find({
       currentPoint: currentPoint,
-      packagesStatus: "Đang xử lý",
+      // packagesStatus: "Đang xử lý",
     });
+
+    const packagesIds = packages.map((pkg) => pkg.packagesId);
+
     res.status(200).json({
       success: true,
       length: packages.length,
       message: `Các đơn hàng từ '${currentPoint}': `,
-      data: packages,
+      data: packagesIds,
     });
   } catch (error) {
     console.error(error);
