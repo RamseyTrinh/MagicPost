@@ -178,6 +178,26 @@ exports.addNewUser = async function addNewUser(req, res) {
   });
 };
 
+exports.addNewUserByManager = async (req, res) => {
+  const user = req.body;
+
+  try {
+    const newUserId = generateUserId();
+    const newUser = Object.assign(user, {
+      userId: newUserId,
+    });
+    await User.create(newUser);
+  } catch (err) {
+    return res.status(400).json({
+      error: err.message,
+    });
+  }
+  return res.status(201).json({
+    status: "create success",
+    user,
+  });
+};
+
 // SignUp function
 exports.signup = asyncErrorHandler(async (req, res) => {
   const newUser = await User.create(req.body);
