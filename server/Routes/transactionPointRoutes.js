@@ -4,6 +4,10 @@ const transactionPointController = require("../Controllers/transactionPointContr
 const router = express.Router();
 
 router
+  .route("/getWarehouse/:transactionPoint")
+  .get(transactionPointController.getWarehouseNameByTransactionPoint);
+
+router
   .route("/newTransactionPoint")
   .post(transactionPointController.createtransactionPoint);
 

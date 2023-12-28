@@ -54,7 +54,7 @@ exports.getAllPackages = asyncErrorHandler(async (req, res) => {
 });
 
 exports.getPackagesById = asyncErrorHandler(async (req, res) => {
-  const packagesId = req.params.Id;
+  const packagesId = req.params.packagesId;
   try {
     const packages = await Packages.findOne({ packagesId: packagesId });
     const order = await Order.findOne({ packagesId: packagesId });
