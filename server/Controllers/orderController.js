@@ -33,26 +33,6 @@ async function createNewOrderWithPackage(packages) {
   }
 }
 
-// // Sử dụng hàm để chuyển đơn hàng đến điểm tập kết tiếp theo
-// async function moveOrderToNextPoint(orderId, nextTransactionPointId) {
-//   try {
-//     const order = await Order.findOne({ orderId });
-
-//     if (!order) {
-//       console.log("Không tìm thấy đơn hàng với ID:", orderId);
-//     } else {
-//       order.route.push({
-//         transactionPointId: nextTransactionPointId,
-//       });
-
-//       await order.save();
-//       console.log("Đã chuyển đơn hàng đến điểm tập kết tiếp theo!");
-//     }
-//   } catch (error) {
-//     console.error("Lỗi khi chuyển đơn hàng:", error.message);
-//   }
-// }
-
 // Tìm packages có trong điểm hiện tại
 async function getPackagesIdByCurrentPoint(req, res) {
   const { currentPoint } = req.params;
@@ -75,8 +55,6 @@ async function getPackagesIdByCurrentPoint(req, res) {
     });
   }
 }
-
-//chuyển từ điểm giao dịch bên gửi sang điểm tập kết bên gửi sau khi ấn xác nhận
 
 async function transactionToWarehouse(req, res) {
   const { packagesId } = req.params;
@@ -131,8 +109,6 @@ async function transactionToWarehouse(req, res) {
   }
 }
 
-// Chuyển từ điển tập kết bên nhận sang điểm tập kết bên gửi sau khi ấn xác nhận
-
 async function warehouseToWarehouse(req, res) {
   const { packagesId } = req.params;
 
@@ -186,8 +162,6 @@ async function warehouseToWarehouse(req, res) {
   }
 }
 
-//chuyển packages từ điểm tập kết bên nhận về điểm giao dịch bên nhận
-
 async function warehouseToTransaction(req, res) {
   const { packagesId } = req.params;
 
@@ -240,8 +214,6 @@ async function warehouseToTransaction(req, res) {
     });
   }
 }
-
-// xác nhận đơn hàng thành công
 
 async function orderSuccess(req, res) {
   const { packagesId } = req.params;

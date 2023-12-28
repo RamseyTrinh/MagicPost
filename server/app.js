@@ -1,13 +1,11 @@
 //IMPORT PACKAGE
 const express = require("express");
 const morgan = require("morgan");
-const moviesRouter = require("./Routes/moviesRoutes");
 const packagesRouter = require("./Routes/packagesRoutes");
 const authRouter = require("./Routes/authRouter");
 const warehouseRouter = require("./Routes/warehouseRoutes");
 const transactionPointRouter = require("./Routes/transactionPointRoutes");
 const orderRouter = require("./Routes/orderRoutes");
-const moneyRouter = require("./Routes/moneyRoutes");
 const CustomError = require("./Utils/CustomError");
 const globalErrorHandler = require("./Controllers/errorController");
 const cors = require("cors");
@@ -20,7 +18,6 @@ app.use(cors());
 
 //USING ROUTES
 
-app.use("/api/v1/movies", moviesRouter);
 app.use("/api/v1/users", authRouter);
 app.use("/api/v1/warehouse", warehouseRouter);
 app.use("/api/v1/TransactionPoint", transactionPointRouter);
