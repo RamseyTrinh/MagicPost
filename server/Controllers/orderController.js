@@ -369,7 +369,7 @@ async function getpackagesSuccess(req, res) {
   }
 }
 
-async function getpackagesNotSucces(req, res) {
+async function getpackagesFail(req, res) {
   try {
     const ordersWithDoneTrue = await Order.find({ done: false });
 
@@ -403,6 +403,6 @@ module.exports = {
   orderSuccess,
   getRouteByPackagesId,
   getpackagesSuccess,
-  getpackagesNotSucces,
+  getpackagesFail,
   transportingPackages,
 };
