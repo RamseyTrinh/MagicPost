@@ -12,23 +12,31 @@ export default function DataTable() {
 
   const fetchData = () => {
     if (category === 1) {
-      fetch("https://jsonplaceholder.typicode.com/users")
+      fetch("http://localhost:3005/api/v1/order/packagesSuccess")
         .then((response) => {
           return response.json();
         })
 
         .then((data) => {
-          setRows(data);
+          setRows(
+            data.data?.map((d) => {
+              return { id: d._id, ...d };
+            })
+          );
         });
     }
     if (category === 2) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
+      fetch("http://localhost:3005/api/v1/order/packagesFail")
         .then((response) => {
           return response.json();
         })
 
         .then((data) => {
-          setRows(data);
+          setRows(
+            data.data?.map((d) => {
+              return { id: d._id, ...d };
+            })
+          );
         });
     }
   };
@@ -38,9 +46,54 @@ export default function DataTable() {
   });
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "email", headerName: "Email", width: 250 },
+    {
+      field: "packagesId",
+      headerName: "Mã bưu gửi",
+      width: 150,
+      valueGetter: (params) => params.row.packagesId,
+    },
+    {
+      field: "senderName",
+      headerName: "Người gửi",
+      width: 150,
+      valueGetter: (params) => params.row.sender.senderName,
+    },
+    {
+      field: "senderPhone",
+      headerName: "SĐT Người gửi",
+      width: 150,
+      valueGetter: (params) => params.row.sender.senderPhone,
+    },
+    {
+      field: "receiverName",
+      headerName: "Người nhận",
+      width: 150,
+      valueGetter: (params) => params.row.receiver.receiverName,
+    },
+    {
+      field: "receiverPhone",
+      headerName: "SĐT Người nhận",
+      width: 180,
+      valueGetter: (params) => params.row.receiver.receiverPhone,
+    },
+    {
+      field: "receiverAddr",
+      headerName: "Địa chỉ nhận",
+      width: 250,
+      valueGetter: (params) => params.row.receiver.receiverAddr,
+    },
+    {
+      field: "receiverAdd",
+      headerName: "",
+      width: 400,
+      valueGetter: (params) => params.row.receiver.receiverAdd,
+    },
+    {
+      field: "productName",
+      headerName: "Bưu Gửi",
+      width: 150,
+      valueGetter: (params) => params.row.package.productName,
+    },
     // {
     //   field: "street",
     //   headerName: "Street",

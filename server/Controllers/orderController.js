@@ -1,5 +1,6 @@
 const Order = require("../Models/orderModel");
 const Packages = require("../Models/packagesModel");
+const { route } = require("../app");
 const { getWHfromLocation } = require("./transactionPointController");
 
 // Tạo order khi package được tạo
@@ -368,7 +369,7 @@ async function getpackagesSuccess(req, res) {
   }
 }
 
-async function getpackagesNotSucces(req, res) {
+async function getpackagesFail(req, res) {
   try {
     const ordersWithDoneTrue = await Order.find({ done: false });
 
@@ -402,6 +403,6 @@ module.exports = {
   orderSuccess,
   getRouteByPackagesId,
   getpackagesSuccess,
-  getpackagesNotSucces,
+  getpackagesFail,
   transportingPackages,
 };
