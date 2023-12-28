@@ -10,7 +10,7 @@ import Statistics from "./Components/Panels/TransactionStaff/Statistics/Statisti
 import GatherTransfer from "./Components/Panels/GatherStaff/Transfer/GatherTransfer.jsx";
 import GatherConfirmation from "./Components/Panels/GatherStaff/Confirmation/GatherConfirmation.jsx";
 import TransactionCreateAcc from "./Components/Panels/TransactionAdmin/TransactionCreateAcc.jsx";
-import PackageStatistics from "./Components/Panels/TransactionAdmin/PackageStatistics.jsx";
+import TransactionAdminStatistics from "./Components/Panels/TransactionAdmin/Statistics/Statistics.jsx";
 import GatherCreateAcc from "./Components/Panels/GatherAdmin/GatherCreateAcc.jsx";
 import GatherStatistics from "./Components/Panels/GatherAdmin/GatherStatistics.jsx";
 import GatherManage from "./Components/Panels/GatherAdmin/GatherManage.jsx";
@@ -70,7 +70,7 @@ export default function App() {
                   role === "transactionStaff" ? (
                     <Statistics />
                   ) : role === "transactionAdmin" ? (
-                    <PackageStatistics />
+                    <TransactionAdminStatistics />
                   ) : (
                     <Unauthorized />
                   )
