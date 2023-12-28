@@ -14,9 +14,9 @@ import "../../../../Assets/Styles/Form/Form.css";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import ReceiverAdd from "../../../Funtions/SelectAdd/SelectAdd.jsx";
+import AlertPDF from "../../../Funtions/Alert/AlertPDF.jsx";
 import { Typography } from "@mui/material";
 import axios from "axios";
-import GeneratePDF from "../../../Funtions/GeneratePDF/GeneratePDF.jsx";
 
 export default function Form() {
   const match = useMediaQuery("(max-width:800px)");
@@ -168,6 +168,7 @@ export default function Form() {
                 id="outlined-basic"
                 label="K.lượng (g)"
                 variant="outlined"
+                required
                 fullWidth
                 // required
                 sx={{ mb: 4 }}
@@ -352,7 +353,7 @@ export default function Form() {
                 >
                   Tạo đơn Thành Công <TaskAltIcon sx={{ color: "green" }} />
                 </Typography>
-                <GeneratePDF pkgId={pkgId} />
+                <AlertPDF pkgId={pkgId} />
               </div>
             ) : (
               ""

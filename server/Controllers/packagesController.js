@@ -24,6 +24,72 @@ function extractLocation(address) {
 
   return null;
 }
+
+exports.getAllPackages = asyncErrorHandler(async (req, res) => {
+  try {
+    const features = new Apifeatures(Packages.find(req.params.ID), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const packages = await features.query;
+
+    res.status(200).json({
+      status: "Success",
+      length: packages.length,
+      data: {
+        packages,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: "Không có bản ghi nào được tìm thấy",
+    });
+  }
+});
+
+exports.getPackagesById = asyncErrorHandler(async (req, res) => {
+  const packagesId = req.params.packagesId;
+  try {
+    const packages = await Packages.findOne({ packagesId: packagesId });
+    const order = await Order.findOne({ packagesId: packagesId });
+    console.log(order);
+    if (!packages) {
+      return res.status(404).json({
+        error: "packages not found",
+      });
+    }
+
+    return res.status(200).json({
+      packages,
+      order,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
+
+exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
+  const packages = await Packages.findByIdAndDelete(req.params.ID);
+  if (!packages) {
+    return next(new CustomError("Không có bản ghi nào được tìm thấy", 404));
+  }
+  res.status(204).json({
+    status: "Success",
+    data: null,
+  });
+
+  res.status(400).json({
+    status: "fail",
+    message: error.message,
+  });
+});
+
 function calculateShippingCost(fromRegion, toRegion, weight) {
   const baseShippingCost = 10000;
   const distanceTable = {

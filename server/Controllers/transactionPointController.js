@@ -63,44 +63,29 @@ exports.createtransactionPoint = async (req, res) => {
 // get name của điểm tập kết của điểm giao dịch này
 exports.getWarehouseNameByTransactionPoint =
   async function getWarehouseNameByTransactionPoint(req, res) {
+    const transactionLocation = decodeURI(req.params.transactionPoint);
+    console.log(transactionLocation);
     try {
-      // Lấy tên của điểm giao dịch từ request query parameters
-      const transactionPointName = req.query.transactionPointName;
-
-      // Kiểm tra xem tên điểm giao dịch có được cung cấp không
-      if (!transactionPointName) {
-        return res.status(400).json({
-          error: "Vui lòng cung cấp tên điểm giao dịch",
-        });
-      }
-
-      // Tìm kiếm điểm giao dịch trong cơ sở dữ liệu
       const transactionPoint = await TransactionPoint.findOne({
-        name: transactionPointName,
+        location: transactionLocation,
       });
+      console.log(transactionPoint);
 
-      // Lấy ID của điểm tập kết từ điểm giao dịch
-      const warehouseId = transactionPoint.wareHouseId;
+      const warehouse = transactionPoint.warehouseLocation;
+      console.log(warehouse);
 
-      // Tìm kiếm thông tin của điểm tập kết từ ID
-      const warehouse = await findWareHouseById(warehouseId);
-
-      // Kiểm tra xem điểm tập kết có tồn tại không
       if (!warehouse) {
         return res.status(404).json({
           error: "Không tìm thấy điểm tập kết thích ứng",
         });
       }
 
-      // Lấy tên của điểm tập kết
-      const warehouseName = warehouse.name;
-
-      return res.status(200).json({
-        warehouseName: warehouseName,
+      res.status(200).json({
+        data: warehouse,
       });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({
+      res.status(500).json({
         error: "Có lỗi xảy ra",
       });
     }

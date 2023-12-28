@@ -25,6 +25,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SearchPackage from "../Funtions/SearchPackage/SearchPackage.jsx";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import BallotIcon from "@mui/icons-material/Ballot";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuthUser, useSignOut } from "react-auth-kit";
@@ -97,13 +98,15 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer() {
+  const match = useMediaQuery("(max-width:800px)");
+
   const theme = useTheme();
   const navigate = useNavigate();
 
   const auth = useAuthUser();
   const role = auth().data.role;
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(!match);
   const [title, setTitle] = React.useState("Thông tin tài khoản");
   const signOut = useSignOut(); // biến để xử lý log out
 
