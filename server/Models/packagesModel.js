@@ -92,7 +92,18 @@ const packageSchema = new mongoose.Schema({
   },
 
   cost: {
-    type: Number,
+    shippingCost: {
+      type: Number,
+    },
+    additionalFee: {
+      type: Number,
+    },
+    vat: {
+      type: Number,
+    },
+    totalCost: {
+      type: Number,
+    },
   },
 });
 const Packages = mongoose.model("Package", packageSchema);
