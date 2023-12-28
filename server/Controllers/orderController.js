@@ -1,4 +1,5 @@
 const Order = require("../Models/orderModel");
+const Packages = require("../Models/packagesModel");
 const { route } = require("../app");
 const { getWHfromLocation } = require("./transactionPointController");
 
@@ -291,6 +292,54 @@ async function getRouteByPackagesId(req, res) {
   }
 }
 
+async function getpackagesSuccess(req, res) {
+  try {
+    const ordersWithDoneTrue = await Order.find({ done: true });
+
+    const packagesIds = ordersWithDoneTrue.map((order) => order.packagesId);
+
+    const packagesWithDoneOrders = await Packages.find({
+      packagesId: { $in: packagesIds },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: packagesWithDoneOrders,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+async function getpackagesFail(req, res) {
+  try {
+    const ordersWithDoneTrue = await Order.find({ done: false });
+
+    const packagesIds = ordersWithDoneTrue.map((order) => order.packagesId);
+
+    const packagesWithDoneOrders = await Packages.find({
+      packagesId: { $in: packagesIds },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: packagesWithDoneOrders,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   createNewOrderWithPackage,
   getPackagesIdByCurrentPoint,
@@ -299,4 +348,6 @@ module.exports = {
   warehouseToTransaction,
   orderSuccess,
   getRouteByPackagesId,
+  getpackagesSuccess,
+  getpackagesFail,
 };

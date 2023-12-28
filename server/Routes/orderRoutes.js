@@ -3,6 +3,9 @@ const orderController = require("./../Controllers/orderController");
 
 const router = express.Router();
 
+router.route("/packagesSuccess").get(orderController.getpackagesSuccess);
+router.route("/packagesFail").get(orderController.getpackagesFail);
+
 router
   .route("/currentPoint/:currentPoint")
   .get(orderController.getPackagesIdByCurrentPoint);
