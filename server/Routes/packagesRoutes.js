@@ -13,7 +13,7 @@ router
   .route("/getPackageWithStatus/:status")
   .get(packagesController.getPackageWithStatus);
 router.route("/updateStatus").patch(packagesController.updatePackageStatus);
-router.route("/:Id").get(packagesController.http_getPackagesById);
+router.route("/:Id").get(packagesController.getPackagesById);
 
 router
   .patch("/:Id/updateRouteAndCurrentPoint")

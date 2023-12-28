@@ -1,4 +1,5 @@
 const Packages = require("../Models/packagesModel");
+const Order = require("../Models/orderModel");
 const Apifeatures = require("../Utils/ApiFeatures");
 const CustomError = require("./../Utils/CustomError");
 const asyncErrorHandler = require("./../Utils/asyncErrorHandler");
@@ -52,23 +53,22 @@ exports.getAllPackages = asyncErrorHandler(async (req, res) => {
   }
 });
 
-// use for orderController
-exports.getPackagesById = async function getPackagesById(packagesId) {
-  return await Packages.findOne({ packagesId: packagesId });
-};
-
-exports.http_getPackagesById = asyncErrorHandler(async (req, res) => {
-  const packagesId = req.params.id;
+exports.getPackagesById = asyncErrorHandler(async (req, res) => {
+  const packagesId = req.params.Id;
   try {
     const packages = await Packages.findOne({ packagesId: packagesId });
-
+    const order = await Order.findOne({ packagesId: packagesId });
+    console.log(order);
     if (!packages) {
       return res.status(404).json({
         error: "packages not found",
       });
     }
 
-    return res.status(200).json(packages);
+    return res.status(200).json({
+      packages,
+      order,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -76,27 +76,6 @@ exports.http_getPackagesById = asyncErrorHandler(async (req, res) => {
     });
   }
 });
-
-// //Hàm tạo đơn hàng đơn giản
-// exports.createPackages = asyncErrorHandler(async (req, res) => {
-//   try {
-//     const packages = await Packages.create(req.body);
-//     packages.packagesId = generatePackagesId();
-//     await packages.save();
-//     res.status(201).json({
-//       status: "Success",
-//       data: {
-//         packages,
-//         id,
-//       },
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       status: "fail",
-//       message: error.message,
-//     });
-//   }
-// });
 
 exports.deletePackage = asyncErrorHandler(async (req, res, next) => {
   const packages = await Packages.findByIdAndDelete(req.params.ID);
@@ -273,31 +252,6 @@ exports.getPackages_SLocation = async function getPackages_SLocation(req, res) {
   }
 };
 //lấy tất package của point hiện tại
-exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
-  req,
-  res
-) {
-  const { currentPoint } = req.params;
-
-  try {
-    const packages = await Packages.find({
-      currentPoint: currentPoint,
-      packagesStatus: "Đang xử lý",
-    });
-    res.status(200).json({
-      success: true,
-      message: `Các đơn hàng từ '${currentPoint}': `,
-      data: packages,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
-      error: error.message,
-    });
-  }
-};
 
 exports.getPackages_ELocation = async function getPackages_ELocation(req, res) {
   const { endLocation } = req.params;
