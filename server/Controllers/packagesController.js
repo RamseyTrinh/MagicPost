@@ -169,6 +169,7 @@ exports.createNewpackages = asyncErrorHandler(async (req, res) => {
       sender: packages.sender,
       receiver: packages.receiver,
       createdDate: now,
+      package: packages.package,
       cost: calculateShippingCost(
         fromWarehouse,
         toWarehouse,
