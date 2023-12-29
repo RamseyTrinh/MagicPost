@@ -8,6 +8,10 @@ router.route("/create").post(packagesController.createNewpackages);
 router
   .route("/currentPoint/:currentPoint")
   .get(packagesController.getPackagesByCurrentPoint);
+router
+  .route("allpackageinlocation/:location")
+  .get(packagesController.getPackagesByLocation);
+
 router.route("/getAllPackages").get(packagesController.getAllPackages);
 router
   .route("/getPackageWithStatus/:status")
