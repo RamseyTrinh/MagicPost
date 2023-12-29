@@ -1,7 +1,6 @@
-const Packages = require("../Models/packagesModel");
 const TransactionPoint = require("../Models/transactionPointModel");
+const Warehouse = require("../Models/warehouseModel.js");
 
-const { findWareHouseById } = require("./warehouseController");
 // Hàm lấy tất cả điểm giao dịch
 
 exports.getAlltransactionPoint = async (_, res) => {
@@ -94,4 +93,33 @@ exports.getWarehouseNameByTransactionPoint =
 exports.getWHfromLocation = async function getWHfromLocation(location) {
   const tran = await TransactionPoint.findOne({ location });
   return tran.warehouseLocation;
+};
+
+exports.createLocation = async (req, res) => {
+  const type = req.body;
+  try {
+    if (type === "Điểm tập kết") {
+      const warehouse = await Warehouse.create(req.body);
+      res.status(201).json({
+        status: "Success",
+        data: {
+          warehouse,
+        },
+      });
+    }
+    if (type === "Điểm giao dịch") {
+      const warehouse = await TransactionPoint.create(req.body);
+      res.status(201).json({
+        status: "Success",
+        data: {
+          warehouse,
+        },
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
 };
