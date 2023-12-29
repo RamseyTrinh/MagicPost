@@ -6,7 +6,7 @@ const router = express.Router();
 router.route("/login").post(authController.login);
 router.route("/signup").post(authController.signup);
 
-router.route("/addnewUser").post(authController.addNewUser);
+router.route("/addTransactionAdmin").post(authController.addTransactionAdmin);
 router
   .route("/addNewUserByTransactionAdmin")
   .post(authController.addNewUserByTransactionAdmin);

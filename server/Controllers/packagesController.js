@@ -245,6 +245,7 @@ exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
 };
 
 exports.getPackagesByLocation = async (req, res) => {
+  console.log("lol");
   const { location } = req.params;
 
   try {

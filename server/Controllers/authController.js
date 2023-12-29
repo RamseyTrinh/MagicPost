@@ -123,9 +123,8 @@ function generateUserId() {
   return `MNV${packagesId}`;
 }
 
-exports.addNewUser = async function addNewUser(req, res) {
+exports.addTransactionAdmin = async (req, res) => {
   const user = req.body;
-
   try {
     if (user.role === "transactionAdmin" || user.role === "warehouseAdmin") {
       const manager = await User.findOne({
@@ -239,7 +238,7 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
 
 // Hàm xóa tài khoản người dùng
 exports.deleteUser = async (req, res, next) => {
-  const userId = req.body.id;
+  const userId = req.params.id;
 
   const deletedUser = await User.findByIdAndDelete(userId);
 
