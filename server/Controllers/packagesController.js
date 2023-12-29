@@ -5,7 +5,6 @@ const CustomError = require("./../Utils/CustomError");
 const asyncErrorHandler = require("./../Utils/asyncErrorHandler");
 const orderController = require("./orderController");
 const { randomBytes } = require("crypto");
-const { getTransactionPointName } = require("./transactionPointController");
 const { getWHfromLocation } = require("./transactionPointController");
 
 function generatePackagesId() {
@@ -340,7 +339,6 @@ exports.getPackagesReceiverById = asyncErrorHandler(async (req, res) => {
 exports.getPackageIdByTransactionPoint =
   async function getPackageIdByTransactionPoint(req, res) {
     try {
-      // Lấy tên của điểm giao dịch từ request query parameters
       const transactionPointName = req.query.transactionPointName;
 
       // Kiểm tra xem tên điểm giao dịch có được cung cấp không
@@ -438,51 +436,51 @@ exports.getPackagesReceiver = asyncErrorHandler(async (req, res) => {
     });
   }
 });
-// exports.getPackages_SLocation = async function getPackages_SLocation(req, res) {
-//   const { startLocation } = req.params;
+exports.getPackages_SLocation = async function getPackages_SLocation(req, res) {
+  const { startLocation } = req.body;
 
-//   try {
-//     const packages = await Packages.find({
-//       startLocation: startLocation,
-//     });
+  try {
+    const packages = await Packages.find({
+      startLocation: startLocation,
+    });
 
-//     res.status(200).json({
-//       success: true,
-//       message: `Các đơn hàng từ ${startLocation}: `,
-//       data: packages,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đến",
-//       error: error.message,
-//     });
-//   }
-// };
+    res.status(200).json({
+      success: true,
+      message: `Các đơn hàng từ ${startLocation}: `,
+      data: packages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đến",
+      error: error.message,
+    });
+  }
+};
 
-// exports.getPackages_ELocation = async function getPackages_ELocation(req, res) {
-//   const { endLocation } = req.params;
+exports.getPackages_ELocation = async function getPackages_ELocation(req, res) {
+  const { endLocation } = req.params;
 
-//   try {
-//     const packages = await Packages.find({
-//       endLocation: endLocation,
-//     });
+  try {
+    const packages = await Packages.find({
+      endLocation: endLocation,
+    });
 
-//     res.status(200).json({
-//       success: true,
-//       message: `Các đơn hàng đến ${endLocation}:`,
-//       data: packages,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đi.",
-//       error: error.message,
-//     });
-//   }
-// };
+    res.status(200).json({
+      success: true,
+      message: `Các đơn hàng đến ${endLocation}:`,
+      data: packages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo điểm đi.",
+      error: error.message,
+    });
+  }
+};
 // async function getTransactionIdFromPackageId(packageId) {
 //   try {
 //     const package = await Packages.findById(packageId);
