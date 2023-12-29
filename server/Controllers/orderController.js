@@ -56,6 +56,186 @@ async function getPackagesIdByCurrentPoint(req, res) {
   }
 }
 
+async function getPackagesIdSendByTransactionPointSend(req, res) {
+  const { TransactionPoint } = req.params;
+
+  try {
+    const order = await Order.find({
+      currentPoint: TransactionPoint,
+      fromtransactionPoint: TransactionPoint,
+    });
+    const packagesIds = order.map((order) => order.packagesId);
+    console.log(packagesIds);
+    res.status(200).json({
+      success: true,
+      message: "Các đơn hàng từ `${currentPoint}`:",
+      data: packagesIds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+async function getPackagesIdSendByWarehouseSend(req, res) {
+  const { warehouse } = req.params;
+
+  try {
+    const order = await Order.find({
+      currentPoint: warehouse,
+      fromWarehouse: warehouse,
+    });
+    const packagesIds = order.map((order) => order.packagesId);
+
+    res.status(200).json({
+      success: true,
+      message: "Các đơn hàng từ `${currentPoint}`:",
+      data: packagesIds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+async function getPackagesIdSendByWarehouseReceive(req, res) {
+  const { warehouse } = req.params;
+
+  try {
+    const order = await Order.find({
+      currentPoint: warehouse,
+      toWarehouse: warehouse,
+    });
+    const packagesIds = order.map((order) => order.packagesId);
+
+    res.status(200).json({
+      success: true,
+      message: "Các đơn hàng từ `${currentPoint}`:",
+      data: packagesIds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+// đơn hàng từ giao dịch 2 đến người nhận
+async function getPackagesIdSendByTransactionPointReceive(req, res) {
+  const { TransactionPoint } = req.params;
+
+  try {
+    const order = await Order.find({
+      currentPoint: TransactionPoint,
+      toWarehouse: TransactionPoint,
+    });
+    const packagesIds = order.map((order) => order.packagesId);
+
+    res.status(200).json({
+      success: true,
+      data: packagesIds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+//đơn hàng cần xác nhận đến điểm tập kết 1
+async function getPackagesIdRequireWarehouseSend(req, res) {
+  const { warehouseLocation } = req.params;
+
+  try {
+    const order = await Order.find({
+      fromWarehouse: warehouseLocation,
+      orderStatus: "Đang vận chuyển",
+      fromtransactionPoint: { $eq: "$currentPoint" },
+    });
+    const packagesIds = order.map((order) => order.packagesId);
+
+    res.status(200).json({
+      success: true,
+      message: "Các đơn hàng từ `${currentPoint}`:",
+      data: packagesIds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+// đơn hàng cần xác nhận đến điểm tập kết 2
+async function getPackagesIdRequireWarehouseReceive(req, res) {
+  const { warehouseLocation } = req.params;
+
+  try {
+    const order = await Order.find({
+      toWarehouse: warehouseLocation,
+      orderStatus: "Đang vận chuyển",
+      fromWarehouse: { $eq: "$currentPoint" },
+    });
+    const packagesIds = order.map((order) => order.packagesId);
+
+    res.status(200).json({
+      success: true,
+      data: packagesIds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+// dơn hàng đang chờ xác nhận đến điểm giao dịch 2
+async function getPackagesIdRequireTransactionReceive(req, res) {
+  const { transactionLocation } = req.params;
+
+  try {
+    const order = await Order.find({
+      totransactionPoint: transactionLocation,
+      orderStatus: "Đang vận chuyển",
+      toWarehouse: { $eq: "$currentPoint" },
+    });
+    const packagesIds = order.map((order) => order.packagesId);
+
+    res.status(200).json({
+      success: true,
+      data: packagesIds,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+// đơn hàng được xác nhận chuyển từ điểm giao dịch 1 sang điểm tập kết 1
 async function transactionToWarehouse(req, res) {
   const { packagesId } = req.params;
 
@@ -109,7 +289,7 @@ async function transactionToWarehouse(req, res) {
     });
   }
 }
-
+//đơn hàng đã được xác nhận từ điển tập kết 1 đến điển tập kết 2
 async function warehouseToWarehouse(req, res) {
   const { packagesId } = req.params;
 
@@ -162,7 +342,7 @@ async function warehouseToWarehouse(req, res) {
     });
   }
 }
-
+// đơn hàng đã được xác nhận chuyển từ điểm tập kết 2 đến điểm giao dịch 1
 async function warehouseToTransaction(req, res) {
   const { packagesId } = req.params;
 
@@ -290,6 +470,7 @@ async function getRouteByPackagesId(req, res) {
   }
 }
 
+// đơn hàng đã được xác nhận rời khỏi điểm
 async function transportingPackages(req, res) {
   const { packagesId } = req.params;
 
@@ -303,18 +484,17 @@ async function transportingPackages(req, res) {
       });
     }
 
-    const newCurrentPoint = "Đang vận chuyển";
-    const now = new Date().toLocaleString();
+    //const now = new Date().toLocaleString();
     const updatedOrder = await Order.findOneAndUpdate(
       { packagesId: packagesId },
       {
         $set: {
           orderStatus: "Đang vận chuyển",
-          currentPoint: newCurrentPoint,
+          //currentPoint: newCurrentPoint,
         },
         $push: {
           route: {
-            pointName: newCurrentPoint,
+            pointName: "Đang vận chuyển",
             timestamp: now,
           },
         },
@@ -397,6 +577,13 @@ async function getpackagesFail(req, res) {
 module.exports = {
   createNewOrderWithPackage,
   getPackagesIdByCurrentPoint,
+  getPackagesIdSendByTransactionPointSend,
+  getPackagesIdSendByWarehouseSend,
+  getPackagesIdSendByWarehouseReceive,
+  getPackagesIdSendByTransactionPointReceive,
+  getPackagesIdRequireWarehouseSend,
+  getPackagesIdRequireWarehouseReceive,
+  getPackagesIdRequireTransactionReceive,
   transactionToWarehouse,
   warehouseToWarehouse,
   warehouseToTransaction,
