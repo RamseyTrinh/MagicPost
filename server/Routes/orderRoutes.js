@@ -27,7 +27,7 @@ router
 
 //đơn hàng gửi từ giao dịch 2 đến người nhận
 router
-  .route("/packagesIdSendByWarehouseReceive/:transactionLocation")
+  .route("/packagesIdSendByTransactionReceive/:transactionLocation")
   .get(orderController.getPackagesIdSendByTransactionPointReceive);
 
 //đơn hàng chờ xác nhận đến điểm tập kết 1
