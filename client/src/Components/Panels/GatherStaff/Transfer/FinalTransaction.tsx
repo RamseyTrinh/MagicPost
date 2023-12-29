@@ -2,8 +2,6 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import TextField from "@mui/material/TextField";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -87,6 +85,7 @@ export default function Gather() {
             spacing={3}
             direction={`${match ? "column" : "row"}`}
             id="GatherMain"
+            sx={{ justifyContent: "center" }}
           >
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={3} direction="column">
@@ -110,7 +109,7 @@ export default function Gather() {
                 ></TextField>
                 <Autocomplete
                   disablePortal
-                  options={rows.packagesIds}
+                  options={rows}
                   fullWidth
                   inputValue={pkgId}
                   onInputChange={(event, newInputValue) => {
@@ -120,28 +119,6 @@ export default function Gather() {
                     <TextField {...params} label="Mã bưu gửi" />
                   )}
                 />
-              </Stack>
-            </Paper>
-            {match ? (
-              <KeyboardDoubleArrowDownIcon
-                sx={{ fontSize: "120px", color: "#003e29" }}
-              />
-            ) : (
-              <KeyboardDoubleArrowRightIcon
-                sx={{ fontSize: "120px", color: "#003e29" }}
-              />
-            )}
-            <Paper id="paper" style={{ width: "45%" }} elevation={3}>
-              <Stack spacing={2} direction="column">
-                <TextField
-                  fullWidth
-                  InputProps={{ readOnly: true }}
-                  id="outlined-basic"
-                  label="Điểm giao dịch đích"
-                  variant="outlined"
-                  value={rows.toTransaction}
-                  required
-                ></TextField>
               </Stack>
             </Paper>
           </Stack>

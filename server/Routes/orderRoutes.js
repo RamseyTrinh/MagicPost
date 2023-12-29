@@ -3,8 +3,12 @@ const orderController = require("./../Controllers/orderController");
 
 const router = express.Router();
 
-router.route("/packagesSuccess").get(orderController.getpackagesSuccess);
-router.route("/packagesFail").get(orderController.getpackagesFail);
+router
+  .route("/packagesSuccess/:transactionLocation")
+  .get(orderController.getpackagesSuccess);
+router
+  .route("/packagesFail/:transactionLocation")
+  .get(orderController.getpackagesFail);
 
 router
   .route("/currentPoint/:currentPoint")
@@ -66,5 +70,9 @@ router
 
 router.route("/orderSuccess").patch(orderController.orderSuccess);
 router.route("/route/:packagesId").get(orderController.getRouteByPackagesId);
+
+router
+  .route("/packagesIdRequireReceiver/:transactionLocation")
+  .get(orderController.getPackagesIdRequireReceiver);
 
 module.exports = router;

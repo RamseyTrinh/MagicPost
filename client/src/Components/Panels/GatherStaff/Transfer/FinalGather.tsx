@@ -90,6 +90,7 @@ export default function Gather() {
             spacing={3}
             direction={`${match ? "column" : "row"}`}
             id="GatherMain"
+            sx={{ justifyContent: "center" }}
           >
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={3} direction="column">
@@ -123,27 +124,6 @@ export default function Gather() {
                     <TextField {...params} label="Mã bưu gửi" />
                   )}
                 />
-              </Stack>
-            </Paper>
-            {match ? (
-              <KeyboardDoubleArrowDownIcon
-                sx={{ fontSize: "120px", color: "#003e29" }}
-              />
-            ) : (
-              <KeyboardDoubleArrowRightIcon
-                sx={{ fontSize: "120px", color: "#003e29" }}
-              />
-            )}
-            <Paper id="paper" style={{ width: "45%" }} elevation={3}>
-              <Stack spacing={2} direction="column">
-                {/* <TextField
-                  fullWidth
-                  multiline
-                  value={rows.toWarehouse}
-                  id="outlined-basic"
-                  label="Điểm tập kết đích"
-                  variant="outlined"
-                ></TextField> */}
               </Stack>
             </Paper>
           </Stack>

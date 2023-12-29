@@ -22,6 +22,7 @@ export default function CreateAccount() {
     address: string;
     specificAdd: string;
     email: string;
+    password: string;
     transactionPoint: string;
   };
 
@@ -130,6 +131,15 @@ export default function CreateAccount() {
                   required
                   sx={{ mb: 3 }}
                   {...register("email")}
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Mật khẩu"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  sx={{ mb: 3 }}
+                  {...register("password")}
                 />
               </Stack>
               <TextField
