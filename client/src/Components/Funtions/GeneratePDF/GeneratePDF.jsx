@@ -121,8 +121,7 @@ const PDFrender = ({ rows }) => {
               justifyContent: "center",
             }}
           >
-            <Text>QR</Text>
-            <Text style={{ fontSize: 7 }}>{rows.packagesId}</Text>
+            <Text style={{ fontSize: 12 }}>{rows.packagesId}</Text>
           </View>
         </View>
 

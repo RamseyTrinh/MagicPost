@@ -12,42 +12,43 @@ export default function ListPoint() {
   const [rows, setRows] = useState([]);
   const [category, setCategory] = useState(0);
 
-  const fetchData = () => {
-    if (category === 1) {
-      fetch("http://localhost:3005/api/v1/transactionPoint/AllTransactionPoint")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(
-            data.data.transactionPoint?.map((d) => {
-              return { id: d._id, ...d };
-            })
-          );
-        });
-    }
-    if (category === 2) {
-      fetch("http://localhost:3005/api/v1/warehouse/allWareHouse")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          console.log(data);
-
-          setRows(
-            data.data.warehouse?.map((d) => {
-              return { id: d._id, ...d };
-            })
-          );
-        });
-    }
-  };
-
   useEffect(() => {
+    const fetchData = () => {
+      if (category === 1) {
+        fetch(
+          "http://localhost:3005/api/v1/transactionPoint/AllTransactionPoint"
+        )
+          .then((response) => {
+            return response.json();
+          })
+
+          .then((data) => {
+            setRows(
+              data.data.transactionPoint?.map((d) => {
+                return { id: d._id, ...d };
+              })
+            );
+          });
+      }
+      if (category === 2) {
+        fetch("http://localhost:3005/api/v1/warehouse/allWareHouse")
+          .then((response) => {
+            return response.json();
+          })
+
+          .then((data) => {
+            console.log(data);
+
+            setRows(
+              data.data.warehouse?.map((d) => {
+                return { id: d._id, ...d };
+              })
+            );
+          });
+      }
+    };
     fetchData();
-  });
+  }, [category]);
 
   const columns = [
     category === 1

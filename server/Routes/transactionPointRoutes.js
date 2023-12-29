@@ -17,4 +17,8 @@ router
   .route("/:province")
   .get(transactionPointController.getLocationByProvince);
 
+router
+  .route("/getTransactionPointsWithoutManager")
+  .get(transactionPointController.getTransactionPointsWithoutManager);
+
 module.exports = router;

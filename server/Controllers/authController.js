@@ -239,9 +239,9 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
 
 // Hàm xóa tài khoản người dùng
 exports.deleteUser = async (req, res, next) => {
-  const userId = req.body.id;
+  const userId = req.params;
 
-  const deletedUser = await User.findByIdAndDelete(userId);
+  const deletedUser = await User.findByIdAndDelete(userId.id);
 
   if (!deletedUser) {
     const error = new CustomError("Người dùng không tìm thấy", 404);
