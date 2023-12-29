@@ -7,9 +7,7 @@ router
   .route("/getWarehouse/:transactionPoint")
   .get(transactionPointController.getWarehouseNameByTransactionPoint);
 
-router
-  .route("/newTransactionPoint")
-  .post(transactionPointController.createtransactionPoint);
+router.route("/newPoint").post(transactionPointController.createPoint);
 
 router
   .route("/allTransactionPoint")

@@ -123,3 +123,47 @@ exports.createLocation = async (req, res) => {
     });
   }
 };
+
+async function getLocationsWithoutManager() {
+  try {
+    const locationsWithoutManager = await TransactionPoint.find({
+      manager: { $exists: false },
+    });
+
+    // Lấy danh sách các địa điểm từ kết quả truy vấn
+    const locations = locationsWithoutManager.map(
+      (location) => location.location
+    );
+
+    console.log("Các địa điểm không có quản lý:", locations);
+    return locations;
+  } catch (error) {
+    console.error("Lỗi khi truy vấn địa điểm:", error.message);
+    throw error;
+  }
+}
+exports.createPoint = async (req, res) => {
+  try {
+    let createdPoint;
+
+    if (req.body.pointType === "transactionPoint") {
+      createdPoint = await TransactionPoint.create(req.body);
+    } else if (req.body.pointType === "warehouse") {
+      createdPoint = await Warehouse.create(req.body);
+    } else {
+      throw new Error("Loại điểm không hợp lệ");
+    }
+
+    res.status(201).json({
+      status: "Success",
+      data: {
+        point: createdPoint,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
