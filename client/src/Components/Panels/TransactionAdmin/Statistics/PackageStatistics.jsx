@@ -3,45 +3,81 @@ import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import { useAuthUser } from "react-auth-kit";
 
 export default function PackageStatistics() {
+  const auth = useAuthUser();
+  const user = auth()?.data;
+
   const [rows, setRows] = useState([]);
-  const [category, setCategory] = useState(0);
-
-  const fetchData = () => {
-    if (category === 1) {
-      fetch("https://jsonplaceholder.typicode.com/users")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(data);
-        });
-    }
-    if (category === 2) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(data);
-        });
-    }
-  };
 
   useEffect(() => {
+    const fetchData = () => {
+      fetch(`http://localhost:3005/api/v1/order/currentPoint/${user.location}`)
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          setRows(
+            data.data?.map((d) => {
+              return { id: d._id, ...d };
+            })
+          );
+        });
+    };
     fetchData();
   });
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "email", headerName: "Email", width: 250 },
+    {
+      field: "packagesId",
+      headerName: "Mã bưu gửi",
+      width: 150,
+      valueGetter: (params) => params.row.packagesId,
+    },
+    {
+      field: "senderName",
+      headerName: "Tên người gửi",
+      width: 150,
+      valueGetter: (params) => params.row.sender.senderName,
+    },
+    {
+      field: "senderPhone",
+      headerName: "Số điện thoại",
+      width: 150,
+      valueGetter: (params) => params.row.sender.senderPhone,
+    },
+    {
+      field: "receiverName",
+      headerName: "Tên người nhận",
+      width: 150,
+      valueGetter: (params) => params.row.receiver.receiverName,
+    },
+    {
+      field: "receiverPhone",
+      headerName: "Số điện thoại",
+      width: 150,
+      valueGetter: (params) => params.row.receiver.receiverPhone,
+    },
+    {
+      field: "receiverAddr",
+      headerName: "Địa chỉ nhận",
+      width: 150,
+      valueGetter: (params) => params.row.receiver.receiverAddr,
+    },
+    {
+      field: "receiverAdd",
+      headerName: "",
+      width: 250,
+      valueGetter: (params) => params.row.receiver.receiverAdd,
+    },
+    {
+      field: "productName",
+      headerName: "Bưu gửi",
+      width: 100,
+      valueGetter: (params) => params.row.package.productName,
+    },
     // {
     //   field: "street",
     //   headerName: "Street",
@@ -51,10 +87,6 @@ export default function PackageStatistics() {
     //   valueGetter: (params) => params.row.address.street,
     // },
   ];
-
-  const handleChange = (e) => {
-    setCategory(e.target.value);
-  };
 
   return (
     <Paper
@@ -71,22 +103,7 @@ export default function PackageStatistics() {
         >
           THỐNG KÊ
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ alignItems: "center", mb: 4 }}>
-          <Typography sx={{ fontSize: "20px" }}>Chọn:</Typography>
-          <FormControl sx={{ minWidth: 120 }}>
-            <Select
-              value={category}
-              onChange={handleChange}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-              sx={{ height: "35px", width: "150px", background: "#fdfdfd" }}
-            >
-              <MenuItem value={0}>Tổng</MenuItem>
-              <MenuItem value={1}>Hàng gủi</MenuItem>
-              <MenuItem value={2}>Hàng nhận</MenuItem>
-            </Select>
-          </FormControl>
-        </Stack>
+
         <DataGrid
           id="confirmationTable"
           sx={{

@@ -165,7 +165,7 @@ exports.createPoint = async (req, res) => {
         name: newPoint.name,
         location: extractLocation(newPoint.address),
         address: newPoint.location,
-        warehouseLocation: area,
+        warehouseLocation: newPoint.area,
         transactionPointId: newPoint.pointID,
       });
       createdPoint = await TransactionPoint.create(newTP);
