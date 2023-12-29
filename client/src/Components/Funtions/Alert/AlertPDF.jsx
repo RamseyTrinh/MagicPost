@@ -20,7 +20,7 @@ function DelayedMessage({ rows }) {
   React.useEffect(() => {
     const timeoutId = setTimeout(() => {
       setPrint(true);
-    }, 5000);
+    }, 4000);
 
     return () => clearTimeout(timeoutId);
   }, []);

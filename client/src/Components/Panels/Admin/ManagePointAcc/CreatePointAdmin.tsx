@@ -19,7 +19,6 @@ export default function CreatePointAdmin() {
     phoneNumber: string;
     address: string;
     specificAdd: string;
-    dob: string;
     email: string;
     pointAssigned: string;
   };
@@ -92,13 +91,6 @@ export default function CreatePointAdmin() {
                 {...register("specificAdd")}
               />
               <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-                <TextField
-                  label="Ngày sinh"
-                  InputLabelProps={{ shrink: true }}
-                  type="date"
-                  {...register("dob")}
-                  sx={{ width: "250px" }}
-                />
                 <TextField
                   id="outlined-basic"
                   label="Email"
