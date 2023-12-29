@@ -18,4 +18,7 @@ router
   .patch("/:Id/updateRouteAndCurrentPoint")
   .patch(packagesController.updateRouteAndCurrentPoint);
 
+router.route("/thongkehanggui").get(packagesController.getPackages_SLocation);
+router.route("/thongkehangnhan").get(packagesController.getPackages_ELocation);
+
 module.exports = router;

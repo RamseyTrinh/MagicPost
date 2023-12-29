@@ -40,32 +40,6 @@ exports.getUserById = async function getUserById(req, res) {
     .json(user ? user : { error: "Không tìm thấy nhân viên" });
 };
 
-exports.ChangeUserProfile = async function ChangeUserProfile(req, res) {
-  const userId = req.body.userId;
-  const userProfile = req.body;
-  console.log(userProfile);
-  console.log(req.body);
-  const user = await User.findOne({ userId: userId });
-
-  try {
-    if (userProfile.name) {
-      user.name = userProfile.name;
-    }
-    if (userProfile.email) {
-      user.email = userProfile.email;
-    }
-    if (userProfile.phone) {
-      user.phone = userProfile.phone;
-    }
-
-    await user.save();
-    return res.status(200).json(userProfile);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Có lỗi xảy ra" });
-  }
-};
-
 exports.getTransactionAdmin = async (_, res) => {
   try {
     const specificRoles = ["transactionAdmin"];
@@ -277,43 +251,6 @@ exports.deleteUser = async (req, res, next) => {
     status: "success",
     data: null,
   });
-};
-
-exports.getUserByEmail = async function getUserByEmail(req, res) {
-  const { email } = req.params;
-
-  try {
-    const user = await User.findOne({ email: email });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found with the provided email.",
-      });
-    }
-
-    // You can customize the response based on your user model structure
-    const userData = {
-      userId: user.userId,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
-      location: user.location,
-      // Add other fields as needed
-    };
-
-    res.status(200).json({
-      success: true,
-      message: "User information retrieved successfully.",
-      data: userData,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error while fetching user information.",
-      error: error.message,
-    });
-  }
 };
 
 exports.protect = asyncErrorHandler(async (req, res, next) => {
