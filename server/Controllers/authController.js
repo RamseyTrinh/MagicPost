@@ -2,7 +2,6 @@ const CustomError = require("../Utils/CustomError");
 const User = require("../Models/userModel");
 const asyncErrorHandler = require("../Utils/asyncErrorHandler");
 const jwt = require("jsonwebtoken");
-const util = require("util");
 const dotenv = require("dotenv");
 const { randomBytes } = require("crypto");
 // const bcrypt = require("bcryptjs");
@@ -42,6 +41,7 @@ exports.getUserById = async function getUserById(req, res) {
 
 exports.getTransactionAdmin = async (_, res) => {
   try {
+    console.log("nguu");
     const specificRoles = ["transactionAdmin"];
     const users = await User.find({ role: specificRoles });
     console.log(users);
@@ -251,47 +251,4 @@ exports.deleteUser = async (req, res, next) => {
     status: "success",
     data: null,
   });
-};
-
-exports.protect = asyncErrorHandler(async (req, res, next) => {
-  //1. Read the token & check if it exist
-  const testToken = req.headers.authorization;
-  let token;
-  if (testToken && testToken.startsWith("bearer")) {
-    token = testToken.split(" ")[1];
-  }
-  if (!token) {
-    next(new CustomError("You are not to logged in!", 401));
-  }
-
-  //2. validate the token
-  const decodedToken = await util.promisify(jwt.verify)(
-    token,
-    process.env.SECRET_STR
-  );
-
-  //3. If the user exists
-  const user = await User.findById(decodedToken.id);
-
-  if (!user) {
-    const error = new CustomError("The user does not exist", 401);
-    next(error);
-  }
-
-  // allow access
-  req.user = user;
-  next();
-});
-
-exports.restrict = (...role) => {
-  return (req, res, next) => {
-    if (!role.includes(req.user.role)) {
-      const error = new CustomError(
-        "You do not have permission to do this",
-        403
-      );
-      next(error);
-    }
-    next();
-  };
 };
