@@ -64,7 +64,7 @@ router
   .route("/transportingPackages")
   .patch(orderController.transportingPackages);
 
-router.route("/orderSuccess/:packagesId").patch(orderController.orderSuccess);
+router.route("/orderSuccess").patch(orderController.orderSuccess);
 router.route("/route/:packagesId").get(orderController.getRouteByPackagesId);
 
 module.exports = router;

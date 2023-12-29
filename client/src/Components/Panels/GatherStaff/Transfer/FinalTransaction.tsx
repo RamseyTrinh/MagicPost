@@ -6,7 +6,6 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import SelectTransaction from "../../../Funtions/SelectArea/SelectTransaction.jsx";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useForm } from "react-hook-form";
 import { useAuthUser } from "react-auth-kit";
@@ -16,7 +15,6 @@ import axios from "axios";
 import "../../../../Assets/Styles/Gather/Gather.css";
 
 import React from "react";
-import { object } from "prop-types";
 
 export default function Gather() {
   const auth = useAuthUser();

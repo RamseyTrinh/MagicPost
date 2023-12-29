@@ -20,7 +20,7 @@ export default function DataTable() {
     category === 1
       ? "http://localhost:3005/api/v1/order/warehouseToTransaction"
       : category === 2
-      ? "http://localhost:3005/api/v1/order/warehouseToWarehouse"
+      ? "http://localhost:3005/api/v1/order/orderSuccess"
       : "";
 
   useEffect(() => {
