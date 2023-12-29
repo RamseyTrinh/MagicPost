@@ -128,24 +128,29 @@ exports.createLocation = async (req, res) => {
   }
 };
 
-async function getLocationsWithoutManager() {
+exports.getTransactionPointsWithoutManager = async (req, res) => {
   try {
-    const locationsWithoutManager = await TransactionPoint.find({
-      manager: { $exists: false },
+    // Truy vấn tất cả điểm giao dịch chưa có quản lý
+    const transactionPointsWithoutManager = await TransactionPoint.find({
+      "manager.name": { $exists: false },
     });
 
-    // Lấy danh sách các địa điểm từ kết quả truy vấn
-    const locations = locationsWithoutManager.map(
-      (location) => location.location
-    );
-
-    console.log("Các địa điểm không có quản lý:", locations);
-    return locations;
+    res.status(200).json({
+      status: "Success",
+      length: transactionPointsWithoutManager.length,
+      data: {
+        transactionPoints: transactionPointsWithoutManager,
+      },
+    });
   } catch (error) {
-    console.error("Lỗi khi truy vấn địa điểm:", error.message);
-    throw error;
+    res.status(500).json({
+      status: "fail",
+      message: "Đã xảy ra lỗi khi truy vấn điểm giao dịch chưa có quản lý",
+      error: error.message,
+    });
   }
-}
+};
+
 function extractLocation(address) {
   const regex = /, (Tỉnh |Thành phố )\s*([^,]+)/;
   const match = address.match(regex);

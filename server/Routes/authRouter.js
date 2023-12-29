@@ -17,8 +17,8 @@ router
 router.route("/allUser").get(authController.getAllUsers);
 router.route("/:id").get(authController.getUserById);
 
-router.route("/allTransactionAdmin").get(authController.getTransactionAdmin);
-router.route("/allWarehouseAdmin").get(authController.getWarehouseAdmin);
+router.route("/allManager/transaction").get(authController.getTransactionAdmin);
+router.route("/allManager/warehouse").get(authController.getWarehouseAdmin);
 
 router
   .route("/allTransactionStaff/:location")
@@ -28,4 +28,5 @@ router
   .route("/allWarehouseStaff/:location")
   .get(authController.getWarehouseStaff);
 
+router.route("/deleteuser").delete(authController.deleteUser);
 module.exports = router;
