@@ -132,12 +132,12 @@ async function getPackagesIdSendByWarehouseReceive(req, res) {
 
 // đơn hàng từ giao dịch 2 đến người nhận
 async function getPackagesIdSendByTransactionPointReceive(req, res) {
-  const { TransactionPoint } = req.params;
+  const { transactionLocation } = req.params;
 
   try {
     const order = await Order.find({
-      currentPoint: TransactionPoint,
-      toWarehouse: TransactionPoint,
+      currentPoint: transactionLocation,
+      totransactionPoint: transactionLocation,
     });
     const packagesIds = order.map((order) => order.packagesId);
 
@@ -221,7 +221,9 @@ async function getPackagesIdRequireTransactionReceive(req, res) {
     const order = await Order.find({
       totransactionPoint: transactionLocation,
       orderStatus: "Đang vận chuyển",
-      toWarehouse: { $eq: "$currentPoint" },
+      $expr: {
+        $eq: ["$currentPoint", "$toWarehouse"],
+      },
     });
     const packagesIds = order.map((order) => order.packagesId);
 
@@ -367,6 +369,7 @@ async function warehouseToTransaction(req, res) {
       {
         $set: {
           currentPoint: newCurrentPoint,
+          orderStatus: "Đang xử lý",
         },
         $push: {
           route: {
