@@ -3,18 +3,17 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import React from "react";
-import SelectAdd from "../../../Funtions/SelectAdd/SelectAdd";
+import SelectAdd from "../../../../Funtions/SelectAdd/SelectAdd";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import axios from "axios";
 
-import "../../../../Assets/Styles/CreateAcc/CreateAcc.css";
+import "../../../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
-export default function CreatePointAdmin() {
+export default function GatherAdmin() {
   type FormValues = {
     pointAdminName: string;
     phoneNumber: string;
@@ -22,7 +21,6 @@ export default function CreatePointAdmin() {
     specificAdd: string;
     email: string;
     password: string;
-    role: string;
     // pointAssigned: string;
   };
 
@@ -33,7 +31,7 @@ export default function CreatePointAdmin() {
 
     try {
       const result = await axios.post(
-        "http://localhost:3005/api/v1/users/addNewUser",
+        "http://localhost:3005/api/v1/user/addnewUser",
         data
       );
       console.log(result);
@@ -122,28 +120,17 @@ export default function CreatePointAdmin() {
                 />
               </Stack>
               <Stack direction="row" spacing={2}>
-                <FormControl sx={{ width: "100%" }}>
-                  <InputLabel>Chức vụ</InputLabel>
-                  <Select defaultValue="" label="Chức vụ" {...register("role")}>
-                    <MenuItem value={"transactionAdmin"}>
-                      Trưởng điểm giao dịch
-                    </MenuItem>
-                    <MenuItem value={"warehouseAdmin"}>
-                      Trưởng điểm tập kết
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl sx={{ width: "100%" }}>
+                {/* <FormControl sx={{ width: "100%" }}>
                   <InputLabel>Tại điểm</InputLabel>
                   <Select
                     defaultValue=""
                     label="Tại điểm"
-                    //   {...register("pointType")}
+                      {...register("pointType")}
                   >
-                    {/* <MenuItem value={"GD"}>Điểm giao dịch</MenuItem>
-                    <MenuItem value={"TK"}>Điểm tập kết</MenuItem> */}
+                    <MenuItem value={"GD"}>Điểm giao dịch</MenuItem>
+                    <MenuItem value={"TK"}>Điểm tập kết</MenuItem>
                   </Select>
-                </FormControl>
+                </FormControl> */}
               </Stack>
             </Paper>
             <Button

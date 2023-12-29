@@ -38,12 +38,20 @@ async function getPackagesIdByCurrentPoint(req, res) {
   const { currentPoint } = req.params;
 
   try {
-    const order = await Order.find({ currentPoint: currentPoint });
+    const order = await Order.find({
+      currentPoint: currentPoint,
+      orderStatus: "Đang xử lý",
+    });
+
     const packagesIds = order.map((order) => order.packagesId);
+    const allPackages = await Packages.find({
+      packagesId: { $in: packagesIds },
+    });
+
     res.status(200).json({
       success: true,
       message: "Các đơn hàng từ `${currentPoint}`:",
-      data: packagesIds,
+      data: allPackages,
     });
   } catch (error) {
     console.error(error);

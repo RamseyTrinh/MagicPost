@@ -28,5 +28,5 @@ router
   .route("/allWarehouseStaff/:location")
   .get(authController.getWarehouseStaff);
 
-router.route("/deleteuser").delete(authController.deleteUser);
+router.route("/deleteuser/:userId").delete(authController.deleteUser);
 module.exports = router;
