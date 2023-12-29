@@ -9,10 +9,9 @@ import Select from "@mui/material/Select";
 
 export default function GatherStatistics() {
   const [rows, setRows] = useState([]);
-  const [category, setCategory] = useState(0);
 
-  const fetchData = () => {
-    if (category === 1) {
+  useEffect(() => {
+    const fetchData = () => {
       fetch("https://jsonplaceholder.typicode.com/users")
         .then((response) => {
           return response.json();
@@ -21,20 +20,7 @@ export default function GatherStatistics() {
         .then((data) => {
           setRows(data);
         });
-    }
-    if (category === 2) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(data);
-        });
-    }
-  };
-
-  useEffect(() => {
+    };
     fetchData();
   });
 
@@ -51,10 +37,6 @@ export default function GatherStatistics() {
     //   valueGetter: (params) => params.row.address.street,
     // },
   ];
-
-  const handleChange = (e) => {
-    setCategory(e.target.value);
-  };
 
   return (
     <div
@@ -89,26 +71,7 @@ export default function GatherStatistics() {
             >
               THỐNG KÊ
             </Typography>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ alignItems: "center", mb: 4 }}
-            >
-              <Typography sx={{ fontSize: "20px" }}>Chọn:</Typography>
-              <FormControl sx={{ minWidth: 120 }}>
-                <Select
-                  value={category}
-                  onChange={handleChange}
-                  displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
-                  sx={{ height: "35px", width: "150px", background: "#fdfdfd" }}
-                >
-                  <MenuItem value={0}>Tổng</MenuItem>
-                  <MenuItem value={1}>Hàng gủi</MenuItem>
-                  <MenuItem value={2}>Hàng nhận</MenuItem>
-                </Select>
-              </FormControl>
-            </Stack>
+
             <DataGrid
               id="confirmationTable"
               sx={{

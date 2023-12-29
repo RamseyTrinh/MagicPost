@@ -62,6 +62,7 @@ async function getPackagesIdSendByTransactionPointSend(req, res) {
     const order = await Order.find({
       currentPoint: TransactionPoint,
       fromtransactionPoint: TransactionPoint,
+      orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
     console.log(packagesIds);
@@ -87,6 +88,7 @@ async function getPackagesIdSendByWarehouseSend(req, res) {
     const order = await Order.find({
       currentPoint: warehouse,
       fromWarehouse: warehouse,
+      orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
 
@@ -112,14 +114,14 @@ async function getPackagesIdSendByWarehouseReceive(req, res) {
     const order = await Order.find({
       currentPoint: warehouse,
       toWarehouse: warehouse,
+      orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
-    const toTransaction = order.map((order) => order.totransactionPoint);
 
     res.status(200).json({
       success: true,
       message: "Các đơn hàng từ `${currentPoint}`:",
-      data: { packagesIds, toTransaction },
+      data: packagesIds,
     });
   } catch (error) {
     console.error(error);
@@ -139,15 +141,12 @@ async function getPackagesIdSendByTransactionPointReceive(req, res) {
     const order = await Order.find({
       currentPoint: transactionLocation,
       totransactionPoint: transactionLocation,
+      orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
 
-    const packagesWithOrders = await Packages.find({
-      packagesId: { $in: packagesIds },
-    });
-
     res.status(200).json({
-      packagesWithOrders,
+      packagesIds,
     });
   } catch (error) {
     console.error(error);
@@ -266,7 +265,7 @@ async function transactionToWarehouse(req, res) {
       {
         $set: {
           currentPoint: newCurrentPoint,
-          orderStatus: "Đang vận chuyển",
+          orderStatus: "Đang xử lý",
         },
         $push: {
           route: {
@@ -320,6 +319,7 @@ async function warehouseToWarehouse(req, res) {
       {
         $set: {
           currentPoint: newCurrentPoint,
+          orderStatus: "Đang xử lý",
         },
         $push: {
           route: {
@@ -408,7 +408,7 @@ async function warehouseToTransaction(req, res) {
 }
 
 async function orderSuccess(req, res) {
-  const { packagesId } = req.params;
+  const { packagesId } = req.body;
 
   try {
     const order = await Order.findOne({ packagesId: packagesId });
@@ -419,12 +419,20 @@ async function orderSuccess(req, res) {
       });
     }
 
+    const now = new Date().toLocaleString();
+
     const updatedOrder = await Order.findOneAndUpdate(
       { packagesId: packagesId },
       {
         $set: {
           done: true,
           orderStatus: "Đã thành công",
+        },
+        $push: {
+          route: {
+            pointName: "Đơn hàng đã được giao thành công.",
+            timestamp: now,
+          },
         },
       },
       { new: true }
@@ -536,8 +544,12 @@ async function transportingPackages(req, res) {
 }
 
 async function getpackagesSuccess(req, res) {
+  const { transactionLocation } = req.params;
   try {
-    const ordersWithDoneTrue = await Order.find({ done: true });
+    const ordersWithDoneTrue = await Order.find({
+      done: true,
+      totransactionPoint: transactionLocation,
+    });
 
     const packagesIds = ordersWithDoneTrue.map((order) => order.packagesId);
 
@@ -561,8 +573,12 @@ async function getpackagesSuccess(req, res) {
 }
 
 async function getpackagesFail(req, res) {
+  const { transactionLocation } = req.params;
   try {
-    const ordersWithDoneTrue = await Order.find({ done: false });
+    const ordersWithDoneTrue = await Order.find({
+      done: false,
+      totransactionPoint: transactionLocation,
+    });
 
     const packagesIds = ordersWithDoneTrue.map((order) => order.packagesId);
 
@@ -574,6 +590,33 @@ async function getpackagesFail(req, res) {
       success: true,
       message: "Đường đi của đơn hàng",
       data: packagesWithDoneOrders,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+// dơn hàng đang chờ xác nhận đến người nhận
+async function getPackagesIdRequireReceiver(req, res) {
+  const { transactionLocation } = req.params;
+
+  try {
+    const order = await Order.find({
+      totransactionPoint: transactionLocation,
+      orderStatus: "Đang vận chuyển",
+      currentPoint: transactionLocation,
+    });
+    console.log(order);
+    const packagesIds = order.map((order) => order.packagesId);
+
+    res.status(200).json({
+      success: true,
+      data: packagesIds,
     });
   } catch (error) {
     console.error(error);
@@ -603,4 +646,5 @@ module.exports = {
   getpackagesSuccess,
   getpackagesFail,
   transportingPackages,
+  getPackagesIdRequireReceiver,
 };

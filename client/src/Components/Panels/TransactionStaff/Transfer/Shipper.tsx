@@ -2,8 +2,6 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import TextField from "@mui/material/TextField";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -11,6 +9,7 @@ import { useForm } from "react-hook-form";
 import React from "react";
 import { useAuthUser } from "react-auth-kit";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import "../../../../Assets/Styles/Gather/Gather.css";
 
@@ -21,6 +20,7 @@ export default function Gather() {
   const user = auth()?.data;
 
   const [rows, setRows] = useState([]);
+  const [pkgId, setPkgId] = useState("");
 
   useEffect(() => {
     const fetchData = () => {
@@ -32,22 +32,29 @@ export default function Gather() {
         })
 
         .then((data) => {
-          setRows(data.data.packagesWithOrders);
+          setRows(data.packagesIds);
         });
     };
     fetchData();
   }, [user.location]);
 
-  console.log(rows);
-
   type FormValues = {
-    packageID: string;
+    packageId: string;
   };
 
   const { handleSubmit } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
+
+    try {
+      const result = await axios.patch(
+        "http://localhost:3005/api/v1/order/transportingPackages",
+        { packagesId: pkgId }
+      );
+      // console.log(rows);
+      console.log(result);
+    } catch (error) {}
   };
 
   return (
@@ -77,6 +84,7 @@ export default function Gather() {
             spacing={3}
             direction={`${match ? "column" : "row"}`}
             id="GatherMain"
+            sx={{ justifyContent: "center" }}
           >
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={3} direction="column">
@@ -102,42 +110,14 @@ export default function Gather() {
                   disablePortal
                   options={rows}
                   fullWidth
+                  inputValue={pkgId}
+                  onInputChange={(event, newInputValue) => {
+                    setPkgId(newInputValue);
+                  }}
                   renderInput={(params) => (
                     <TextField {...params} label="Mã bưu gửi" />
                   )}
                 />
-              </Stack>
-            </Paper>
-            {match ? (
-              <KeyboardDoubleArrowDownIcon
-                sx={{ fontSize: "120px", color: "#003e29" }}
-              />
-            ) : (
-              <KeyboardDoubleArrowRightIcon
-                sx={{ fontSize: "120px", color: "#003e29" }}
-              />
-            )}
-            <Paper id="paper" style={{ width: "45%" }} elevation={3}>
-              <Stack spacing={3} direction="column">
-                <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Người nhận"
-                  variant="outlined"
-                  required
-                ></TextField>
-                <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Số điện thoại"
-                  variant="outlined"
-                ></TextField>
-                <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Địa chỉ"
-                  variant="outlined"
-                ></TextField>
               </Stack>
             </Paper>
           </Stack>

@@ -20,7 +20,7 @@ export default function DataTable() {
     category === 1
       ? "http://localhost:3005/api/v1/order/warehouseToTransaction"
       : category === 2
-      ? "http://localhost:3005/api/v1/order/warehouseToWarehouse"
+      ? "http://localhost:3005/api/v1/order/orderSuccess"
       : "";
 
   useEffect(() => {
@@ -42,22 +42,22 @@ export default function DataTable() {
             );
           });
       }
-      // if (category === 2) {
-      //   fetch(
-      //     `http://localhost:3005/api/v1/order/packagesIdRequireWarehouseReceive/${user.location}`
-      //   )
-      //     .then((response) => {
-      //       return response.json();
-      //     })
+      if (category === 2) {
+        fetch(
+          `http://localhost:3005/api/v1/order/packagesIdRequireReceiver/${user.location}`
+        )
+          .then((response) => {
+            return response.json();
+          })
 
-      //     .then((data) => {
-      //       setRows(
-      //         data.data.map((d) => {
-      //           return { id: d };
-      //         })
-      //       );
-      //     });
-      // }
+          .then((data) => {
+            setRows(
+              data.data.map((d) => {
+                return { id: d };
+              })
+            );
+          });
+      }
     };
     fetchData();
   }, [category, user.location]);
