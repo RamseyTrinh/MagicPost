@@ -117,12 +117,11 @@ async function getPackagesIdSendByWarehouseReceive(req, res) {
       orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
-    const toTransaction = order.map((order) => order.totransactionPoint);
 
     res.status(200).json({
       success: true,
       message: "Các đơn hàng từ `${currentPoint}`:",
-      data: { packagesIds, toTransaction },
+      data: packagesIds,
     });
   } catch (error) {
     console.error(error);
@@ -545,8 +544,12 @@ async function transportingPackages(req, res) {
 }
 
 async function getpackagesSuccess(req, res) {
+  const { transactionLocation } = req.params;
   try {
-    const ordersWithDoneTrue = await Order.find({ done: true });
+    const ordersWithDoneTrue = await Order.find({
+      done: true,
+      totransactionPoint: transactionLocation,
+    });
 
     const packagesIds = ordersWithDoneTrue.map((order) => order.packagesId);
 
@@ -570,8 +573,12 @@ async function getpackagesSuccess(req, res) {
 }
 
 async function getpackagesFail(req, res) {
+  const { transactionLocation } = req.params;
   try {
-    const ordersWithDoneTrue = await Order.find({ done: false });
+    const ordersWithDoneTrue = await Order.find({
+      done: false,
+      totransactionPoint: transactionLocation,
+    });
 
     const packagesIds = ordersWithDoneTrue.map((order) => order.packagesId);
 
@@ -583,6 +590,33 @@ async function getpackagesFail(req, res) {
       success: true,
       message: "Đường đi của đơn hàng",
       data: packagesWithDoneOrders,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+}
+
+// dơn hàng đang chờ xác nhận đến người nhận
+async function getPackagesIdRequireReceiver(req, res) {
+  const { transactionLocation } = req.params;
+
+  try {
+    const order = await Order.find({
+      totransactionPoint: transactionLocation,
+      orderStatus: "Đang vận chuyển",
+      currentPoint: transactionLocation,
+    });
+    console.log(order);
+    const packagesIds = order.map((order) => order.packagesId);
+
+    res.status(200).json({
+      success: true,
+      data: packagesIds,
     });
   } catch (error) {
     console.error(error);
@@ -612,4 +646,5 @@ module.exports = {
   getpackagesSuccess,
   getpackagesFail,
   transportingPackages,
+  getPackagesIdRequireReceiver,
 };

@@ -4,44 +4,51 @@ import { DataGrid } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
 import Navigator from "../../../Funtions/Navigator/Navigator";
 import Typography from "@mui/material/Typography";
+import { useAuthUser } from "react-auth-kit";
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
   const [category, setCategory] = useState(0);
   const [title, setTitle] = useState("THỐNG KÊ");
 
-  const fetchData = () => {
-    if (category === 1) {
-      fetch("http://localhost:3005/api/v1/order/packagesSuccess")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(
-            data.data?.map((d) => {
-              return { id: d._id, ...d };
-            })
-          );
-        });
-    }
-    if (category === 2) {
-      fetch("http://localhost:3005/api/v1/order/packagesFail")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(
-            data.data?.map((d) => {
-              return { id: d._id, ...d };
-            })
-          );
-        });
-    }
-  };
+  const auth = useAuthUser();
+  const user = auth()?.data;
 
   useEffect(() => {
+    const fetchData = () => {
+      if (category === 1) {
+        fetch(
+          `http://localhost:3005/api/v1/order/packagesSuccess/${user.location}`
+        )
+          .then((response) => {
+            return response.json();
+          })
+
+          .then((data) => {
+            setRows(
+              data.data?.map((d) => {
+                return { id: d._id, ...d };
+              })
+            );
+          });
+      }
+      if (category === 2) {
+        fetch(
+          `http://localhost:3005/api/v1/order/packagesFail/${user.location}`
+        )
+          .then((response) => {
+            return response.json();
+          })
+
+          .then((data) => {
+            setRows(
+              data.data?.map((d) => {
+                return { id: d._id, ...d };
+              })
+            );
+          });
+      }
+    };
     fetchData();
   });
 

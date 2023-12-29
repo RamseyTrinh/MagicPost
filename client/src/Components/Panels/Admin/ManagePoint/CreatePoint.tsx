@@ -10,22 +10,33 @@ import MenuItem from "@mui/material/MenuItem";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
+import axios from "axios";
 
 import "../../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
 export default function ManagePoint() {
   type FormValues = {
-    pointName: string;
+    name: string;
+    location: string;
     address: string;
-    specificAdd: string;
+    area: string;
     pointType: string;
     pointID: string;
   };
 
   const { register, handleSubmit } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
+
+    try {
+      const result = await axios.post(
+        "http://localhost:3005/api/v1/transactionPoint/newPoint",
+        data
+      );
+
+      console.log(result);
+    } catch (error) {}
   };
 
   return (
@@ -60,7 +71,7 @@ export default function ManagePoint() {
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack direction="column">
-            <Paper sx={{ height: "450px", padding: 3, background: "#fdfdfd" }}>
+            <Paper sx={{ height: "510px", padding: 3, background: "#fdfdfd" }}>
               <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
                 <TextField
                   id="outlined-basic"
@@ -68,7 +79,7 @@ export default function ManagePoint() {
                   variant="outlined"
                   fullWidth
                   required
-                  {...register("pointName")}
+                  {...register("name")}
                 />
               </Stack>
               <SelectAdd refs={{ ...register("address") }} />
@@ -79,8 +90,16 @@ export default function ManagePoint() {
                 fullWidth
                 required
                 sx={{ mb: 3 }}
-                {...register("specificAdd")}
+                {...register("location")}
               />
+              <FormControl sx={{ width: "100%", mb: 3 }}>
+                <InputLabel>Miền</InputLabel>
+                <Select defaultValue="" label="Miền" {...register("area")}>
+                  <MenuItem value={"Miền Bắc"}>Miền Bắc</MenuItem>
+                  <MenuItem value={"Miền Trung"}>Miền Trung</MenuItem>
+                  <MenuItem value={"Miền Nam"}>Miền Nam</MenuItem>
+                </Select>
+              </FormControl>
               <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
                 <FormControl sx={{ width: "250px" }}>
                   <InputLabel>Loại điểm</InputLabel>
@@ -114,7 +133,7 @@ export default function ManagePoint() {
                 background: "#003e29",
                 width: "150px",
               }}
-              sx={{ mt: 4, ml: "auto", mr: "auto" }}
+              sx={{ mt: 2, ml: "auto", mr: "auto" }}
             >
               TẠO
             </Button>
