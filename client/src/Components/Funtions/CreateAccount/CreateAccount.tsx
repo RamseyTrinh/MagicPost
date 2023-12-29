@@ -36,7 +36,9 @@ export default function CreateAccount() {
 
     try {
       const result = await axios.post(
-        "http://localhost:3005/api/v1/users/addNewUserByManager",
+        `http://localhost:3005/api/v1/users/addNewUserBy${
+          user.role.at(0).toUpperCase() + user.role.slice(1)
+        }`,
         data
       );
       console.log(result);

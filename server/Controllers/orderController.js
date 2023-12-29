@@ -114,11 +114,12 @@ async function getPackagesIdSendByWarehouseReceive(req, res) {
       toWarehouse: warehouse,
     });
     const packagesIds = order.map((order) => order.packagesId);
+    const toTransaction = order.map((order) => order.totransactionPoint);
 
     res.status(200).json({
       success: true,
       message: "Các đơn hàng từ `${currentPoint}`:",
-      data: packagesIds,
+      data: { packagesIds, toTransaction },
     });
   } catch (error) {
     console.error(error);
@@ -133,7 +134,7 @@ async function getPackagesIdSendByWarehouseReceive(req, res) {
 // đơn hàng từ giao dịch 2 đến người nhận
 async function getPackagesIdSendByTransactionPointReceive(req, res) {
   const { transactionLocation } = req.params;
-
+  console.log(transactionLocation);
   try {
     const order = await Order.find({
       currentPoint: transactionLocation,
@@ -141,9 +142,12 @@ async function getPackagesIdSendByTransactionPointReceive(req, res) {
     });
     const packagesIds = order.map((order) => order.packagesId);
 
+    const packagesWithOrders = await Packages.find({
+      packagesId: { $in: packagesIds },
+    });
+
     res.status(200).json({
-      success: true,
-      data: packagesIds,
+      packagesWithOrders,
     });
   } catch (error) {
     console.error(error);
@@ -243,7 +247,7 @@ async function getPackagesIdRequireTransactionReceive(req, res) {
 
 // đơn hàng được xác nhận chuyển từ điểm giao dịch 1 sang điểm tập kết 1
 async function transactionToWarehouse(req, res) {
-  const { packagesId } = req.params;
+  const { packagesId } = req.body;
 
   try {
     const order = await Order.findOne({ packagesId: packagesId });
@@ -297,7 +301,7 @@ async function transactionToWarehouse(req, res) {
 }
 //đơn hàng đã được xác nhận từ điển tập kết 1 đến điển tập kết 2
 async function warehouseToWarehouse(req, res) {
-  const { packagesId } = req.params;
+  const { packagesId } = req.body;
 
   try {
     const order = await Order.findOne({ packagesId: packagesId });
@@ -350,7 +354,7 @@ async function warehouseToWarehouse(req, res) {
 }
 // đơn hàng đã được xác nhận chuyển từ điểm tập kết 2 đến điểm giao dịch 1
 async function warehouseToTransaction(req, res) {
-  const { packagesId } = req.params;
+  const { packagesId } = req.body;
 
   try {
     const order = await Order.findOne({ packagesId: packagesId });
@@ -479,7 +483,7 @@ async function getRouteByPackagesId(req, res) {
 
 // đơn hàng đã được xác nhận rời khỏi điểm
 async function transportingPackages(req, res) {
-  const { packagesId } = req.params;
+  const { packagesId } = req.body;
 
   try {
     const order = await Order.findOne({ packagesId: packagesId });

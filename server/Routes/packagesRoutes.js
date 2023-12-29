@@ -2,6 +2,7 @@ const express = require("express");
 const packagesController = require("./../Controllers/packagesController");
 
 const router = express.Router();
+router.route("/receiver/:Id").get(packagesController.getPackagesReceiver);
 
 router.route("/create").post(packagesController.createNewpackages);
 router

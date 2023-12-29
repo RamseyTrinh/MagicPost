@@ -5,43 +5,90 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Navigator from "../../../Funtions/Navigator/Navigator";
 import Typography from "@mui/material/Typography";
+import { useAuthUser } from "react-auth-kit";
+import axios from "axios";
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
   const [category, setCategory] = useState(0);
   const [title, setTitle] = useState("XÁC NHẬN BƯU GỬI");
 
-  const fetchData = () => {
-    if (category === 1) {
-      fetch("https://jsonplaceholder.typicode.com/users")
-        .then((response) => {
-          return response.json();
-        })
+  const auth = useAuthUser();
+  const user = auth()?.data;
 
-        .then((data) => {
-          setRows(data);
-        });
-    }
-    if (category === 2) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(data);
-        });
-    }
-  };
+  const confirmApi =
+    category === 1
+      ? "http://localhost:3005/api/v1/order/warehouseToTransaction"
+      : category === 2
+      ? "http://localhost:3005/api/v1/order/warehouseToWarehouse"
+      : "";
 
   useEffect(() => {
+    const fetchData = () => {
+      if (category === 1) {
+        fetch(
+          `http://localhost:3005/api/v1/order/packagesIdRequireTransactionReceive/${user.location}`
+        )
+          .then((response) => {
+            return response.json();
+          })
+
+          .then((data) => {
+            console.log(data);
+            setRows(
+              data.data.map((d) => {
+                return { id: d };
+              })
+            );
+          });
+      }
+      // if (category === 2) {
+      //   fetch(
+      //     `http://localhost:3005/api/v1/order/packagesIdRequireWarehouseReceive/${user.location}`
+      //   )
+      //     .then((response) => {
+      //       return response.json();
+      //     })
+
+      //     .then((data) => {
+      //       setRows(
+      //         data.data.map((d) => {
+      //           return { id: d };
+      //         })
+      //       );
+      //     });
+      // }
+    };
     fetchData();
-  });
+  }, [category, user.location]);
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "email", headerName: "Email", width: 250 },
+    {
+      field: "id",
+      headerName: "Mã bưu gửi",
+      width: 180,
+    },
+    {
+      field: "confirm",
+      headerName: "Xác nhận",
+      width: 200,
+      sortable: false,
+      renderCell: (params) => (
+        <Button
+          onClick={async () => {
+            console.log(params);
+            try {
+              const result = await axios.patch(confirmApi, {
+                packagesId: params.id,
+              });
+              console.log(result);
+            } catch (error) {}
+          }}
+        >
+          Xác nhận
+        </Button>
+      ),
+    },
     // {
     //   field: "street",
     //   headerName: "Street",
@@ -111,35 +158,7 @@ export default function DataTable() {
                 },
               }}
               pageSizeOptions={[5, 10, 15, 25, 30]}
-              checkboxSelection
             />
-
-            {category === 1 ? (
-              <Button
-                variant="contained"
-                sx={{ width: "150px" }}
-                style={{ fontWeight: "bold", background: "#003e29" }}
-              >
-                XÁC NHẬN
-              </Button>
-            ) : category === 2 ? (
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="contained"
-                  sx={{ width: "200px" }}
-                  style={{ fontWeight: "bold", background: "#003e29" }}
-                >
-                  THÀNH CÔNG
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ width: "200px" }}
-                  style={{ fontWeight: "bold", background: "#003e29" }}
-                >
-                  KHÔNG THÀNH CÔNG
-                </Button>
-              </Stack>
-            ) : null}
           </Stack>
         </Paper>
       </div>

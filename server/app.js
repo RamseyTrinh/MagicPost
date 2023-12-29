@@ -20,7 +20,7 @@ app.use(cors());
 
 app.use("/api/v1/users", authRouter);
 app.use("/api/v1/warehouse", warehouseRouter);
-app.use("/api/v1/TransactionPoint", transactionPointRouter);
+app.use("/api/v1/transactionPoint", transactionPointRouter);
 app.use("/api/v1/packages", packagesRouter);
 app.use("/api/v1/order", orderRouter);
 

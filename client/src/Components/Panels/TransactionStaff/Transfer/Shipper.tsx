@@ -22,32 +22,29 @@ export default function Gather() {
 
   const [rows, setRows] = useState([]);
 
-  const fetchData = () => {
-    fetch(`http://localhost:3005/api/v1/packages/currentPoint/${user.location}`)
-      .then((response) => {
-        return response.json();
-      })
-
-      .then((data) => {
-        setRows(data.data);
-      });
-  };
-
   useEffect(() => {
+    const fetchData = () => {
+      fetch(
+        `http://localhost:3005/api/v1/order/packagesIdSendByTransactionReceive/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          setRows(data.data.packagesWithOrders);
+        });
+    };
     fetchData();
-  });
+  }, [user.location]);
+
+  console.log(rows);
 
   type FormValues = {
-    from: {
-      transactionPoint: string;
-      transactionStaffID: string;
-      packageID: string;
-    };
-
-    to: {};
+    packageID: string;
   };
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { handleSubmit } = useForm<FormValues>();
 
   const onSubmit = (data: FormValues) => {
     console.log(data);
@@ -91,7 +88,6 @@ export default function Gather() {
                   variant="outlined"
                   value={user.location}
                   required
-                  {...register("from.transactionPoint")}
                 ></TextField>
                 <TextField
                   fullWidth
@@ -101,18 +97,13 @@ export default function Gather() {
                   variant="outlined"
                   value={user.userId}
                   required
-                  {...register("from.transactionStaffID")}
                 ></TextField>
                 <Autocomplete
                   disablePortal
                   options={rows}
                   fullWidth
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Mã bưu gửi"
-                      {...register("from.packageID")}
-                    />
+                    <TextField {...params} label="Mã bưu gửi" />
                   )}
                 />
               </Stack>
