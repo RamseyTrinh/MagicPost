@@ -89,8 +89,10 @@ export default function ManagePoint() {
                     label="Loại điểm"
                     {...register("pointType")}
                   >
-                    <MenuItem value={"GD"}>Điểm giao dịch</MenuItem>
-                    <MenuItem value={"TK"}>Điểm tập kết</MenuItem>
+                    <MenuItem value={"transactionPoint"}>
+                      Điểm giao dịch
+                    </MenuItem>
+                    <MenuItem value={"warehouse"}>Điểm tập kết</MenuItem>
                   </Select>
                 </FormControl>
                 <TextField

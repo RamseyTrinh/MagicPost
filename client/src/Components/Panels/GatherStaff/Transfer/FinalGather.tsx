@@ -6,9 +6,11 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import SelectGather from "../../../Funtions/SelectArea/SelectGather.jsx";
 import { useForm } from "react-hook-form";
 import { useAuthUser } from "react-auth-kit";
+import { useEffect, useState } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
+import axios from "axios";
 
 import "../../../../Assets/Styles/Gather/Gather.css";
 
@@ -18,25 +20,47 @@ export default function Gather() {
   const auth = useAuthUser();
   const user = auth()?.data;
 
+  const [rows, setRows] = useState([]);
+  const [pkgId, setPkgId] = useState("");
+
   const match = useMediaQuery("(max-width:800px)");
 
-  type FormValues = {
-    from: {
-      gatherPoint: string;
-      gatherStaffID: string;
-      packageID: string;
-    };
+  useEffect(() => {
+    const fetchData = () => {
+      fetch(
+        `http://localhost:3005/api/v1/order/packagesIdSendByWarehouseSend/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
 
-    to: {
-      finalGatherPoint: string;
-      note: string;
+        .then((data) => {
+          console.log(data.data);
+          setRows(data.data);
+        });
     };
+    fetchData();
+  }, [user.location]);
+
+  console.log(rows[0]);
+
+  type FormValues = {
+    packageID: string;
   };
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { handleSubmit } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
+
+    try {
+      const result = await axios.patch(
+        "http://localhost:3005/api/v1/order/transportingPackages",
+        { packagesId: pkgId }
+      );
+      // console.log(rows);
+      console.log(result);
+    } catch (error) {}
   };
 
   return (
@@ -77,7 +101,6 @@ export default function Gather() {
                   variant="outlined"
                   value={user.location}
                   required
-                  {...register("from.gatherPoint")}
                 ></TextField>
                 <TextField
                   fullWidth
@@ -87,16 +110,19 @@ export default function Gather() {
                   variant="outlined"
                   value={user.userId}
                   required
-                  {...register("from.gatherStaffID")}
                 ></TextField>
-                <TextField
+                <Autocomplete
+                  disablePortal
+                  options={rows}
                   fullWidth
-                  id="outlined-basic"
-                  label="Mã bưu gửi"
-                  variant="outlined"
-                  required
-                  {...register("from.packageID")}
-                ></TextField>
+                  inputValue={pkgId}
+                  onInputChange={(event, newInputValue) => {
+                    setPkgId(newInputValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Mã bưu gửi" />
+                  )}
+                />
               </Stack>
             </Paper>
             {match ? (
@@ -110,16 +136,14 @@ export default function Gather() {
             )}
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={2} direction="column">
-                <SelectGather refs={{ ...register("to.finalGatherPoint") }} />
-                <TextField
+                {/* <TextField
                   fullWidth
                   multiline
-                  rows={5}
+                  value={rows.toWarehouse}
                   id="outlined-basic"
-                  label="Ghi chú"
+                  label="Điểm tập kết đích"
                   variant="outlined"
-                  {...register("to.note")}
-                ></TextField>
+                ></TextField> */}
               </Stack>
             </Paper>
           </Stack>

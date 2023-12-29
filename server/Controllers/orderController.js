@@ -62,6 +62,7 @@ async function getPackagesIdSendByTransactionPointSend(req, res) {
     const order = await Order.find({
       currentPoint: TransactionPoint,
       fromtransactionPoint: TransactionPoint,
+      orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
     console.log(packagesIds);
@@ -87,6 +88,7 @@ async function getPackagesIdSendByWarehouseSend(req, res) {
     const order = await Order.find({
       currentPoint: warehouse,
       fromWarehouse: warehouse,
+      orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
 
@@ -112,6 +114,7 @@ async function getPackagesIdSendByWarehouseReceive(req, res) {
     const order = await Order.find({
       currentPoint: warehouse,
       toWarehouse: warehouse,
+      orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
     const toTransaction = order.map((order) => order.totransactionPoint);
@@ -139,15 +142,12 @@ async function getPackagesIdSendByTransactionPointReceive(req, res) {
     const order = await Order.find({
       currentPoint: transactionLocation,
       totransactionPoint: transactionLocation,
+      orderStatus: "Đang xử lý",
     });
     const packagesIds = order.map((order) => order.packagesId);
 
-    const packagesWithOrders = await Packages.find({
-      packagesId: { $in: packagesIds },
-    });
-
     res.status(200).json({
-      packagesWithOrders,
+      packagesIds,
     });
   } catch (error) {
     console.error(error);
@@ -266,7 +266,7 @@ async function transactionToWarehouse(req, res) {
       {
         $set: {
           currentPoint: newCurrentPoint,
-          orderStatus: "Đang vận chuyển",
+          orderStatus: "Đang xử lý",
         },
         $push: {
           route: {
@@ -320,6 +320,7 @@ async function warehouseToWarehouse(req, res) {
       {
         $set: {
           currentPoint: newCurrentPoint,
+          orderStatus: "Đang xử lý",
         },
         $push: {
           route: {
@@ -408,7 +409,7 @@ async function warehouseToTransaction(req, res) {
 }
 
 async function orderSuccess(req, res) {
-  const { packagesId } = req.params;
+  const { packagesId } = req.body;
 
   try {
     const order = await Order.findOne({ packagesId: packagesId });
@@ -419,12 +420,20 @@ async function orderSuccess(req, res) {
       });
     }
 
+    const now = new Date().toLocaleString();
+
     const updatedOrder = await Order.findOneAndUpdate(
       { packagesId: packagesId },
       {
         $set: {
           done: true,
           orderStatus: "Đã thành công",
+        },
+        $push: {
+          route: {
+            pointName: "Đơn hàng đã được giao thành công.",
+            timestamp: now,
+          },
         },
       },
       { new: true }
