@@ -7,36 +7,59 @@ import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrow
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import SelectTransaction from "../../../Funtions/SelectArea/SelectTransaction.jsx";
+import Autocomplete from "@mui/material/Autocomplete";
 import { useForm } from "react-hook-form";
 import { useAuthUser } from "react-auth-kit";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 import "../../../../Assets/Styles/Gather/Gather.css";
 
 import React from "react";
+import { object } from "prop-types";
 
 export default function Gather() {
   const auth = useAuthUser();
   const user = auth()?.data;
 
+  const [rows, setRows] = useState([]);
+  const [pkgId, setPkgId] = useState("");
+
   const match = useMediaQuery("(max-width:800px)");
 
-  type FormValues = {
-    from: {
-      gatherPoint: string;
-      gatherStaffID: string;
-      packageID: string;
-    };
+  useEffect(() => {
+    const fetchData = () => {
+      fetch(
+        `http://localhost:3005/api/v1/order/packagesIdSendByWarehouseReceive/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
 
-    to: {
-      finalTransactionPoint: string;
-      note: string;
+        .then((data) => {
+          setRows(data.data);
+        });
     };
+    fetchData();
+  }, [user.location]);
+
+  type FormValues = {
+    packageID: string;
   };
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { handleSubmit } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
+
+    try {
+      const result = await axios.patch(
+        "http://localhost:3005/api/v1/order/transportingPackages",
+        { packagesId: pkgId }
+      );
+      // console.log(rows);
+      console.log(result);
+    } catch (error) {}
   };
 
   return (
@@ -77,7 +100,6 @@ export default function Gather() {
                   variant="outlined"
                   value={user.location}
                   required
-                  {...register("from.gatherPoint")}
                 ></TextField>
                 <TextField
                   fullWidth
@@ -87,16 +109,19 @@ export default function Gather() {
                   variant="outlined"
                   value={user.userId}
                   required
-                  {...register("from.gatherStaffID")}
                 ></TextField>
-                <TextField
+                <Autocomplete
+                  disablePortal
+                  options={rows.packagesIds}
                   fullWidth
-                  id="outlined-basic"
-                  label="Mã bưu gửi"
-                  variant="outlined"
-                  required
-                  {...register("from.packageID")}
-                ></TextField>
+                  inputValue={pkgId}
+                  onInputChange={(event, newInputValue) => {
+                    setPkgId(newInputValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Mã bưu gửi" />
+                  )}
+                />
               </Stack>
             </Paper>
             {match ? (
@@ -110,17 +135,14 @@ export default function Gather() {
             )}
             <Paper id="paper" style={{ width: "45%" }} elevation={3}>
               <Stack spacing={2} direction="column">
-                <SelectTransaction
-                  refs={{ ...register("to.finalTransactionPoint") }}
-                />
                 <TextField
                   fullWidth
-                  multiline
-                  rows={5}
+                  InputProps={{ readOnly: true }}
                   id="outlined-basic"
-                  label="Ghi chú"
+                  label="Điểm giao dịch đích"
                   variant="outlined"
-                  {...register("to.note")}
+                  value={rows.toTransaction}
+                  required
                 ></TextField>
               </Stack>
             </Paper>

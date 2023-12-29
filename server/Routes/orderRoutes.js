@@ -47,24 +47,24 @@ router
 
 // đơn hàng được xác nhận đến tập kết 1
 router
-  .route("/transactionToWarehouse/:packagesId")
+  .route("/transactionToWarehouse")
   .patch(orderController.transactionToWarehouse);
 
 // đơn hàng được xác nhận đến tập kết 2
 router
-  .route("/warehouseToWarehouse/:packagesId")
+  .route("/warehouseToWarehouse")
   .patch(orderController.warehouseToWarehouse);
 
 //đơn hàng được xác nhạn đến giao dịch 2
 router
-  .route("/warehouseToTransaction/:packagesId")
+  .route("/warehouseToTransaction")
   .patch(orderController.warehouseToTransaction);
 // đơn hàng được xác nhận đang di chuyển giữa các điểm
 router
-  .route("/transportingPackages/:packagesId")
+  .route("/transportingPackages")
   .patch(orderController.transportingPackages);
 
 router.route("/orderSuccess/:packagesId").patch(orderController.orderSuccess);
-router.route("/order/:packagesId").get(orderController.getRouteByPackagesId);
+router.route("/route/:packagesId").get(orderController.getRouteByPackagesId);
 
 module.exports = router;

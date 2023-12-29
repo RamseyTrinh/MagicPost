@@ -422,6 +422,22 @@ exports.updateRouteAndCurrentPoint = async function updateRouteAndCurrentPoint(
     });
   }
 };
+
+exports.getPackagesReceiver = asyncErrorHandler(async (req, res) => {
+  const packagesId = req.params.Id;
+  try {
+    const packages = await Packages.findOne({ packagesId: packagesId });
+    const { receiverName, receiverPhone, receiverAddr, receiverAdd } =
+      packages.receiver;
+
+    return res.json({ receiverName, receiverPhone, receiverAdd });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Internal Server Error",
+    });
+  }
+});
 // exports.getPackages_SLocation = async function getPackages_SLocation(req, res) {
 //   const { startLocation } = req.params;
 
