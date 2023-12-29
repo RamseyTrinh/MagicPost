@@ -94,6 +94,10 @@ exports.getWHfromLocation = async function getWHfromLocation(location) {
   const tran = await TransactionPoint.findOne({ location });
   return tran.warehouseLocation;
 };
+async function getWHLocation(location) {
+  const tran = await TransactionPoint.findOne({ location });
+  return tran.warehouseLocation;
+}
 
 exports.createLocation = async (req, res) => {
   const type = req.body;
@@ -142,14 +146,37 @@ async function getLocationsWithoutManager() {
     throw error;
   }
 }
+function extractLocation(address) {
+  const regex = /, (Tỉnh |Thành phố )\s*([^,]+)/;
+  const match = address.match(regex);
+  if (match && match[2]) {
+    return match[2].trim();
+  }
+
+  return null;
+}
 exports.createPoint = async (req, res) => {
   try {
     let createdPoint;
+    const newPoint = req.body;
 
-    if (req.body.pointType === "transactionPoint") {
-      createdPoint = await TransactionPoint.create(req.body);
-    } else if (req.body.pointType === "warehouse") {
-      createdPoint = await Warehouse.create(req.body);
+    if (newPoint.pointType === "transactionPoint") {
+      const newTP = Object.assign(newPoint, {
+        name: newPoint.name,
+        location: extractLocation(newPoint.address),
+        address: newPoint.location,
+        warehouseLocation: area,
+        transactionPointId: newPoint.pointID,
+      });
+      createdPoint = await TransactionPoint.create(newTP);
+    } else if (newPoint.pointType === "warehouse") {
+      const newTP = Object.assign(newPoint, {
+        name: newPoint.name,
+        location: newPoint.area,
+        address: newPoint.location,
+        warehouseId: newPoint.pointID,
+      });
+      createdPoint = await Warehouse.create(newTP);
     } else {
       throw new Error("Loại điểm không hợp lệ");
     }
@@ -157,7 +184,7 @@ exports.createPoint = async (req, res) => {
     res.status(201).json({
       status: "Success",
       data: {
-        point: createdPoint,
+        createdPoint,
       },
     });
   } catch (error) {
