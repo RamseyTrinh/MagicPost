@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
   home: {
     type: String,
   },
-  avartar: {
+  address: {
     type: String,
     trim: true,
   },

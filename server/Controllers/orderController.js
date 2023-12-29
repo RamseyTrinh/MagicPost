@@ -40,7 +40,6 @@ async function getPackagesIdByCurrentPoint(req, res) {
   try {
     const order = await Order.find({ currentPoint: currentPoint });
     const packagesIds = order.map((order) => order.packagesId);
-    console.log(packagesIds);
     res.status(200).json({
       success: true,
       message: "Các đơn hàng từ `${currentPoint}`:",
@@ -93,7 +92,7 @@ async function getPackagesIdSendByWarehouseSend(req, res) {
 
     res.status(200).json({
       success: true,
-      message: "Các đơn hàng từ `${currentPoint}`:",
+      message: "Các đơn hàng từ:",
       data: packagesIds,
     });
   } catch (error) {
@@ -164,8 +163,11 @@ async function getPackagesIdRequireWarehouseSend(req, res) {
     const order = await Order.find({
       fromWarehouse: warehouseLocation,
       orderStatus: "Đang vận chuyển",
-      fromtransactionPoint: { $eq: "$currentPoint" },
+      $expr: {
+        $eq: ["$currentPoint", "$fromtransactionPoint"],
+      },
     });
+    console.log(order);
     const packagesIds = order.map((order) => order.packagesId);
 
     res.status(200).json({
@@ -191,7 +193,9 @@ async function getPackagesIdRequireWarehouseReceive(req, res) {
     const order = await Order.find({
       toWarehouse: warehouseLocation,
       orderStatus: "Đang vận chuyển",
-      fromWarehouse: { $eq: "$currentPoint" },
+      $expr: {
+        $eq: ["$currentPoint", "$fromWarehouse"],
+      },
     });
     const packagesIds = order.map((order) => order.packagesId);
 
@@ -484,7 +488,7 @@ async function transportingPackages(req, res) {
       });
     }
 
-    //const now = new Date().toLocaleString();
+    const now = new Date().toLocaleString();
     const updatedOrder = await Order.findOneAndUpdate(
       { packagesId: packagesId },
       {
