@@ -10,6 +10,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useForm } from "react-hook-form";
 import { useAuthUser } from "react-auth-kit";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import "../../../../Assets/Styles/Gather/Gather.css";
 
@@ -21,58 +22,59 @@ export default function Gather() {
 
   const [rows, setRows] = useState([]);
   const [warehouse, setWarehouse] = useState("");
-
-  const fetchData = () => {
-    fetch(`http://localhost:3005/api/v1/packages/currentPoint/${user.location}`)
-      .then((response) => {
-        return response.json();
-      })
-
-      .then((data) => {
-        setRows(data.data);
-      });
-  };
+  const [pkgId, setPkgId] = useState("");
 
   useEffect(() => {
+    const fetchData = () => {
+      fetch(
+        `http://localhost:3005/api/v1/order/packagesIdSendByTransactionPointSend/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          setRows(data.data);
+        });
+    };
     fetchData();
-  });
-
-  const fetchWarehouse = () => {
-    fetch(
-      `http://localhost:3005/api/v1/TransactionPoint/getWarehouse/${user.location}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-
-      .then((data) => {
-        setWarehouse(data.data);
-      });
-  };
+  }, [user.location]);
 
   useEffect(() => {
+    const fetchWarehouse = () => {
+      fetch(
+        `http://localhost:3005/api/v1/TransactionPoint/getWarehouse/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          setWarehouse(data.data);
+        });
+    };
     fetchWarehouse();
-  });
+  }, [user.location]);
 
   const match = useMediaQuery("(max-width:800px)");
 
   type FormValues = {
-    from: {
-      transactionPoint: string;
-      transactionStaffID: string;
-      packageID: string;
-    };
-
-    to: {
-      gatherPoint: string;
-      note: string;
-    };
+    packageId: string;
   };
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { handleSubmit } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
+
+    try {
+      const result = await axios.patch(
+        "http://localhost:3005/api/v1/order/transportingPackages",
+        { packagesId: pkgId }
+      );
+      // console.log(rows);
+      console.log(result);
+    } catch (error) {}
   };
 
   return (
@@ -113,7 +115,6 @@ export default function Gather() {
                   variant="outlined"
                   value={user.location}
                   required
-                  {...register("from.transactionPoint")}
                 ></TextField>
                 <TextField
                   fullWidth
@@ -123,18 +124,17 @@ export default function Gather() {
                   variant="outlined"
                   value={user.userId}
                   required
-                  {...register("from.transactionStaffID")}
                 ></TextField>
                 <Autocomplete
                   disablePortal
                   options={rows}
                   fullWidth
+                  inputValue={pkgId}
+                  onInputChange={(event, newInputValue) => {
+                    setPkgId(newInputValue);
+                  }}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Mã bưu gửi"
-                      {...register("from.packageID")}
-                    />
+                    <TextField {...params} label="Mã bưu gửi" />
                   )}
                 />
               </Stack>
@@ -158,9 +158,8 @@ export default function Gather() {
                   variant="outlined"
                   value={warehouse}
                   required
-                  {...register("to.gatherPoint")}
                 ></TextField>
-                <TextField
+                {/* <TextField
                   fullWidth
                   multiline
                   rows={5}
@@ -168,7 +167,7 @@ export default function Gather() {
                   label="Ghi chú"
                   variant="outlined"
                   {...register("to.note")}
-                ></TextField>
+                ></TextField> */}
               </Stack>
             </Paper>
           </Stack>

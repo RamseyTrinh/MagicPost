@@ -7,9 +7,10 @@ import SelectAdd from "../../../Funtions/SelectAdd/SelectAdd";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
-// import MenuItem from "@mui/material/MenuItem";
+import MenuItem from "@mui/material/MenuItem";
 import { useForm } from "react-hook-form";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
+import axios from "axios";
 
 import "../../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
@@ -20,13 +21,23 @@ export default function CreatePointAdmin() {
     address: string;
     specificAdd: string;
     email: string;
-    pointAssigned: string;
+    password: string;
+    role: string;
+    // pointAssigned: string;
   };
 
   const { register, handleSubmit } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log(data);
+
+    try {
+      const result = await axios.post(
+        "http://localhost:3005/api/v1/users/addNewUser",
+        data
+      );
+      console.log(result);
+    } catch (error) {}
   };
 
   return (
@@ -100,8 +111,28 @@ export default function CreatePointAdmin() {
                   sx={{ mb: 3 }}
                   {...register("email")}
                 />
+                <TextField
+                  id="outlined-basic"
+                  label="Mật khẩu"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  sx={{ mb: 3 }}
+                  {...register("password")}
+                />
               </Stack>
               <Stack direction="row" spacing={2}>
+                <FormControl sx={{ width: "100%" }}>
+                  <InputLabel>Chức vụ</InputLabel>
+                  <Select defaultValue="" label="Chức vụ" {...register("role")}>
+                    <MenuItem value={"transactionAdmin"}>
+                      Trưởng điểm giao dịch
+                    </MenuItem>
+                    <MenuItem value={"warehouseAdmin"}>
+                      Trưởng điểm tập kết
+                    </MenuItem>
+                  </Select>
+                </FormControl>
                 <FormControl sx={{ width: "100%" }}>
                   <InputLabel>Tại điểm</InputLabel>
                   <Select

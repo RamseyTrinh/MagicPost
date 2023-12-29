@@ -50,6 +50,8 @@ export default function SelectAdd({ refs }) {
     !district && setDistricts([]);
   }, [province, district]);
 
+  console.log(provinces);
+
   return (
     <>
       <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
