@@ -69,12 +69,12 @@ ScrollTop.propTypes = {
   window: PropTypes.func,
 };
 
-function handleSubmit() {}
-
 export default function BackToTop(props) {
   const match = useMediaQuery("(max-width:800px)");
   const navigate = useNavigate();
   const signOut = useSignOut();
+
+  const [pkgId, setPkgId] = React.useState("");
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -93,6 +93,11 @@ export default function BackToTop(props) {
   const handleLogout = () => {
     setAnchorEl(null);
     signOut();
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/search?packagesId=${pkgId}`);
   };
 
   const isAuthenticated = useIsAuthenticated();
@@ -240,6 +245,10 @@ export default function BackToTop(props) {
                 >
                   <TextField
                     placeholder="Nhập mã bưu gửi"
+                    onChange={(e) => {
+                      setPkgId(e.target.value);
+                    }}
+                    value={pkgId}
                     sx={{
                       width: "100%",
                       ".MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":

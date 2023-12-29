@@ -166,7 +166,7 @@ export default function Form() {
               />
               <TextField
                 id="outlined-basic"
-                label="K.lượng (g)"
+                label="K.lượng (kg)"
                 variant="outlined"
                 required
                 fullWidth

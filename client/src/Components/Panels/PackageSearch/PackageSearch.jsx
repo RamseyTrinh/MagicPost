@@ -2,47 +2,46 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import "../../../Assets/Styles/Table/Table.css";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import WestIcon from "@mui/icons-material/West";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function PackageSearch() {
   const [rows, setRows] = useState([]);
   const match = useMediaQuery("(max-width:800px)");
+  const [searchParam] = useSearchParams();
 
-  function PackageLabel({ label }) {
+  const pkgId = searchParam.get("packagesId");
+
+  function PackageLabel({ label, content }) {
     return (
-      <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+      <Box sx={{ display: "flex", alignItems: "baseline" }}>
         <Typography sx={{ mr: 1, color: "#003e29", fontSize: "20px" }}>
           {label}
         </Typography>
-        <TextField
-          variant="standard"
-          InputProps={{ readOnly: true, disableUnderline: true }}
-          sx={{ fontWeight: "bold" }}
-        />
+        <Typography sx={{ fontSize: "20px" }}>{content}</Typography>
       </Box>
     );
   }
 
-  const fetchData = () => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => {
-        return response.json();
-      })
-
-      .then((data) => {
-        setRows(data);
-      });
-  };
-
   useEffect(() => {
+    const fetchData = () => {
+      fetch(`http://localhost:3005/api/v1/packages/${pkgId}`)
+        .then((response) => {
+          console.log(response);
+          return response.json();
+        })
+
+        .then((data) => {
+          console.log(data);
+          setRows(data);
+        });
+    };
     fetchData();
-  });
+  }, [pkgId]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -113,26 +112,53 @@ export default function PackageSearch() {
           </div>
           <div
             style={{
-              width: "800px",
+              width: "100%",
               padding: "20px",
               backgroundColor: "transparent",
             }}
           >
             <Stack direction="column" spacing={2}>
-              <PackageLabel label={"Số hiệu bưu gửi:"} />
+              <PackageLabel
+                label={"Số hiệu bưu gửi:"}
+                content={rows.packages?.packagesId}
+              />
               <Stack
                 direction={`${match ? "column" : "row"}`}
-                spacing={match ? 2 : 20}
+                spacing={match ? 2 : 8}
               >
-                <PackageLabel label={"Nơi gửi:"} />
-                <PackageLabel label={"Nơi nhận:"} />
+                <PackageLabel
+                  label={"Nơi gửi:"}
+                  content={
+                    rows.packages?.sender.senderAddr +
+                    " " +
+                    rows.packages?.sender.senderAdd
+                  }
+                />
+                <PackageLabel
+                  label={"Nơi nhận:"}
+                  content={
+                    rows.packages?.receiver.receiverAddr +
+                    " " +
+                    rows.packages?.receiver.receiverAdd
+                  }
+                />
               </Stack>
               <Stack
                 direction={`${match ? "column" : "row"}`}
-                spacing={match ? 2 : 10}
+                spacing={match ? 2 : 50}
               >
-                <PackageLabel label={"Tên bưu gửi:"} />
-                <PackageLabel label={"Loại hàng:"} />
+                <PackageLabel
+                  label={"Tên bưu gửi:"}
+                  content={rows.packages?.package.productName}
+                />
+                <PackageLabel
+                  label={"Loại hàng:"}
+                  content={
+                    rows.packages?.package.productType === "parcel"
+                      ? "Bưu kiện"
+                      : "Tài liệu"
+                  }
+                />
               </Stack>
               <PackageLabel label={"Trạng thái hiện tại:"} />
             </Stack>
