@@ -54,7 +54,6 @@ exports.getPackagesById = asyncErrorHandler(async (req, res) => {
   try {
     const packages = await Packages.findOne({ packagesId: packagesId });
     const order = await Order.findOne({ packagesId: packagesId });
-    console.log(order);
     if (!packages) {
       return res.status(404).json({
         error: "packages not found",
@@ -215,30 +214,6 @@ exports.getAllPackages = asyncErrorHandler(async (req, res) => {
   }
 });
 
-exports.getPackagesById = asyncErrorHandler(async (req, res) => {
-  const packagesId = req.params.packagesId;
-  try {
-    const packages = await Packages.findOne({ packagesId: packagesId });
-    const order = await Order.findOne({ packagesId: packagesId });
-    console.log(order);
-    if (!packages) {
-      return res.status(404).json({
-        error: "packages not found",
-      });
-    }
-
-    return res.status(200).json({
-      packages,
-      order,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      error: "Internal Server Error",
-    });
-  }
-});
-
 exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
   req,
   res
@@ -264,6 +239,31 @@ exports.getPackagesByCurrentPoint = async function getPackagesByCurrentPoint(
     res.status(500).json({
       success: false,
       message: "Đã xảy ra lỗi khi truy vấn đơn hàng theo vị trí",
+      error: error.message,
+    });
+  }
+};
+
+exports.getPackagesByLocation = async (req, res) => {
+  const { location } = req.params;
+
+  try {
+    // Truy vấn tất cả đơn hàng tại vị trí cụ thể
+    const packagesAtLocation = await Packages.find({
+      startLocation: location,
+    });
+
+    res.status(200).json({
+      status: "Success",
+      length: packagesAtLocation.length,
+      data: {
+        packages: packagesAtLocation,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: "Đã xảy ra lỗi khi truy vấn đơn hàng tại vị trí",
       error: error.message,
     });
   }
