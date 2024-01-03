@@ -20,4 +20,5 @@ router
 router
   .route("/getTransactionPointsWithoutManager")
   .get(transactionPointController.getTransactionPointsWithoutManager);
+
 module.exports = router;

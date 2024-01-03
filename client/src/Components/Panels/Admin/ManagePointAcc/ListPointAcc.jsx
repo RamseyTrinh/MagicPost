@@ -12,51 +12,50 @@ export default function ListPointAcc() {
   const [rows, setRows] = useState([]);
   const [category, setCategory] = useState(0);
 
-  const fetchData = () => {
-    if (category === 1) {
-      fetch("http://localhost:3005/api/v1/users/allTransactionAdmin")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          console.log(data);
-          setRows(
-            data.map((d) => {
-              const role = d.role;
-              let roleToVN;
-              if (role === "transactionAdmin") {
-                roleToVN = "Trưởng điểm giao dịch";
-              }
-              return { ...d, id: d._id, role: roleToVN };
-            })
-          );
-        });
-    }
-    if (category === 2) {
-      fetch("http://localhost:3005/api/v1/users/allWarehouseAdmin")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(
-            data.map((d) => {
-              const role = d.role;
-              let roleToVN;
-              if (role === "warehouseAdmin") {
-                roleToVN = "Trưởng điểm tập kết";
-              }
-              return { ...d, id: d._id, role: roleToVN };
-            })
-          );
-        });
-    }
-  };
-
   useEffect(() => {
+    const fetchData = () => {
+      if (category === 1) {
+        fetch("http://localhost:3005/api/v1/users/allManager/transaction")
+          .then((response) => {
+            return response.json();
+          })
+
+          .then((data) => {
+            console.log(data);
+            setRows(
+              data.map((d) => {
+                const role = d.role;
+                let roleToVN;
+                if (role === "transactionAdmin") {
+                  roleToVN = "Trưởng điểm giao dịch";
+                }
+                return { ...d, id: d._id, role: roleToVN };
+              })
+            );
+          });
+      }
+      if (category === 2) {
+        fetch("http://localhost:3005/api/v1/users/allManager/warehouse")
+          .then((response) => {
+            return response.json();
+          })
+
+          .then((data) => {
+            setRows(
+              data.map((d) => {
+                const role = d.role;
+                let roleToVN;
+                if (role === "warehouseAdmin") {
+                  roleToVN = "Trưởng điểm tập kết";
+                }
+                return { ...d, id: d._id, role: roleToVN };
+              })
+            );
+          });
+      }
+    };
     fetchData();
-  });
+  }, [category]);
 
   const columns = [
     { field: "userId", headerName: "Mã nhân viên", width: 200 },

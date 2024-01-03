@@ -88,13 +88,6 @@ export default function AccountInfo() {
             Icon={AssignmentIcon}
           />
           <DisplayInfo value={user.location} Icon={PlaceIcon} />
-          <Button
-            variant="contained"
-            style={{ fontWeight: "bold", background: "#003e29" }}
-            sx={{ mb: 4 }}
-          >
-            ĐỔI MẬT KHẨU
-          </Button>
         </Stack>
       </Paper>
     </div>
