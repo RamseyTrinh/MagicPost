@@ -1,4 +1,4 @@
-import CreatePointAdmin from "./CreatePointAdmin.tsx";
+import CreatePointAdmin from "./CreatePointAdmin.jsx";
 import ListPointAcc from "./ListPointAcc.jsx";
 import Divider from "@mui/material/Divider";
 

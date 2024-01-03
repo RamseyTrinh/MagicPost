@@ -4,35 +4,62 @@ import { DataGrid } from "@mui/x-data-grid";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { useAuthUser } from "react-auth-kit";
 
 export default function GatherManager() {
   const [rows, setRows] = useState([]);
 
-  const fetchData = () => {
-    fetch("http://localhost:3005/api/v1/users/allWarehouseStaff/Miền Bắc")
-      .then((response) => {
-        return response.json();
-      })
-
-      .then((data) => {
-        setRows(
-          data.users?.map((d) => {
-            return { id: d._id, ...d };
-          })
-        );
-      });
-  };
+  const auth = useAuthUser();
+  const user = auth()?.data;
 
   useEffect(() => {
+    const fetchData = () => {
+      fetch(
+        `http://localhost:3005/api/v1/users/allWarehouseStaff/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          console.log(data);
+          setRows(
+            data.users?.map((d) => {
+              return { id: d.userId, name: d.name, email: d.email };
+            })
+          );
+        });
+    };
     fetchData();
-  });
+  }, []);
 
   const columns = [
     { field: "id", headerName: "Mã nhân viên", width: 150 },
     { field: "name", headerName: "Họ và tên", width: 200 },
-    { field: "phoneNumber", headerName: "Số điện thoại", width: 150 },
     { field: "email", headerName: "Email", width: 250 },
-    { field: "home", headerName: "Địa chỉ", width: 400 },
+    {
+      field: "delete",
+      headerName: "Xóa tài khoản",
+      width: 200,
+      sortable: false,
+      renderCell: (params) => (
+        <Button
+          onClick={async () => {
+            console.log(params);
+            try {
+              const result = await axios.delete(
+                `http://localhost:3005/api/v1/users/deleteUser/${params.id}`
+              );
+              console.log(result);
+            } catch (error) {}
+          }}
+        >
+          Xóa tài khoản
+        </Button>
+      ),
+    },
+
     // {
     //   field: "street",
     //   headerName: "Street",
@@ -74,7 +101,7 @@ export default function GatherManager() {
               id="confirmationTable"
               sx={{
                 mb: 4,
-                width: "100%",
+                width: "60%",
                 background: "#fdfdfd",
                 maxHeight: "55vh",
               }}
@@ -86,16 +113,7 @@ export default function GatherManager() {
                 },
               }}
               pageSizeOptions={[5, 10, 15, 25, 30]}
-              checkboxSelection
             />
-
-            <Button
-              variant="contained"
-              sx={{ width: "150px" }}
-              style={{ fontWeight: "bold", background: "#003e29" }}
-            >
-              Xóa tài khoản
-            </Button>
           </Stack>
         </Paper>
       </div>

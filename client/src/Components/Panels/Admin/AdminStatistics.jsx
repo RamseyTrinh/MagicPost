@@ -10,39 +10,37 @@ import InputLabel from "@mui/material/InputLabel";
 
 export default function AdminStatistics() {
   const [rows, setRows] = useState([]);
-  const [category, setCategory] = useState(0);
-
-  const fetchData = () => {
-    if (category === 1) {
-      fetch("https://jsonplaceholder.typicode.com/users")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(data);
-        });
-    }
-    if (category === 2) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
-        .then((response) => {
-          return response.json();
-        })
-
-        .then((data) => {
-          setRows(data);
-        });
-    }
-  };
+  // const [category, setCategory] = useState(0);
 
   useEffect(() => {
+    const fetchData = () => {
+      fetch("http://localhost:3005/api/v1/packages/getAllPackages")
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          // console.log(data);
+          setRows(
+            data.data.packages.map((d) => {
+              return {
+                id: d.packagesId,
+                packagesId: d.packagesId,
+                productName: d.package.productName,
+                productType: d.package.productType,
+              };
+            })
+          );
+          console.log(data.data.packages);
+        });
+    };
     fetchData();
-  });
+  }, []);
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "email", headerName: "Email", width: 250 },
+    { field: "packagesId", headerName: "Mã bưu gửi", width: 150 },
+    { field: "productName", headerName: "Tên bưu gửi", width: 150 },
+    { field: "productType", headerName: "Loại bưu gửi", width: 250 },
     // {
     //   field: "street",
     //   headerName: "Street",
@@ -52,10 +50,6 @@ export default function AdminStatistics() {
     //   valueGetter: (params) => params.row.address.street,
     // },
   ];
-
-  const handleChange = (e) => {
-    setCategory(e.target.value);
-  };
 
   return (
     <div
@@ -90,7 +84,7 @@ export default function AdminStatistics() {
             >
               THỐNG KÊ
             </Typography>
-            <Stack
+            {/* <Stack
               direction="row"
               spacing={4}
               sx={{ alignItems: "center", mb: 4 }}
@@ -124,7 +118,7 @@ export default function AdminStatistics() {
                   <MenuItem value={2}>Hàng nhận</MenuItem>
                 </Select>
               </FormControl>
-            </Stack>
+            </Stack> */}
             <DataGrid
               id="confirmationTable"
               sx={{

@@ -8,6 +8,7 @@ import "../../../Assets/Styles/Table/Table.css";
 import { Link, useSearchParams } from "react-router-dom";
 import WestIcon from "@mui/icons-material/West";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import PackageRoutes from "./PackageRoutes.jsx";
 
 export default function PackageSearch() {
   const [rows, setRows] = useState([]);
@@ -31,31 +32,15 @@ export default function PackageSearch() {
     const fetchData = () => {
       fetch(`http://localhost:3005/api/v1/packages/${pkgId}`)
         .then((response) => {
-          console.log(response);
           return response.json();
         })
 
         .then((data) => {
-          console.log(data);
           setRows(data);
         });
     };
     fetchData();
   }, [pkgId]);
-
-  const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "email", headerName: "Email", width: 250 },
-    // {
-    //   field: "street",
-    //   headerName: "Street",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 150,
-    //   valueGetter: (params) => params.row.address.street,
-    // },
-  ];
 
   return (
     <div
@@ -128,19 +113,11 @@ export default function PackageSearch() {
               >
                 <PackageLabel
                   label={"Nơi gửi:"}
-                  content={
-                    rows.packages?.sender.senderAddr +
-                    " " +
-                    rows.packages?.sender.senderAdd
-                  }
+                  content={rows.packages?.sender.senderAdd}
                 />
                 <PackageLabel
                   label={"Nơi nhận:"}
-                  content={
-                    rows.packages?.receiver.receiverAddr +
-                    " " +
-                    rows.packages?.receiver.receiverAdd
-                  }
+                  content={rows.packages?.receiver.receiverAdd}
                 />
               </Stack>
               <Stack
@@ -160,10 +137,13 @@ export default function PackageSearch() {
                   }
                 />
               </Stack>
-              <PackageLabel label={"Trạng thái hiện tại:"} />
+              <PackageLabel
+                label={"Trạng thái hiện tại:"}
+                content={rows.order?.orderStatus}
+              />
             </Stack>
           </div>
-          <Paper sx={{ background: "#faf6ed", padding: 2 }}>
+          {/* <Paper sx={{ background: "#faf6ed", padding: 2 }}>
             <Typography
               sx={{
                 textAlign: "center",
@@ -193,7 +173,8 @@ export default function PackageSearch() {
               }}
               pageSizeOptions={[5, 10, 15, 20, 25]}
             />
-          </Paper>
+          </Paper> */}
+          <PackageRoutes pkgId={pkgId} />
         </Stack>
       </Paper>
     </div>
