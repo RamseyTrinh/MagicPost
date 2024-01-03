@@ -96,18 +96,21 @@ exports.getWarehouseStaff = async (req, res) => {
   try {
     const location = req.params.location;
     const users = await User.find({
-      location: location,
+      // location: location,
       role: "warehouseStaff",
     });
+
     if (!users || users.length === 0) {
       return res.status(404).json({
         error: `Không có nhân viên đó tại điểm này`,
       });
     }
 
+    const userIds = users.map((user) => user._id);
+
     return res.status(200).json({
-      length: users.length,
-      users: users,
+      length: userIds.length,
+      userIds,
     });
   } catch (error) {
     console.error(error);
