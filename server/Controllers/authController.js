@@ -41,10 +41,8 @@ exports.getUserById = async function getUserById(req, res) {
 
 exports.getTransactionAdmin = async (_, res) => {
   try {
-    console.log("nguu");
     const specificRoles = ["transactionAdmin"];
     const users = await User.find({ role: specificRoles });
-    console.log(users);
     return res.status(200).json(users);
   } catch (error) {
     console.error(error);
@@ -157,6 +155,7 @@ exports.addTransactionAdmin = async (req, res) => {
     user,
   });
 };
+
 exports.addWarehouseAdmin = async (req, res) => {
   const user = req.body;
   try {
@@ -165,6 +164,10 @@ exports.addWarehouseAdmin = async (req, res) => {
       userId: newUserId,
       role: "warehouseAdmin",
       name: user.pointAdminName,
+      location: user.address,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      home: user.specificAdd,
     });
     await User.create(newUser);
   } catch (err) {
@@ -266,9 +269,7 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
 // Hàm xóa tài khoản người dùng
 exports.deleteUser = async (req, res, next) => {
   const userId = req.params;
-
-  const deletedUser = await User.findByIdAndDelete(userId.id);
-
+  const deletedUser = await User.findOneAndDelete(userId);
   if (!deletedUser) {
     const error = new CustomError("Người dùng không tìm thấy", 404);
     return next(error);
@@ -276,5 +277,6 @@ exports.deleteUser = async (req, res, next) => {
   res.status(204).json({
     status: "success",
     data: null,
+    message: "Đã xóa thành công",
   });
 };

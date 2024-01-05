@@ -13,11 +13,14 @@ const userAccountSchema = new mongoose.Schema({
 const transactionPointSchema = new mongoose.Schema({
   transactionPointId: {
     type: String,
+    unique: true,
+    lowercase: true,
   },
   name: {
     type: String,
     trim: true,
     unique: true,
+    lowercase: true,
   },
   location: {
     type: String,

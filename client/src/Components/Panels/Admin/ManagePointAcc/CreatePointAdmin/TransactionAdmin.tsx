@@ -22,22 +22,37 @@ export default function TransactionAdmin() {
     email: string;
     password: string;
   };
+
   const [showPassword, setShowPassword] = useState(false);
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
-  const { register, handleSubmit } = useForm<FormValues>();
+
+  const { register, handleSubmit, setError, formState, reset } =
+    useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
     console.log(data);
 
     try {
       const result = await axios.post(
-        "http://localhost:3005/api/v1/user/addTransactionAdmin",
+        "http://localhost:3005/api/v1/users/addTransactionAdmin",
         data
       );
-      console.log(result);
-    } catch (error) {}
+      window.alert("Đã tạo thành công!");
+      reset();
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setError("email", {
+          type: "manual",
+          message: "Email này không hợp lệ hoặc đã trùng với email khác",
+        });
+      } else {
+        console.log("vcl");
+        console.error(error);
+      }
+      console.error(error.response.data);
+    }
   };
 
   return (
@@ -108,6 +123,8 @@ export default function TransactionAdmin() {
                   variant="outlined"
                   fullWidth
                   required
+                  error={!!formState.errors.email}
+                  helperText={formState.errors.email?.message}
                   sx={{ mb: 3 }}
                   {...register("email")}
                 />

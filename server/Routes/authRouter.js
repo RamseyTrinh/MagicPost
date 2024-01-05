@@ -32,7 +32,7 @@ router
   .route("/allWarehouseStaff/:location")
   .get(authController.getWarehouseStaff);
 
-router.route("/deleteuser/:userId").delete(authController.deleteUser);
+router.route("/delete/:userId").delete(authController.deleteUser);
 
 router.route("/signup").post(authController.signup);
 module.exports = router;
