@@ -60,19 +60,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [false, "Vui lòng nhập mật khẩu"],
-    minlength: 8,
-    select: false,
-  },
-  confirmPassword: {
-    type: String,
-    required: [false, "Vui lòng xác nhận lại mật khẩu"],
-    validate: {
-      validator: function (val) {
-        return val == this.password;
-      },
-      message: "Mật khẩu không trùng nhau",
-    },
   },
 });
 

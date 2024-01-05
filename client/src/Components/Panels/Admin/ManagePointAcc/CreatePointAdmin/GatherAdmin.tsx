@@ -31,11 +31,13 @@ export default function GatherAdmin() {
 
     try {
       const result = await axios.post(
-        "http://localhost:3005/api/v1/user/addnewUser",
+        "http://localhost:3005/api/v1/user/addWarehouseAdmin",
         data
       );
       console.log(result);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

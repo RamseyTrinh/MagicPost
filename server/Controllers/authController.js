@@ -4,7 +4,7 @@ const asyncErrorHandler = require("../Utils/asyncErrorHandler");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { randomBytes } = require("crypto");
-// const bcrypt = require("bcryptjs");
+
 dotenv.config();
 
 const DEFAULT_USER_ID = 0;
@@ -129,18 +129,42 @@ function generateUserId() {
 exports.addTransactionAdmin = async (req, res) => {
   const user = req.body;
   try {
-    if (user.role === "transactionAdmin" || user.role === "warehouseAdmin") {
-      const manager = await User.findOne({
-        location: user.location,
-        role: user.role,
-      });
-      if (manager) {
-        throw new Error("Điểm này đã có quản lý!");
-      }
-    }
+    // const manager = await User.findOne({
+    //   location: user.location,
+    //   role: user.role,
+    // });
+    // if (manager) {
+    //   throw new Error("Điểm này đã có quản lý!");
+    // }
     const newUserId = generateUserId();
     const newUser = Object.assign(user, {
       userId: newUserId,
+      role: "transactionAdmin",
+      name: user.pointAdminName,
+      location: user.address,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      home: user.specificAdd,
+    });
+    await User.create(newUser);
+  } catch (err) {
+    return res.status(400).json({
+      error: err.message,
+    });
+  }
+  return res.status(201).json({
+    status: "create success",
+    user,
+  });
+};
+exports.addWarehouseAdmin = async (req, res) => {
+  const user = req.body;
+  try {
+    const newUserId = generateUserId();
+    const newUser = Object.assign(user, {
+      userId: newUserId,
+      role: "warehouseAdmin",
+      name: user.pointAdminName,
     });
     await User.create(newUser);
   } catch (err) {
@@ -242,7 +266,6 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
 // Hàm xóa tài khoản người dùng
 exports.deleteUser = async (req, res, next) => {
   const userId = req.params;
-
 
   const deletedUser = await User.findByIdAndDelete(userId.id);
 

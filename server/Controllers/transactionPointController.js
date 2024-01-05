@@ -194,7 +194,7 @@ exports.createPoint = async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({
-      status: "fail",
+      status: "Trùng tên rồi!",
       message: error.message,
     });
   }

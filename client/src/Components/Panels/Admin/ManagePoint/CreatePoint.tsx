@@ -36,7 +36,9 @@ export default function ManagePoint() {
       );
 
       console.log(result);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
   };
 
   return (

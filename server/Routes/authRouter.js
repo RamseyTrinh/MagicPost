@@ -3,13 +3,17 @@ const authController = require("../Controllers/authController");
 
 const router = express.Router();
 
+// Đăng nhập
 router.route("/login").post(authController.login);
-router.route("/signup").post(authController.signup);
 
+// Tạo thêm transactionAdmin
 router.route("/addTransactionAdmin").post(authController.addTransactionAdmin);
+router.route("/addWarehouseAdmin").post(authController.addWarehouseAdmin);
+
 router
   .route("/addNewUserByTransactionAdmin")
   .post(authController.addNewUserByTransactionAdmin);
+
 router
   .route("/addNewUserByWarehouseAdmin")
   .post(authController.addNewUserByWarehouseAdmin);
@@ -29,4 +33,6 @@ router
   .get(authController.getWarehouseStaff);
 
 router.route("/deleteuser/:userId").delete(authController.deleteUser);
+
+router.route("/signup").post(authController.signup);
 module.exports = router;

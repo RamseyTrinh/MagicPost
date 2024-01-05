@@ -2,14 +2,14 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import React from "react";
+import React, { useState } from "react";
 import SelectAdd from "../../../../Funtions/SelectAdd/SelectAdd";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import axios from "axios";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import "../../../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
@@ -21,9 +21,11 @@ export default function TransactionAdmin() {
     specificAdd: string;
     email: string;
     password: string;
-    // pointAssigned: string;
   };
-
+  const [showPassword, setShowPassword] = useState(false);
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
   const { register, handleSubmit } = useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
@@ -31,7 +33,7 @@ export default function TransactionAdmin() {
 
     try {
       const result = await axios.post(
-        "http://localhost:3005/api/v1/user/addnewUser",
+        "http://localhost:3005/api/v1/user/addTransactionAdmin",
         data
       );
       console.log(result);
@@ -66,7 +68,7 @@ export default function TransactionAdmin() {
             mb: 1,
           }}
         >
-          TẠO TÀI KHOẢN TRƯỞNG ĐIỂM
+          TẠO TÀI KHOẢN TRƯỞNG ĐIỂM GIAO DỊCH
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack direction="column">
@@ -115,22 +117,17 @@ export default function TransactionAdmin() {
                   variant="outlined"
                   fullWidth
                   required
+                  type={showPassword ? "text" : "password"}
                   sx={{ mb: 3 }}
                   {...register("password")}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={handleTogglePassword} edge="end">
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    ),
+                  }}
                 />
-              </Stack>
-              <Stack direction="row" spacing={2}>
-                {/* <FormControl sx={{ width: "100%" }}>
-                  <InputLabel>Tại điểm</InputLabel>
-                  <Select
-                    defaultValue=""
-                    label="Tại điểm"
-                      {...register("pointType")}
-                  >
-                    <MenuItem value={"GD"}>Điểm giao dịch</MenuItem>
-                    <MenuItem value={"TK"}>Điểm tập kết</MenuItem>
-                  </Select>
-                </FormControl> */}
               </Stack>
             </Paper>
             <Button
