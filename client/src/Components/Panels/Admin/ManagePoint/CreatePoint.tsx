@@ -24,7 +24,8 @@ export default function ManagePoint() {
     pointID: string;
   };
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit, setError, formState, reset } =
+    useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
     console.log(data);
@@ -34,9 +35,23 @@ export default function ManagePoint() {
         "http://localhost:3005/api/v1/transactionPoint/newPoint",
         data
       );
+      window.alert("Đã tạo thành công!");
+      reset();
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.errors) {
+        // const errors = error.response.data.errors;
 
-      console.log(result);
-    } catch (error) {}
+        // if (errors.name) {
+        setError("name", {
+          type: "manual",
+          message: "Tên điểm đã tồn tại",
+        });
+        // }
+      } else {
+        console.error(error);
+      }
+      console.log(error);
+    }
   };
 
   return (
@@ -79,6 +94,8 @@ export default function ManagePoint() {
                   variant="outlined"
                   fullWidth
                   required
+                  error={!!formState.errors.name}
+                  helperText={formState.errors.name?.message}
                   {...register("name")}
                 />
               </Stack>

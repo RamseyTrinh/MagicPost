@@ -4,11 +4,15 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import SelectAdd from "../../Funtions/SelectAdd/SelectAdd.jsx";
 import FormHelperText from "@mui/material/FormHelperText";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
 import { useAuthUser } from "react-auth-kit";
 import axios from "axios";
+
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import "../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
@@ -25,11 +29,17 @@ export default function CreateAccount() {
     password: string;
     transactionPoint: string;
   };
-
+  const [showPassword, setShowPassword] = useState(false);
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
+    formState,
+    reset,
+    setError,
   } = useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
@@ -43,10 +53,20 @@ export default function CreateAccount() {
         data
       );
       console.log(result);
-    } catch (error) {}
+      window.alert("Đã tạo thành công");
+      reset();
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setError("email", {
+          type: "manual",
+          message: "Email này không hợp lệ hoặc đã trùng với email khác",
+        });
+      } else {
+        console.error(error);
+      }
+      console.log(error);
+    }
   };
-
-  const handleErrors = (errors) => {};
 
   return (
     <div
@@ -78,12 +98,13 @@ export default function CreateAccount() {
         >
           TẠO TÀI KHOẢN
         </Typography>
-        <form onSubmit={handleSubmit(onSubmit, handleErrors)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack direction="column">
             <Paper sx={{ height: "590px", padding: 3, background: "#fdfdfd" }}>
               <FormHelperText sx={{ textAlign: "right", color: "red" }}>
                 {errors?.phoneNumber && errors.phoneNumber.message}
               </FormHelperText>
+
               <Stack direction="row" spacing={2} sx={{ mb: 5 }}>
                 <TextField
                   id="outlined-basic"
@@ -129,6 +150,8 @@ export default function CreateAccount() {
                   variant="outlined"
                   fullWidth
                   required
+                  error={!!formState.errors.email}
+                  helperText={formState.errors.email?.message}
                   sx={{ mb: 3 }}
                   {...register("email")}
                 />
@@ -138,8 +161,16 @@ export default function CreateAccount() {
                   variant="outlined"
                   fullWidth
                   required
+                  type={showPassword ? "text" : "password"}
                   sx={{ mb: 3 }}
                   {...register("password")}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={handleTogglePassword} edge="end">
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    ),
+                  }}
                 />
               </Stack>
               <TextField

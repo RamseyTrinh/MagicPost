@@ -22,7 +22,14 @@ export default function StaffStatistics() {
       .then((data) => {
         setRows(
           data.users?.map((d) => {
-            return { id: d._id, ...d };
+            return {
+              id: d._id,
+              userId: d.userId,
+              name: d.name,
+              phoneNumber: d.phoneNumber,
+              email: d.email,
+              home: d.address,
+            };
           })
         );
       });

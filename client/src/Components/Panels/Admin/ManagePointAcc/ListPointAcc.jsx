@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import axios from "axios";
 
 export default function ListPointAcc() {
   const [rows, setRows] = useState([]);
@@ -58,20 +59,84 @@ export default function ListPointAcc() {
   }, [category]);
 
   const columns = [
-    { field: "userId", headerName: "Mã nhân viên", width: 200 },
+    { field: "userId", headerName: "Mã nhân viên", width: 150 },
     { field: "name", headerName: "Họ và tên", width: 200 },
-    { field: "location", headerName: "Địa điểm", width: 150 },
+    { field: "address", headerName: "Nơi tạm trú", width: 300 },
+    { field: "location", headerName: "Làm việc tại", width: 150 },
     { field: "role", headerName: "Chức danh", width: 200 },
     { field: "email", headerName: "Email", width: 250 },
-    // {
-    //   field: "street",
-    //   headerName: "Street",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 150,
-    //   valueGetter: (params) => params.row.address.street,
-    // },
+    {
+      field: "actions",
+      headerName: "Actions",
+      sortable: false,
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          onClick={() => handleDelete(params.row.userId)}
+          sx={{ fontWeight: "bold", background: "#ff0000" }}
+        >
+          Xóa
+        </Button>
+      ),
+    },
   ];
+  const handleDelete = async (userId) => {
+    const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa?");
+    if (isConfirmed) {
+      try {
+        const result = await axios.delete(
+          `http://localhost:3005/api/v1/users/delete/${userId}`
+        );
+        console.log(result);
+        fetchData();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const fetchData = () => {
+    if (category === 1) {
+      fetch("http://localhost:3005/api/v1/users/allManager/transaction")
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          console.log(data);
+          setRows(
+            data.map((d) => {
+              const role = d.role;
+              let roleToVN;
+              if (role === "transactionAdmin") {
+                roleToVN = "Trưởng điểm giao dịch";
+              }
+              return { ...d, id: d._id, role: roleToVN };
+            })
+          );
+        });
+    }
+    if (category === 2) {
+      fetch("http://localhost:3005/api/v1/users/allManager/warehouse")
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          setRows(
+            data.map((d) => {
+              const role = d.role;
+              let roleToVN;
+              if (role === "warehouseAdmin") {
+                roleToVN = "Trưởng điểm tập kết";
+              }
+              return { ...d, id: d._id, role: roleToVN };
+            })
+          );
+        });
+    }
+  };
 
   const handleChange = (e) => {
     setCategory(e.target.value);
@@ -118,19 +183,12 @@ export default function ListPointAcc() {
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
+              paginationModel: { page: 0, pageSize: 10 },
             },
           }}
-          pageSizeOptions={[5, 10, 15, 25, 30]}
+          pageSizeOptions={[10, 15, 25, 30]}
           checkboxSelection
         />
-        <Button
-          variant="contained"
-          sx={{ width: "150px" }}
-          style={{ fontWeight: "bold", background: "#003e29" }}
-        >
-          XÓA TÀI KHOẢN
-        </Button>
       </Stack>
     </Paper>
   );

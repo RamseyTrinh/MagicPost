@@ -5,16 +5,12 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-//name, email, password, confirmPassword, photo
 const userSchema = new mongoose.Schema({
   userId: {
     type: String,
-    unique: true,
   },
   name: {
     type: String,
-    required: [true, "Vui lòng nhập tên nhân viên"],
-    trim: true,
   },
   phoneNumber: {
     type: String,
@@ -50,7 +46,6 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, "Vui lòng nhập email"],
     unique: true,
     lowercase: true,
     validate: [validator.isEmail, "Không phải địa chỉ email hợp lệ"],
@@ -60,19 +55,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [false, "Vui lòng nhập mật khẩu"],
-    minlength: 8,
-    select: false,
-  },
-  confirmPassword: {
-    type: String,
-    required: [false, "Vui lòng xác nhận lại mật khẩu"],
-    validate: {
-      validator: function (val) {
-        return val == this.password;
-      },
-      message: "Mật khẩu không trùng nhau",
-    },
   },
 });
 

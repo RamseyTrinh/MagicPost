@@ -2,14 +2,20 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import React from "react";
+import React, { useState } from "react";
 import SelectAdd from "../../../../Funtions/SelectAdd/SelectAdd";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import axios from "axios";
+
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import "../../../../../Assets/Styles/CreateAcc/CreateAcc.css";
 
@@ -21,21 +27,104 @@ export default function TransactionAdmin() {
     specificAdd: string;
     email: string;
     password: string;
-    // pointAssigned: string;
+    location: string;
+  };
+  const provinces = [
+    "An Giang",
+    "Bà Rịa - Vũng Tàu",
+    "Bắc Giang",
+    "Bắc Kạn",
+    "Bạc Liêu",
+    "Bắc Ninh",
+    "Bến Tre",
+    "Bình Định",
+    "Bình Dương",
+    "Bình Phước",
+    "Bình Thuận",
+    "Cà Mau",
+    "Cần Thơ",
+    "Cao Bằng",
+    "Đà Nẵng",
+    "Đắk Lắk",
+    "Đắk Nông",
+    "Điện Biên",
+    "Đồng Nai",
+    "Đồng Tháp",
+    "Gia Lai",
+    "Hà Giang",
+    "Hà Nam",
+    "Hà Nội",
+    "Hà Tĩnh",
+    "Hải Dương",
+    "Hải Phòng",
+    "Hậu Giang",
+    "Hòa Bình",
+    "Hưng Yên",
+    "Khánh Hòa",
+    "Kiên Giang",
+    "Kon Tum",
+    "Lai Châu",
+    "Lâm Đồng",
+    "Lạng Sơn",
+    "Lào Cai",
+    "Long An",
+    "Nam Định",
+    "Nghệ An",
+    "Ninh Bình",
+    "Ninh Thuận",
+    "Phú Thọ",
+    "Phú Yên",
+    "Quảng Bình",
+    "Quảng Nam",
+    "Quảng Ngãi",
+    "Quảng Ninh",
+    "Quảng Trị",
+    "Sóc Trăng",
+    "Sơn La",
+    "Tây Ninh",
+    "Thái Bình",
+    "Thái Nguyên",
+    "Thanh Hóa",
+    "Thừa Thiên Huế",
+    "Tiền Giang",
+    "TP.Hồ Chí Minh",
+    "Trà Vinh",
+    "Tuyên Quang",
+    "Vĩnh Long",
+    "Vĩnh Phúc",
+    "Yên Bái",
+  ];
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
   };
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit, setError, formState, reset } =
+    useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
     console.log(data);
 
     try {
       const result = await axios.post(
-        "http://localhost:3005/api/v1/user/addnewUser",
+        "http://localhost:3005/api/v1/users/addTransactionAdmin",
         data
       );
-      console.log(result);
-    } catch (error) {}
+      window.alert("Đã tạo thành công!");
+      reset();
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setError("email", {
+          type: "manual",
+          message: "Email này không hợp lệ hoặc đã trùng với email khác",
+        });
+      } else {
+        console.log("vcl");
+        console.error(error);
+      }
+      console.error(error.response.data);
+    }
   };
 
   return (
@@ -66,7 +155,7 @@ export default function TransactionAdmin() {
             mb: 1,
           }}
         >
-          TẠO TÀI KHOẢN TRƯỞNG ĐIỂM
+          TẠO TÀI KHOẢN TRƯỞNG ĐIỂM GIAO DỊCH
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack direction="column">
@@ -106,6 +195,8 @@ export default function TransactionAdmin() {
                   variant="outlined"
                   fullWidth
                   required
+                  error={!!formState.errors.email}
+                  helperText={formState.errors.email?.message}
                   sx={{ mb: 3 }}
                   {...register("email")}
                 />
@@ -115,22 +206,34 @@ export default function TransactionAdmin() {
                   variant="outlined"
                   fullWidth
                   required
+                  type={showPassword ? "text" : "password"}
                   sx={{ mb: 3 }}
                   {...register("password")}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={handleTogglePassword} edge="end">
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    ),
+                  }}
                 />
               </Stack>
-              <Stack direction="row" spacing={2}>
-                {/* <FormControl sx={{ width: "100%" }}>
-                  <InputLabel>Tại điểm</InputLabel>
+              <Stack>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <InputLabel>Tại điểm giao dịch</InputLabel>
                   <Select
-                    defaultValue=""
-                    label="Tại điểm"
-                      {...register("pointType")}
+                    label="location"
+                    displayEmpty
+                    sx={{ background: "#fdfdfd" }}
+                    {...register("location")}
                   >
-                    <MenuItem value={"GD"}>Điểm giao dịch</MenuItem>
-                    <MenuItem value={"TK"}>Điểm tập kết</MenuItem>
+                    {provinces.map((province, index) => (
+                      <MenuItem key={index} value={province}>
+                        {province}
+                      </MenuItem>
+                    ))}
                   </Select>
-                </FormControl> */}
+                </FormControl>
               </Stack>
             </Paper>
             <Button

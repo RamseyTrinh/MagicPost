@@ -10,7 +10,7 @@ import InputLabel from "@mui/material/InputLabel";
 
 export default function AdminStatistics() {
   const [rows, setRows] = useState([]);
-  // const [category, setCategory] = useState(0);
+  const [category, setCategory] = useState(0);
 
   useEffect(() => {
     const fetchData = () => {
@@ -20,7 +20,6 @@ export default function AdminStatistics() {
         })
 
         .then((data) => {
-          // console.log(data);
           setRows(
             data.data.packages.map((d) => {
               return {
@@ -28,6 +27,11 @@ export default function AdminStatistics() {
                 packagesId: d.packagesId,
                 productName: d.package.productName,
                 productType: d.package.productType,
+                senderName: d.sender.senderName,
+                senderAdd: d.sender.senderAdd,
+                receiverName: d.receiver.receiverName,
+                receiverAdd: d.receiver.receiverAdd,
+                cost: d.cost.totalCost,
               };
             })
           );
@@ -39,8 +43,14 @@ export default function AdminStatistics() {
 
   const columns = [
     { field: "packagesId", headerName: "Mã bưu gửi", width: 150 },
-    { field: "productName", headerName: "Tên bưu gửi", width: 150 },
-    { field: "productType", headerName: "Loại bưu gửi", width: 250 },
+    { field: "productName", headerName: "Tên bưu gửi", width: 180 },
+    { field: "productType", headerName: "Loại", width: 100 },
+    { field: "senderName", headerName: "Người gửi", width: 180 },
+    { field: "senderAdd", headerName: "Nơi gửi", width: 280 },
+    { field: "receiverName", headerName: "Người nhận", width: 180 },
+    { field: "receiverAdd", headerName: "Nơi nhận", width: 280 },
+    { field: "cost", headerName: "Giá tiền", width: 100 },
+
     // {
     //   field: "street",
     //   headerName: "Street",
@@ -50,6 +60,9 @@ export default function AdminStatistics() {
     //   valueGetter: (params) => params.row.address.street,
     // },
   ];
+  const handleChange = (e) => {
+    setCategory(e.target.value);
+  };
 
   return (
     <div
@@ -84,26 +97,11 @@ export default function AdminStatistics() {
             >
               THỐNG KÊ
             </Typography>
-            {/* <Stack
+            <Stack
               direction="row"
               spacing={4}
               sx={{ alignItems: "center", mb: 4 }}
             >
-              <FormControl sx={{ minWidth: 120 }}>
-                <InputLabel>Nơi</InputLabel>
-                <Select
-                  label="Nơi"
-                  //   value={category}
-                  //   onChange={handleChange}
-                  value={3}
-                  displayEmpty
-                  sx={{ width: "160px", background: "#fdfdfd" }}
-                >
-                  <MenuItem value={3}>Toàn quốc</MenuItem>
-                  <MenuItem value={6}>Điểm giao dịch</MenuItem>
-                  <MenuItem value={4}>Điểm tập kết</MenuItem>
-                </Select>
-              </FormControl>
               <FormControl sx={{ minWidth: 120 }}>
                 <InputLabel>Loại hàng</InputLabel>
                 <Select
@@ -111,14 +109,14 @@ export default function AdminStatistics() {
                   value={category}
                   onChange={handleChange}
                   displayEmpty
-                  sx={{ width: "150px", background: "#fdfdfd" }}
+                  sx={{ width: "300px", background: "#fdfdfd" }}
                 >
-                  <MenuItem value={0}>Tổng</MenuItem>
-                  <MenuItem value={1}>Hàng gủi</MenuItem>
-                  <MenuItem value={2}>Hàng nhận</MenuItem>
+                  <MenuItem value={0}>Tổng hàng </MenuItem>
+                  <MenuItem value={1}>Hàng gửi thành công</MenuItem>
+                  <MenuItem value={2}>Hàng gửi không thành công</MenuItem>
                 </Select>
               </FormControl>
-            </Stack> */}
+            </Stack>
             <DataGrid
               id="confirmationTable"
               sx={{
@@ -131,7 +129,7 @@ export default function AdminStatistics() {
               columns={columns}
               initialState={{
                 pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
+                  paginationModel: { page: 0, pageSize: 50 },
                 },
               }}
               pageSizeOptions={[5, 10, 15, 20, 25]}

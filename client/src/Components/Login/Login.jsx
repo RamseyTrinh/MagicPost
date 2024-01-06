@@ -49,7 +49,6 @@ export default function Login() {
           ) {
             navigate("/menu");
           }
-          // console.log(result.data.role);
           setError("");
         }
       })

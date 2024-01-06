@@ -4,7 +4,7 @@ const asyncErrorHandler = require("../Utils/asyncErrorHandler");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { randomBytes } = require("crypto");
-// const bcrypt = require("bcryptjs");
+
 dotenv.config();
 
 const DEFAULT_USER_ID = 0;
@@ -14,13 +14,20 @@ const signToken = (id) => {
     expiresIn: process.env.LOGIN_EXPIRES,
   });
 };
+function extractLocation(address) {
+  const regex = /, (Tỉnh |Thành phố )\s*([^,]+)/;
+  const match = address.match(regex);
+  if (match && match[2]) {
+    return match[2].trim();
+  }
 
-exports.getAllUsers = async function getAllUsers(req, res) {
+  return null;
+}
+
+exports.getAllUsers = async (req, res) => {
   try {
-    // Truy vấn tất cả người dùng từ cơ sở dữ liệu
     const users = await User.find();
 
-    // Trả về danh sách người dùng
     return res.status(200).json(users);
   } catch (error) {
     console.error(error);
@@ -41,10 +48,8 @@ exports.getUserById = async function getUserById(req, res) {
 
 exports.getTransactionAdmin = async (_, res) => {
   try {
-    console.log("nguu");
     const specificRoles = ["transactionAdmin"];
     const users = await User.find({ role: specificRoles });
-    console.log(users);
     return res.status(200).json(users);
   } catch (error) {
     console.error(error);
@@ -80,10 +85,9 @@ exports.getTransactionStaff = async (req, res) => {
         error: `Không có nhân viên tại điểm này`,
       });
     }
-
     return res.status(200).json({
-      length: users.length,
-      users: users,
+      status: "Success",
+      users,
     });
   } catch (error) {
     console.error(error);
@@ -99,15 +103,17 @@ exports.getWarehouseStaff = async (req, res) => {
       location: location,
       role: "warehouseStaff",
     });
+
     if (!users || users.length === 0) {
       return res.status(404).json({
         error: `Không có nhân viên đó tại điểm này`,
       });
     }
 
+    const userIds = users.map((user) => user._id);
+
     return res.status(200).json({
-      length: users.length,
-      users: users,
+      users,
     });
   } catch (error) {
     console.error(error);
@@ -126,18 +132,47 @@ function generateUserId() {
 exports.addTransactionAdmin = async (req, res) => {
   const user = req.body;
   try {
-    if (user.role === "transactionAdmin" || user.role === "warehouseAdmin") {
-      const manager = await User.findOne({
-        location: user.location,
-        role: user.role,
-      });
-      if (manager) {
-        throw new Error("Điểm này đã có quản lý!");
-      }
-    }
+    // const manager = await User.findOne({
+    //   location: user.location,
+    //   role: user.role,
+    // });
+    // if (manager) {
+    //   throw new Error("Điểm này đã có quản lý!");
+    // }
     const newUserId = generateUserId();
     const newUser = Object.assign(user, {
       userId: newUserId,
+      role: "transactionAdmin",
+      name: user.pointAdminName,
+      location: user.address,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      home: user.specificAdd,
+    });
+    await User.create(newUser);
+  } catch (err) {
+    return res.status(400).json({
+      error: err.message,
+    });
+  }
+  return res.status(201).json({
+    status: "create success",
+    user,
+  });
+};
+
+exports.addWarehouseAdmin = async (req, res) => {
+  const user = req.body;
+  try {
+    const newUserId = generateUserId();
+    const newUser = Object.assign(user, {
+      userId: newUserId,
+      role: "warehouseAdmin",
+      name: user.pointAdminName,
+      location: user.address,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      home: user.specificAdd,
     });
     await User.create(newUser);
   } catch (err) {
@@ -157,7 +192,8 @@ exports.addNewUserByTransactionAdmin = async (req, res) => {
     const newUserId = generateUserId();
     const newUser = Object.assign(user, {
       userId: newUserId,
-      location: user.location,
+      home: user.specificAdd,
+      location: transactionPoint,
       role: "transactionStaff",
     });
     await User.create(newUser);
@@ -180,6 +216,8 @@ exports.addNewUserByWarehouseAdmin = async (req, res) => {
       userId: newUserId,
       location: user.location,
       role: "warehouseStaff",
+      home: user.specificAdd,
+      location: extractLocation(user.warehousePoint),
     });
     await User.create(newUser);
   } catch (err) {
@@ -239,10 +277,7 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
 // Hàm xóa tài khoản người dùng
 exports.deleteUser = async (req, res, next) => {
   const userId = req.params;
-
-
-  const deletedUser = await User.findByIdAndDelete(userId.id);
-
+  const deletedUser = await User.findOneAndDelete(userId);
   if (!deletedUser) {
     const error = new CustomError("Người dùng không tìm thấy", 404);
     return next(error);
@@ -250,5 +285,6 @@ exports.deleteUser = async (req, res, next) => {
   res.status(204).json({
     status: "success",
     data: null,
+    message: "Đã xóa thành công",
   });
 };
