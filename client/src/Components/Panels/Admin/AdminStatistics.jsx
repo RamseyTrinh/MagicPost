@@ -31,7 +31,6 @@ export default function AdminStatistics() {
                 senderAdd: d.sender.senderAdd,
                 receiverName: d.receiver.receiverName,
                 receiverAdd: d.receiver.receiverAdd,
-
                 cost: d.cost.totalCost,
               };
             })

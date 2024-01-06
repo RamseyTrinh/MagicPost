@@ -14,13 +14,20 @@ const signToken = (id) => {
     expiresIn: process.env.LOGIN_EXPIRES,
   });
 };
+function extractLocation(address) {
+  const regex = /, (Tỉnh |Thành phố )\s*([^,]+)/;
+  const match = address.match(regex);
+  if (match && match[2]) {
+    return match[2].trim();
+  }
 
-exports.getAllUsers = async function getAllUsers(req, res) {
+  return null;
+}
+
+exports.getAllUsers = async (req, res) => {
   try {
-    // Truy vấn tất cả người dùng từ cơ sở dữ liệu
     const users = await User.find();
 
-    // Trả về danh sách người dùng
     return res.status(200).json(users);
   } catch (error) {
     console.error(error);
@@ -78,10 +85,9 @@ exports.getTransactionStaff = async (req, res) => {
         error: `Không có nhân viên tại điểm này`,
       });
     }
-
     return res.status(200).json({
-      length: users.length,
-      users: users,
+      status: "Success",
+      users,
     });
   } catch (error) {
     console.error(error);
@@ -94,7 +100,7 @@ exports.getWarehouseStaff = async (req, res) => {
   try {
     const location = req.params.location;
     const users = await User.find({
-      // location: location,
+      location: location,
       role: "warehouseStaff",
     });
 
@@ -107,8 +113,7 @@ exports.getWarehouseStaff = async (req, res) => {
     const userIds = users.map((user) => user._id);
 
     return res.status(200).json({
-      length: userIds.length,
-      userIds,
+      users,
     });
   } catch (error) {
     console.error(error);
@@ -187,7 +192,8 @@ exports.addNewUserByTransactionAdmin = async (req, res) => {
     const newUserId = generateUserId();
     const newUser = Object.assign(user, {
       userId: newUserId,
-      location: user.location,
+      home: user.specificAdd,
+      location: transactionPoint,
       role: "transactionStaff",
     });
     await User.create(newUser);
@@ -210,6 +216,8 @@ exports.addNewUserByWarehouseAdmin = async (req, res) => {
       userId: newUserId,
       location: user.location,
       role: "warehouseStaff",
+      home: user.specificAdd,
+      location: extractLocation(user.warehousePoint),
     });
     await User.create(newUser);
   } catch (err) {

@@ -7,6 +7,12 @@ import SelectAdd from "../../../../Funtions/SelectAdd/SelectAdd";
 import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import axios from "axios";
+
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -21,7 +27,10 @@ export default function GatherAdmin() {
     specificAdd: string;
     email: string;
     password: string;
+    location: string;
   };
+
+  const area = ["Miền Bắc", "Miền Trung", "Miền Nam"];
 
   const [showPassword, setShowPassword] = useState(false);
   const handleTogglePassword = () => {
@@ -144,6 +153,23 @@ export default function GatherAdmin() {
                     ),
                   }}
                 />
+              </Stack>
+              <Stack>
+                <FormControl sx={{ minWidth: 120 }}>
+                  <InputLabel>Tại điểm tập kết</InputLabel>
+                  <Select
+                    label="location"
+                    displayEmpty
+                    sx={{ background: "#fdfdfd" }}
+                    {...register("location")}
+                  >
+                    {area.map((area, index) => (
+                      <MenuItem key={index} value={area}>
+                        {area}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Stack>
             </Paper>
             <Button

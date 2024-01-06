@@ -3,7 +3,6 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
 import "../../../Assets/Styles/Table/Table.css";
 import { Link, useSearchParams } from "react-router-dom";
 import WestIcon from "@mui/icons-material/West";
@@ -78,9 +77,7 @@ export default function PackageSearch() {
           <div
             style={{
               mb: 4,
-              //   backgroundColor: "#003e29",
               width: "100%",
-              //   borderRadius: "20px",
               textAlign: "",
             }}
           >

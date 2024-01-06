@@ -60,8 +60,9 @@ export default function ListPointAcc() {
 
   const columns = [
     { field: "userId", headerName: "Mã nhân viên", width: 150 },
-    { field: "name", headerName: "Họ và tên", width: 250 },
-    { field: "address", headerName: "Địa điểm", width: 400 },
+    { field: "name", headerName: "Họ và tên", width: 200 },
+    { field: "address", headerName: "Nơi tạm trú", width: 300 },
+    { field: "location", headerName: "Làm việc tại", width: 150 },
     { field: "role", headerName: "Chức danh", width: 200 },
     { field: "email", headerName: "Email", width: 250 },
     {

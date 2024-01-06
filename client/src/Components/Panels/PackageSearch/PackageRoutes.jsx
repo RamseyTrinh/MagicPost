@@ -30,7 +30,7 @@ export default function PackageSearch({ pkgId }) {
     {
       field: "pointName",
       headerName: "Trạng thái / Đã đến",
-      width: 200,
+      width: 300,
       valueGetter: (params) => params.row.pointName,
     },
     {
@@ -39,14 +39,6 @@ export default function PackageSearch({ pkgId }) {
       width: 400,
       valueGetter: (params) => params.row.timestamp,
     },
-    // {
-    //   field: "street",
-    //   headerName: "Street",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 150,
-    //   valueGetter: (params) => params.row.address.street,
-    // },
   ];
 
   return (
@@ -68,7 +60,7 @@ export default function PackageSearch({ pkgId }) {
           id="confirmationTable"
           sx={{
             mb: 2,
-            width: "30%",
+            width: "60%",
             background: "#fxfxfx",
             maxHeight: "60vh",
           }}
@@ -76,10 +68,9 @@ export default function PackageSearch({ pkgId }) {
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
+              paginationModel: { page: 0, pageSize: 10 },
             },
           }}
-          pageSizeOptions={[5, 10, 15, 20, 25]}
         />
       </Stack>
     </Paper>

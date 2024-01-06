@@ -1,6 +1,5 @@
 const Order = require("../Models/orderModel");
 const Packages = require("../Models/packagesModel");
-const { route } = require("../app");
 const { getWHfromLocation } = require("./transactionPointController");
 
 // Tạo order khi package được tạo
