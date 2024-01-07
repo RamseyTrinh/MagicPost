@@ -27,7 +27,7 @@ export default function CreateAccount() {
     specificAdd: string;
     email: string;
     password: string;
-    transactionPoint: string;
+    location: string;
   };
   const [showPassword, setShowPassword] = useState(false);
   const handleTogglePassword = () => {
@@ -181,7 +181,7 @@ export default function CreateAccount() {
                 variant="outlined"
                 value={user.location}
                 required
-                {...register("transactionPoint")}
+                {...register("location")}
               ></TextField>
             </Paper>
             <Button

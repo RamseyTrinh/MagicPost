@@ -52,9 +52,11 @@ export default function Gather() {
         "http://localhost:3005/api/v1/order/transportingPackages",
         { packagesId: pkgId }
       );
-      // console.log(rows);
       console.log(result);
-    } catch (error) {}
+      window.alert("Đã chuyển thành công");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

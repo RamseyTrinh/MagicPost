@@ -60,32 +60,19 @@ export default function PackageStatistics() {
       width: 150,
       valueGetter: (params) => params.row.receiver.receiverPhone,
     },
-    {
-      field: "receiverAddr",
-      headerName: "Địa chỉ nhận",
-      width: 150,
-      valueGetter: (params) => params.row.receiver.receiverAddr,
-    },
+
     {
       field: "receiverAdd",
-      headerName: "",
-      width: 250,
+      headerName: "Địa chỉ nhận hàng",
+      width: 450,
       valueGetter: (params) => params.row.receiver.receiverAdd,
     },
     {
       field: "productName",
       headerName: "Bưu gửi",
-      width: 100,
+      width: 150,
       valueGetter: (params) => params.row.package.productName,
     },
-    // {
-    //   field: "street",
-    //   headerName: "Street",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 150,
-    //   valueGetter: (params) => params.row.address.street,
-    // },
   ];
 
   return (

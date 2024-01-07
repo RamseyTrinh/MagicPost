@@ -54,6 +54,7 @@ export default function Gather() {
         { packagesId: pkgId }
       );
       // console.log(rows);
+      window.alert("Đã chuyển thành công");
       console.log(result);
     } catch (error) {}
   };

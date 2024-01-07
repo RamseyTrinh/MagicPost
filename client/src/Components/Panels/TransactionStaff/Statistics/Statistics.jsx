@@ -83,15 +83,10 @@ export default function DataTable() {
       width: 180,
       valueGetter: (params) => params.row.receiver.receiverPhone,
     },
-    {
-      field: "receiverAddr",
-      headerName: "Địa chỉ nhận",
-      width: 250,
-      valueGetter: (params) => params.row.receiver.receiverAddr,
-    },
+
     {
       field: "receiverAdd",
-      headerName: "",
+      headerName: "Địa chỉ nhận",
       width: 400,
       valueGetter: (params) => params.row.receiver.receiverAdd,
     },
@@ -101,14 +96,6 @@ export default function DataTable() {
       width: 150,
       valueGetter: (params) => params.row.package.productName,
     },
-    // {
-    //   field: "street",
-    //   headerName: "Street",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 150,
-    //   valueGetter: (params) => params.row.address.street,
-    // },
   ];
 
   function handleClickLeft() {
