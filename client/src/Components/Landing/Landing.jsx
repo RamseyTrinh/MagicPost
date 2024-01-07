@@ -231,7 +231,7 @@ export default function BackToTop(props) {
             </Typography>
             <Stack sx={{ alignItems: "center" }}>
               <FormHelperText sx={{ width: `${match ? "300px" : "570px"}` }}>
-                Tra nhiều mã thêm giấu phẩy giữa các mã
+                {/*    */}
               </FormHelperText>
               <form onSubmit={handleSubmit}>
                 <Stack

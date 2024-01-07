@@ -14,7 +14,7 @@ export default function GatherManager() {
   const user = auth()?.data;
 
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       fetch(
         `http://localhost:3005/api/v1/users/allWarehouseStaff/${user.location}`
       )
@@ -32,7 +32,7 @@ export default function GatherManager() {
         });
     };
     fetchData();
-  }, []);
+  }, [user.location]);
 
   const columns = [
     { field: "id", headerName: "Mã nhân viên", width: 150 },
@@ -59,15 +59,6 @@ export default function GatherManager() {
         </Button>
       ),
     },
-
-    // {
-    //   field: "street",
-    //   headerName: "Street",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 150,
-    //   valueGetter: (params) => params.row.address.street,
-    // },
   ];
 
   return (

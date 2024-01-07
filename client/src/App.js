@@ -21,6 +21,7 @@ import AccountInfo from "./Components/Panels/AcountInfo/AccountInfo.jsx";
 import Unauthorized from "./Components/Panels/Unauthorized/Unauthorized.jsx";
 import PackageSearch from "./Components/Panels/PackageSearch/PackageSearch.jsx";
 import { useAuthUser } from "react-auth-kit";
+import NotFound from "./Components/Panels/PackageSearch/notFound.jsx";
 
 export default function App() {
   const auth = useAuthUser();
@@ -35,7 +36,9 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route path="/search" element={<PackageSearch />} />
+      <Route path="/search" element={<PackageSearch />}>
+        <Route path="404notfound" element={<notFound />}></Route>
+      </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/menu" element={<PrivateRoute />}>
         <Route index element={role && <AccountInfo />} />

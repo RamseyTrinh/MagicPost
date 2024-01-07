@@ -76,18 +76,18 @@ exports.getWarehouseAdmin = async (_, res) => {
 exports.getTransactionStaff = async (req, res) => {
   try {
     const location = req.params.location;
-    const users = await User.find({
+    const user = await User.find({
       location: location,
       role: "transactionStaff",
     });
-    if (!users || users.length === 0) {
+    if (!user || user.length === 0) {
       return res.status(404).json({
         error: `Không có nhân viên tại điểm này`,
       });
     }
     return res.status(200).json({
       status: "Success",
-      users,
+      user,
     });
   } catch (error) {
     console.error(error);
@@ -103,14 +103,6 @@ exports.getWarehouseStaff = async (req, res) => {
       location: location,
       role: "warehouseStaff",
     });
-
-    if (!users || users.length === 0) {
-      return res.status(404).json({
-        error: `Không có nhân viên đó tại điểm này`,
-      });
-    }
-
-    const userIds = users.map((user) => user._id);
 
     return res.status(200).json({
       users,
@@ -193,7 +185,7 @@ exports.addNewUserByTransactionAdmin = async (req, res) => {
     const newUser = Object.assign(user, {
       userId: newUserId,
       home: user.specificAdd,
-      location: transactionPoint,
+      location: user.transactionPoint,
       role: "transactionStaff",
     });
     await User.create(newUser);
@@ -217,7 +209,7 @@ exports.addNewUserByWarehouseAdmin = async (req, res) => {
       location: user.location,
       role: "warehouseStaff",
       home: user.specificAdd,
-      location: extractLocation(user.warehousePoint),
+      location: user.warehousePoint,
     });
     await User.create(newUser);
   } catch (err) {
