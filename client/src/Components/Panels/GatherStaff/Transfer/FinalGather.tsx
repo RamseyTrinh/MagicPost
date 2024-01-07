@@ -25,20 +25,20 @@ export default function Gather() {
 
   const match = useMediaQuery("(max-width:800px)");
 
-  useEffect(() => {
-    const fetchData = () => {
-      fetch(
-        `http://localhost:3005/api/v1/order/packagesIdSendByWarehouseSend/${user.location}`
-      )
-        .then((response) => {
-          return response.json();
-        })
+  const fetchData = () => {
+    fetch(
+      `http://localhost:3005/api/v1/order/packagesIdSendByWarehouseSend/${user.location}`
+    )
+      .then((response) => {
+        return response.json();
+      })
 
-        .then((data) => {
-          console.log(data.data);
-          setRows(data.data);
-        });
-    };
+      .then((data) => {
+        console.log(data.data);
+        setRows(data.data);
+      });
+  };
+  useEffect(() => {
     fetchData();
   }, [user.location]);
 
@@ -48,7 +48,7 @@ export default function Gather() {
     packageID: string;
   };
 
-  const { handleSubmit } = useForm<FormValues>();
+  const { handleSubmit, reset } = useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
     console.log(data);
@@ -58,8 +58,9 @@ export default function Gather() {
         "http://localhost:3005/api/v1/order/transportingPackages",
         { packagesId: pkgId }
       );
-      // console.log(rows);
       window.alert("Đã chuyển thành công");
+      fetchData();
+      reset();
       console.log(result);
     } catch (error) {}
   };
@@ -84,7 +85,7 @@ export default function Gather() {
               color: "#003e29",
             }}
           >
-            ĐIỂM TẬP KẾT ĐÍCH
+            CHUYỂN HÀNG ĐẾN ĐIỂM TẬP KẾT ĐÍCH
           </Typography>
 
           <Stack

@@ -6,6 +6,7 @@ const router = express.Router();
 router
   .route("/packagesSuccess/:transactionLocation")
   .get(orderController.getpackagesSuccess);
+
 router
   .route("/packagesFail/:transactionLocation")
   .get(orderController.getpackagesFail);

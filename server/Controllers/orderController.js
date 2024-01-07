@@ -32,7 +32,6 @@ async function createNewOrderWithPackage(packages) {
   }
 }
 
-// Tìm packages có trong điểm hiện tại
 async function getPackagesIdByCurrentPoint(req, res) {
   const { currentPoint } = req.params;
 
