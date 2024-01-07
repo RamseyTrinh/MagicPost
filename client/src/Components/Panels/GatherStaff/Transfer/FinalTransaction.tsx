@@ -79,7 +79,7 @@ export default function Gather() {
               color: "#003e29",
             }}
           >
-            ĐIỂM GIAO DỊCH ĐÍCH
+            CHUYỂN HÀNG ĐẾN ĐIỂM GIAO DỊCH ĐÍCH
           </Typography>
 
           <Stack

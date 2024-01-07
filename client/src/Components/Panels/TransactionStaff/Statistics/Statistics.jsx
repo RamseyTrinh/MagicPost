@@ -96,6 +96,14 @@ export default function DataTable() {
       width: 150,
       valueGetter: (params) => params.row.package.productName,
     },
+    // {
+    //   field: "street",
+    //   headerName: "Street",
+    //   description: "This column has a value getter and is not sortable.",
+    //   sortable: false,
+    //   width: 150,
+    //   valueGetter: (params) => params.row.address.street,
+    // },
   ];
 
   function handleClickLeft() {

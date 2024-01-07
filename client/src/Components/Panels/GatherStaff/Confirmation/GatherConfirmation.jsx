@@ -22,43 +22,42 @@ export default function DataTable() {
       : category === 2
       ? "http://localhost:3005/api/v1/order/warehouseToWarehouse"
       : "";
+  const fetchData = () => {
+    if (category === 1) {
+      fetch(
+        `http://localhost:3005/api/v1/order/packagesIdRequireWarehouseSend/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
 
+        .then((data) => {
+          console.log(data);
+          setRows(
+            data.data.map((d) => {
+              return { id: d };
+            })
+          );
+        });
+    }
+    if (category === 2) {
+      fetch(
+        `http://localhost:3005/api/v1/order/packagesIdRequireWarehouseReceive/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          setRows(
+            data.data.map((d) => {
+              return { id: d };
+            })
+          );
+        });
+    }
+  };
   useEffect(() => {
-    const fetchData = () => {
-      if (category === 1) {
-        fetch(
-          `http://localhost:3005/api/v1/order/packagesIdRequireWarehouseSend/${user.location}`
-        )
-          .then((response) => {
-            return response.json();
-          })
-
-          .then((data) => {
-            console.log(data);
-            setRows(
-              data.data.map((d) => {
-                return { id: d };
-              })
-            );
-          });
-      }
-      if (category === 2) {
-        fetch(
-          `http://localhost:3005/api/v1/order/packagesIdRequireWarehouseReceive/${user.location}`
-        )
-          .then((response) => {
-            return response.json();
-          })
-
-          .then((data) => {
-            setRows(
-              data.data.map((d) => {
-                return { id: d };
-              })
-            );
-          });
-      }
-    };
     fetchData();
   }, [category, user.location]);
 
@@ -82,6 +81,10 @@ export default function DataTable() {
                 packagesId: params.id,
               });
               console.log(result);
+              if (result.data.success) {
+                window.alert("Xác nhận hàng đến thành công");
+                fetchData();
+              }
             } catch (error) {}
           }}
         >
@@ -89,22 +92,14 @@ export default function DataTable() {
         </Button>
       ),
     },
-    // {
-    //   field: "street",
-    //   headerName: "Street",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 150,
-    //   valueGetter: (params) => params.row.address.street,
-    // },
   ];
 
   function handleClickLeft() {
-    setTitle("ĐIỂM GIAO DỊCH");
+    setTitle("CÁC HÀNG TỪ ĐIỂM GIAO DỊCH ĐẾN");
     setCategory(1);
   }
   function handleClickRight() {
-    setTitle("ĐIỂM TẬP KẾT KHÁC");
+    setTitle("CÁC HÀNG TỪ ĐIỂM TẬP KẾT KHÁC ĐẾN");
     setCategory(2);
   }
 
@@ -129,8 +124,8 @@ export default function DataTable() {
       >
         <Navigator
           type={2}
-          label1={"ĐIỂM GIAO DỊCH"}
-          label2={"ĐIỂM TẬP KẾT KHÁC"}
+          label1={"HÀNG TỪ ĐIỂM GIAO DỊCH"}
+          label2={"HÀNG TỪ ĐIỂM TẬP KẾT KHÁC"}
           function1={handleClickLeft}
           function2={handleClickRight}
         />
@@ -146,7 +141,7 @@ export default function DataTable() {
               id="confirmationTable"
               sx={{
                 mb: 4,
-                width: "100%",
+                width: "80%",
                 background: "#fdfdfd",
                 maxHeight: "55vh",
               }}

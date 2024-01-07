@@ -23,7 +23,12 @@ export default function Error() {
             <Link to="/" style={{ textDecoration: "none" }}>
               <Button
                 variant="contained"
-                sx={{ fontSize: "16px", fontWeight: "bold" }}
+                sx={{
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  backgroundColor: "#003e29",
+                  color: "white",
+                }}
               >
                 Quay về trang chủ
               </Button>

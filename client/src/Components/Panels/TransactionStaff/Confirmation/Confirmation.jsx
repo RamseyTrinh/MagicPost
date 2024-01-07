@@ -23,42 +23,42 @@ export default function DataTable() {
       ? "http://localhost:3005/api/v1/order/orderSuccess"
       : "";
 
+  const fetchData = () => {
+    if (category === 1) {
+      fetch(
+        `http://localhost:3005/api/v1/order/packagesIdRequireTransactionReceive/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          console.log(data);
+          setRows(
+            data.data.map((d) => {
+              return { id: d };
+            })
+          );
+        });
+    }
+    if (category === 2) {
+      fetch(
+        `http://localhost:3005/api/v1/order/packagesIdRequireReceiver/${user.location}`
+      )
+        .then((response) => {
+          return response.json();
+        })
+
+        .then((data) => {
+          setRows(
+            data.data.map((d) => {
+              return { id: d };
+            })
+          );
+        });
+    }
+  };
   useEffect(() => {
-    const fetchData = () => {
-      if (category === 1) {
-        fetch(
-          `http://localhost:3005/api/v1/order/packagesIdRequireTransactionReceive/${user.location}`
-        )
-          .then((response) => {
-            return response.json();
-          })
-
-          .then((data) => {
-            console.log(data);
-            setRows(
-              data.data.map((d) => {
-                return { id: d };
-              })
-            );
-          });
-      }
-      if (category === 2) {
-        fetch(
-          `http://localhost:3005/api/v1/order/packagesIdRequireReceiver/${user.location}`
-        )
-          .then((response) => {
-            return response.json();
-          })
-
-          .then((data) => {
-            setRows(
-              data.data.map((d) => {
-                return { id: d };
-              })
-            );
-          });
-      }
-    };
     fetchData();
   }, [category, user.location]);
 
@@ -82,7 +82,11 @@ export default function DataTable() {
                 packagesId: params.id,
               });
               console.log(result);
-            } catch (error) {}
+              window.alert("Xác nhận đơn hàng đến thành công");
+              fetchData();
+            } catch (error) {
+              console.log(error);
+            }
           }}
         >
           Xác nhận
@@ -100,11 +104,11 @@ export default function DataTable() {
   ];
 
   function handleClickLeft() {
-    setTitle("ĐIỂM TẬP KẾT");
+    setTitle("CÁC HÀNG TỪ ĐIỂM TẬP KẾT ĐẾN");
     setCategory(1);
   }
   function handleClickRight() {
-    setTitle("NGƯỜI NHẬN");
+    setTitle("NGƯỜI NHẬN THÀNH CÔNG");
     setCategory(2);
   }
 
