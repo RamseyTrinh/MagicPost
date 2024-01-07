@@ -244,6 +244,7 @@ export default function BackToTop(props) {
                   }}
                 >
                   <TextField
+                    required
                     placeholder="Nhập mã bưu gửi"
                     onChange={(e) => {
                       setPkgId(e.target.value);
