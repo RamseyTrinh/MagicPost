@@ -14,61 +14,105 @@ export default function GatherManager() {
   const user = auth()?.data;
 
   useEffect(() => {
-    const fetchData = () => {
-      fetch(
-        `http://localhost:3005/api/v1/users/allWarehouseStaff/${user.location}`
-      )
-        .then((response) => {
-          return response.json();
-        })
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3005/api/v1/users/allWarehouseStaff/${user.location}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
 
-        .then((data) => {
-          console.log(data);
-          setRows(
-            data.users?.map((d) => {
-              return { id: d.userId, name: d.name, email: d.email };
-            })
-          );
-        });
+        setRows(
+          data.users?.map((d) => {
+            return {
+              id: d.userId,
+              name: d.name,
+              email: d.email,
+              address: d.address,
+              phoneNumber: d.phoneNumber,
+              role: d.role,
+              location: d.location,
+            };
+          })
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
+
     fetchData();
-  }, []);
+  }, [user.location]);
 
   const columns = [
     { field: "id", headerName: "Mã nhân viên", width: 150 },
-    { field: "name", headerName: "Họ và tên", width: 200 },
+    { field: "name", headerName: "Họ và tên", width: 150 },
     { field: "email", headerName: "Email", width: 250 },
+    { field: "location", headerName: "Làm việc tại", width: 150 },
+    { field: "address", headerName: "Nơi tạm trú", width: 500 },
     {
-      field: "delete",
-      headerName: "Xóa tài khoản",
-      width: 200,
+      field: "actions",
+      headerName: "Actions",
       sortable: false,
+      width: 150,
       renderCell: (params) => (
         <Button
-          onClick={async () => {
-            console.log(params);
-            try {
-              const result = await axios.delete(
-                `http://localhost:3005/api/v1/users/deleteUser/${params.id}`
-              );
-              console.log(result);
-            } catch (error) {}
-          }}
+          variant="contained"
+          onClick={() => handleDelete(params.row.id)}
+          sx={{ fontWeight: "bold", background: "#ff0000" }}
         >
-          Xóa tài khoản
+          Xóa
         </Button>
       ),
     },
-
-    // {
-    //   field: "street",
-    //   headerName: "Street",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 150,
-    //   valueGetter: (params) => params.row.address.street,
-    // },
   ];
+
+  const handleDelete = async (userId) => {
+    const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa?");
+    if (isConfirmed) {
+      try {
+        const result = await axios.delete(
+          `http://localhost:3005/api/v1/users/delete/${userId}`
+        );
+        console.log(result);
+        fetchData();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3005/api/v1/users/allWarehouseStaff/${user.location}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      setRows(
+        data.users?.map((d) => {
+          return {
+            id: d.userId,
+            name: d.name,
+            email: d.email,
+            address: d.address,
+            phoneNumber: d.phoneNumber,
+            role: d.role,
+            location: d.location,
+          };
+        })
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   return (
     <div
@@ -80,43 +124,33 @@ export default function GatherManager() {
         width: "100%",
       }}
     >
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Paper sx={{ p: 4, background: "#faf6ed", width: "100%" }}>
-          <Stack alignItems={"center"}>
-            <Typography
-              variant="h4"
-              sx={{ color: "#003e29", fontWeight: "bold", mb: 4 }}
-            >
-              Quản lý tài khoản
-            </Typography>
-            <DataGrid
-              id="confirmationTable"
-              sx={{
-                mb: 4,
-                width: "60%",
-                background: "#fdfdfd",
-                maxHeight: "55vh",
-              }}
-              rows={rows}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
-                },
-              }}
-              pageSizeOptions={[5, 10, 15, 25, 30]}
-            />
-          </Stack>
-        </Paper>
-      </div>
+      <Paper sx={{ p: 4, background: "#faf6ed", width: "100%" }}>
+        <Stack alignItems={"center"}>
+          <Typography
+            variant="h4"
+            sx={{ color: "#003e29", fontWeight: "bold", mb: 4 }}
+          >
+            Quản lý tài khoản
+          </Typography>
+          <DataGrid
+            id="confirmationTable"
+            sx={{
+              mb: 4,
+              width: "100%",
+              background: "#fdfdfd",
+              maxHeight: "60vh",
+            }}
+            rows={rows}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 },
+              },
+            }}
+            pageSizeOptions={[5, 10, 15, 25, 30]}
+          />
+        </Stack>
+      </Paper>
     </div>
   );
 }

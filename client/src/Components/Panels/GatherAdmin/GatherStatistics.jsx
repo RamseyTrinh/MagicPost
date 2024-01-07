@@ -121,7 +121,9 @@ export default function GatherStatistics() {
             >
               THỐNG KÊ
             </Typography>
-
+            <Typography variant="h5" sx={{ color: "#003e29", mb: 4 }}>
+              Hàng tại điểm
+            </Typography>
             <DataGrid
               id="confirmationTable"
               sx={{

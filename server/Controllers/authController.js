@@ -14,15 +14,6 @@ const signToken = (id) => {
     expiresIn: process.env.LOGIN_EXPIRES,
   });
 };
-function extractLocation(address) {
-  const regex = /, (Tỉnh |Thành phố )\s*([^,]+)/;
-  const match = address.match(regex);
-  if (match && match[2]) {
-    return match[2].trim();
-  }
-
-  return null;
-}
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -80,13 +71,7 @@ exports.getTransactionStaff = async (req, res) => {
       location: location,
       role: "transactionStaff",
     });
-    if (!users || users.length === 0) {
-      return res.status(404).json({
-        error: `Không có nhân viên tại điểm này`,
-      });
-    }
     return res.status(200).json({
-      status: "Success",
       users,
     });
   } catch (error) {
@@ -103,14 +88,6 @@ exports.getWarehouseStaff = async (req, res) => {
       location: location,
       role: "warehouseStaff",
     });
-
-    if (!users || users.length === 0) {
-      return res.status(404).json({
-        error: `Không có nhân viên đó tại điểm này`,
-      });
-    }
-
-    const userIds = users.map((user) => user._id);
 
     return res.status(200).json({
       users,
@@ -193,7 +170,8 @@ exports.addNewUserByTransactionAdmin = async (req, res) => {
     const newUser = Object.assign(user, {
       userId: newUserId,
       home: user.specificAdd,
-      location: transactionPoint,
+      location: user.location,
+      address: user.address,
       role: "transactionStaff",
     });
     await User.create(newUser);
@@ -214,10 +192,10 @@ exports.addNewUserByWarehouseAdmin = async (req, res) => {
     const newUserId = generateUserId();
     const newUser = Object.assign(user, {
       userId: newUserId,
-      location: user.location,
+      address: user.address,
       role: "warehouseStaff",
       home: user.specificAdd,
-      location: extractLocation(user.warehousePoint),
+      location: user.location,
     });
     await User.create(newUser);
   } catch (err) {

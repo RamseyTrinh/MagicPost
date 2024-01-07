@@ -10,6 +10,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useForm } from "react-hook-form";
 import { useAuthUser } from "react-auth-kit";
 import { useEffect, useState } from "react";
+
 import axios from "axios";
 
 import "../../../../Assets/Styles/Gather/Gather.css";
@@ -62,7 +63,7 @@ export default function Gather() {
     packageId: string;
   };
 
-  const { handleSubmit } = useForm<FormValues>();
+  const { handleSubmit, reset } = useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
     console.log(data);
@@ -72,9 +73,12 @@ export default function Gather() {
         "http://localhost:3005/api/v1/order/transportingPackages",
         { packagesId: pkgId }
       );
-      // console.log(rows);
       console.log(result);
-    } catch (error) {}
+      window.alert("Đã chuyển thành công!");
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -159,15 +163,6 @@ export default function Gather() {
                   value={warehouse}
                   required
                 ></TextField>
-                {/* <TextField
-                  fullWidth
-                  multiline
-                  rows={5}
-                  id="outlined-basic"
-                  label="Ghi chú"
-                  variant="outlined"
-                  {...register("to.note")}
-                ></TextField> */}
               </Stack>
             </Paper>
           </Stack>
