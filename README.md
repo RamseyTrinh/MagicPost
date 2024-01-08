@@ -1,5 +1,17 @@
 # MagicPost
 
+## Host by netlify
+https://trinh-magicpost.netlify.app/
+
+If you want to test our project,
+tk: admin@magicpost.com
+tk: transactionstaff@magicpost.com
+tk: warehousestaff@magicpost.com
+tk: transactionadmin@magicpost.com
+tk: warehouseadmin@magicpost.com
+
+all the password is abc123456
+
 ## Local Run
 
 Clone the project
