@@ -1,7 +1,5 @@
 # MagicPost
 
-## Host by netlify
-https://trinh-magicpost.netlify.app/
 
 If you want to test our project,
 tk: admin@magicpost.com
